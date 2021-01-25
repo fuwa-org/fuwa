@@ -1,18 +1,21 @@
 {
-  "name": "wrappercord",
-  "version": "0.0.1",
-  "description": "A Discord API Wrapper made for JavaScript Universe",
-  "main": "src/index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/nearlySplat/wrappercord.git"
-  },
-  "keywords": [
-    "nearlyDp"
-  ],
-  "author": "",
-  "license": "ISC"
+	"name": "wrappercord",
+	"version": "0.0.1",
+	"description": "A Discord API Wrapper made for JavaScript Universe",
+	"main": "src/index.js",
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1"
+	},
+	"repository": "https://github.com/nearlySplat/wrappercord.git",
+	"keywords": [
+		"nearlyDp"
+	],
+	"author": "Ruairi O hUanachain <splatterxl@outlook.ie>",
+	"license": "AGPL-3.0-or-later",
+	"dependencies": {
+		"@discordjs/collection": "^0.1.6",
+		"node-fetch": "^2.6.1",
+		"ws": "^7.4.3"
+	},
+	"types": "src/index.d.ts"
 }
