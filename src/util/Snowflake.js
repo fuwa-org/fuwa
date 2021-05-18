@@ -1,3 +1,0 @@
-/**
- * @typedef {`${number}`} Snowflake
- */

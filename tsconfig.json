@@ -1,0 +1,10 @@
+{
+  "compilerOptions": {
+    "outDir": "./dist/",
+    "declaration": true
+  },
+  "extends": "@splatterxl/tsconfig",
+  "include": ["src/**/*"],
+  "compileOnSave": false,
+  "exclude": ["dist/**"]
+}
