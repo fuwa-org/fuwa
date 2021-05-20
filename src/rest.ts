@@ -1,12 +1,13 @@
 import { Client } from "./client";
 import fetch, { RequestInit, BodyInit, Response } from "node-fetch";
-import { Util } from "./util";
-import { CONSTANTS } from "./constants";
+import { Util } from "./util/util";
+import { CONSTANTS, HTTPMethod } from "./constants";
 
 export interface RequestOptions {
   headers?: Record<string, string>;
   data?: BodyInit;
   rawUrl?: boolean;
+  method?: HTTPMethod;
 }
 export interface RESTManager {
   token: string;
@@ -22,10 +23,11 @@ export class RESTManager {
   }
   async request<T = any>(
     url: string,
-    options?: RequestOptions
+    options: RequestOptions = {}
   ): Promise<{ data: T; res: Response }> {
     const bucket = Util.getURLBucket(url);
     async function waitUntilRateLimitIsOver(): Promise<void> {
+      if (options.rawUrl) return;
       // @ts-ignore
       if (bucket in this.rateLimits) {
         // @ts-ignore
@@ -37,9 +39,9 @@ export class RESTManager {
     const requestOptions: RequestInit = {
       body: options.data,
       headers: {
-        ...options.headers,
+        ...(options.headers ?? {}),
         ...CONSTANTS.api.headers,
-        Authorization: this.token,
+        Authorization: `Bot ${this.client.token}`,
       },
     };
     const res = await fetch(

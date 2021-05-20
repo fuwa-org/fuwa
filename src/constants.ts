@@ -31,5 +31,26 @@ export const CONSTANTS = {
 
 export const ERRORS = {
   NO_TOKEN: new TypeError("An invalid token was provided for the client."),
-  NO_INTENTS: new TypeError("No intents were provided for the Client"),
+  NO_INTENTS: new TypeError("No intents were provided for the Client."),
+  SHARDING: new TypeError("Sharding is not supported by wrappercord."),
 };
+
+export type HTTPMethod =
+  | "GET"
+  | "HEAD"
+  | "POST"
+  | "PUT"
+  | "PATCH"
+  | "DELETE"
+  | "CONNECT"
+  | "OPTIONS"
+  | "TRACE"
+  | "get"
+  | "head"
+  | "post"
+  | "put"
+  | "patch"
+  | "delete"
+  | "connect"
+  | "options"
+  | "trace";
