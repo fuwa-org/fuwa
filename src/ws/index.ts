@@ -15,18 +15,22 @@ import { message } from "./events";
 export class WebSocketManager extends EventEmitter {
   socket!: WebSocket;
   client: Client;
-  lastSequence: number = 0;
+  lastSequence = 0;
+  declare on: (
+    event: "message",
+    handler: (data: GatewayReceivePayload) => void
+  ) => this;
   constructor(client: Client) {
     super();
     this.client = client;
   }
-  seq() {
+  seq(): number {
     return this.lastSequence;
   }
-  async connect() {
+  async connect(): Promise<string> {
     const { token } = this.client;
     if (!token || !token.length) throw ERRORS.NO_TOKEN;
-    const prelimInfo = await this.client.request<APIGatewayBotInfo>(
+    const prelimInfo = await this.client.request<void, APIGatewayBotInfo>(
       CONSTANTS.getUrl("getGatewayBot"),
       { rawUrl: true }
     );
@@ -42,7 +46,7 @@ export class WebSocketManager extends EventEmitter {
       data = data.toString();
       try {
         data = JSON.parse(data);
-      } catch {}
+      } catch {} // eslint-disable-line no-empty
       this.emit("message", data);
     });
     this.socket.on("open", () =>
@@ -58,12 +62,10 @@ export class WebSocketManager extends EventEmitter {
       )
     );
     this._addListeners();
+    return this.client.token;
   }
-  declare on: (
-    event: "message",
-    handler: (data: GatewayReceivePayload) => void
-  ) => this;
-  private async _addListeners() {
+
+  private async _addListeners(): void {
     this.on("message", message.bind(null, this));
     for (const file of [
       ...readdirSync(pathDotJoin(__dirname, "..", "events")).filter(

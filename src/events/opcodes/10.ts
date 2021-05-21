@@ -4,10 +4,12 @@ import { WebSocketManager } from "../../ws";
 export default function handleOpcode10(
   manager: WebSocketManager,
   data: GatewayHello
-) {
-  setTimeout(
-    () => manager.socket.send(JSON.stringify({ op: 1, d: manager.seq() })),
-    data.d.heartbeat_interval * Math.random()
+): void {
+  manager.client.timeouts.push(
+    setTimeout(
+      () => manager.socket.send(JSON.stringify({ op: 1, d: manager.seq() })),
+      data.d.heartbeat_interval * Math.random()
+    )
   );
   manager.client.intervals.push(
     setInterval(
