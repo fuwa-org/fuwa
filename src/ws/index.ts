@@ -16,14 +16,15 @@ export class WebSocketManager extends EventEmitter {
   socket!: WebSocket;
   client: Client;
   lastSequence = 0;
-  declare on: (
-    event: "message",
-    handler: (data: GatewayReceivePayload) => void
-  ) => this;
   constructor(client: Client) {
     super();
     this.client = client;
   }
+declare on: (
+    event: "message",
+    handler: (data: GatewayReceivePayload) => void
+  ) => this;
+  
   seq(): number {
     return this.lastSequence;
   }
@@ -65,7 +66,7 @@ export class WebSocketManager extends EventEmitter {
     return this.client.token;
   }
 
-  private async _addListeners(): void {
+  private async _addListeners(): Promise<void> {
     this.on("message", message.bind(null, this));
     for (const file of [
       ...readdirSync(pathDotJoin(__dirname, "..", "events")).filter(

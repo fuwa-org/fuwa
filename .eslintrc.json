@@ -16,13 +16,16 @@
       {
         "order": [
           "[constants]",
-          "[static-properties]",
-          "[static-methods]",
-          "[properties]",
+          "[alphabetical-static-properties]",
+          "[alphabetical-static-methods]",
+          "[alphabetical-properties]",
           "[conventional-private-properties]",
           "constructor",
-          "[methods]",
-          "[conventional-private-methods]"
+          "on",
+          "[alphabetical-methods]",
+          "[conventional-private-methods]",
+          "toString",
+          "toJSON"
         ],
         "groups": {
           "constants": [

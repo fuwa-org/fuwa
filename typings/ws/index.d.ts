@@ -7,8 +7,8 @@ export declare class WebSocketManager extends EventEmitter {
     socket: WebSocket;
     client: Client;
     lastSequence: number;
-    on: (event: "message", handler: (data: GatewayReceivePayload) => void) => this;
     constructor(client: Client);
+    on: (event: "message", handler: (data: GatewayReceivePayload) => void) => this;
     seq(): number;
     connect(): Promise<string>;
     private _addListeners;

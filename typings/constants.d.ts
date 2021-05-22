@@ -1,14 +1,20 @@
+/// <reference types="node" />
+import { ImageFormat, ImageSize } from "./types";
 export declare const CONSTANTS: {
     urls: {
         base: string;
         getGatewayBot: string;
         socketUrl: string;
+        cdn: {
+            base: string;
+            avatar(hash: string, format: ImageFormat, size: ImageSize): string;
+        };
     };
     api: {
         version: string;
         userAgent: string;
         gatewayProperties: {
-            $os: string;
+            $os: NodeJS.Platform;
             $browser: string;
             $device: string;
         };

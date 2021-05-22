@@ -1,4 +1,3 @@
-import { Snowflake } from "discord-api-types";
 import { Util } from "./util";
 /**
  * A container for useful snowflake-related methods.

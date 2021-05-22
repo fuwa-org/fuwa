@@ -1,6 +1,5 @@
 "use strict";
 
-import { Snowflake } from "discord-api-types";
 import { Util } from "./util";
 
 let INCREMENT = 0;
@@ -39,7 +38,7 @@ export class SnowflakeUtil extends Util {
    * Deconstructs a Discord snowflake.
    */
   static deconstruct(snowflake: Snowflake): DeconstructedSnowflake {
-    const BINARY = Util.idToBinary(snowflake).toString(2).padStart(64, "0");
+    const BINARY = Util.idToBinary(snowflake).padStart(64, "0");
     return {
       timestamp: parseInt(BINARY.substring(0, 42), 2) + this.EPOCH,
       get date() {

@@ -1,4 +1,6 @@
-export class Intents {
+import { BitField } from "./BitField";
+
+export class Intents extends BitField {
   static FLAGS = {
     GUILDS: 1 << 0,
     GUILD_MEMBERS: 1 << 1,
