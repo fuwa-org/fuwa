@@ -7,7 +7,12 @@
     "lint": "eslint . --ext .ts",
     "lint:fix": "yarn lint --fix",
     "test": "node tests/index.test.js",
-    "compile": "tsc;"
+    "build": "tsc",
+    "docs:build": "typedoc",
+    "docs:serve": "cd docs; python3 http.server",
+    "docs": "yarn docs:build",
+    "prepare": "git config --local core.hooksPath .hooks/",
+    "prettify": "precise-commits"
   },
   "repository": "https://github.com/nearlySplat/wrappercord.git",
   "keywords": [],
@@ -29,6 +34,9 @@
     "@typescript-eslint/parser": "^4.24.0",
     "eslint": "^7.26.0",
     "eslint-plugin-sort-class-members": "^1.11.0",
+    "precise-commits": "^1.0.2",
+    "prettier": "^2.3.0",
+    "typedoc": "^0.20.36",
     "typescript": "^4.2.4"
   }
 }

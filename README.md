@@ -1,5 +1,20 @@
 # wrappercord
 
-A Discord API Wrapper made for the JavaScript Universe event, but I kinda gave up for a while. I'm now working on it though!
+A small Discord API wrapper made as a kind of experiment and learning experience. Originally
 
-Thanks to @Cinnamonsroll and @Airbus-A330 for helping out a little.
+## Usage
+
+[Node.js](https://nodejs.org) version 14.x.x or higher is required for this library.
+
+Installing with pnpm, npm or yarn is simple. I don't know any other package managers.
+
+```sh
+# with npm
+npm install --save nearlysplat/wrappercord
+
+# with yarn
+yarn add github:nearlysplat/wrappercord
+
+# with pnpm
+pnpm add nearlysplat/wrappercord
+```

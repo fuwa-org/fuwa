@@ -1,7 +1,6 @@
 import {
   APIGatewayBotInfo,
   GatewayDispatchPayload,
-  GatewayIdentify,
   GatewayOPCodes,
   GatewayReceivePayload,
 } from 'discord-api-types';
@@ -14,9 +13,11 @@ import { CONSTANTS, ERRORS } from '../constants';
 import { message } from './events';
 export class WebSocketManager extends EventEmitter {
   client: Client;
+  gatewayVersion = 9;
   lastSequence = 0;
+  session = '';
+  shardId = 0;
   socket!: WebSocket;
-
   constructor(client: Client) {
     super();
     this.client = client;
@@ -27,9 +28,9 @@ export class WebSocketManager extends EventEmitter {
       ...readdirSync(pathDotJoin(__dirname, '..', 'events')).filter(
         (v) => v !== 'opcodes'
       ),
-      ...readdirSync(pathDotJoin(__dirname, '..', 'events', 'opcodes')).map(
-        (v) => pathDotJoin('opcodes', v)
-      ),
+      ...readdirSync(
+        pathDotJoin(__dirname, '..', 'events', 'opcodes')
+      ).map((v) => pathDotJoin('opcodes', v)),
     ].filter((v) => !v.endsWith('.d.ts'))) {
       const { default: data } = await import(
         pathDotJoin(__dirname, '..', 'events', file)
@@ -68,6 +69,29 @@ export class WebSocketManager extends EventEmitter {
       this.emit('message', data);
     });
     this.socket.on('open', () =>
+      this.identify(!!this.lastSequence, {
+        session: this.session,
+        seq: this.seq(),
+      })
+    );
+    this._addListeners();
+    return this.client.token;
+  }
+  destroy() {
+    this.socket.close(0, 'Client was destroyed.');
+  }
+  identify(resuming = false, options: IdentifyOptions = {}): void {
+    if (resuming)
+      this.socket.send(
+        JSON.stringify({
+          op: GatewayOPCodes.Resume,
+          d: {
+            session_id: options.session,
+            seq: options.seq,
+          },
+        })
+      );
+    else
       this.socket.send(
         JSON.stringify({
           op: GatewayOPCodes.Identify,
@@ -76,17 +100,15 @@ export class WebSocketManager extends EventEmitter {
             properties: CONSTANTS.api.gatewayProperties,
             intents: this.client.options.intents,
           },
-        } as GatewayIdentify)
-      )
-    );
-    this._addListeners();
-    return this.client.token;
+        })
+      );
   }
   seq(): number {
     return this.lastSequence;
   }
-  declare on: (
-    event: 'message',
-    handler: (data: GatewayReceivePayload) => void
-  ) => this;
+}
+
+export interface IdentifyOptions {
+  seq?: number;
+  session?: string;
 }

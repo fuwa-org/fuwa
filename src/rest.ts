@@ -59,8 +59,9 @@ export class RESTManager {
       options.rawUrl ? url : CONSTANTS.urls.base + url,
       requestOptions
     );
-    let data: T extends void ? R : T =
-      (await res.buffer()) as unknown as T extends void ? R : T;
+    let data: T extends void
+      ? R
+      : T = ((await res.buffer()) as unknown) as T extends void ? R : T;
     if (res.ok) {
       try {
         data = JSON.parse(data.toString());

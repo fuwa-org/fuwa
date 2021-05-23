@@ -5,21 +5,33 @@ import { ImageURLOptions, UserPremiumType } from '../types';
 import { Snowflake } from '../util/snowflake';
 import { CONSTANTS } from '../constants';
 import { UserFlags } from '../util/UserFlags';
-
+/** A Bot or User on Discord. */
 export class User extends Base {
-  avatarHash: string;
+  /** The user's avatar hash. Set to `null` if the user has a default avatar. */
+  avatarHash: null | string = null;
+  /** Whether the user is a bot account. */
   bot = false;
+  /** The user's discriminator (e.g.: Discord#**0000**) */
   discriminator: string;
+  /** The user's email address. Only available in Oauth2 connections. */
   email: null | string = null;
-  flags: UserFlags = new UserFlags(0);
+  /** The user's [public flags](https://discord.com/developers/docs/resources/user#user-object-user-flags) */
+  flags = new UserFlags(0);
+  /** The user's ID */
   id: Snowflake;
-
+  /** The user's preferred client locale. Only available in Oauth2 connections. */
   locale: null | string = null;
+  /** Whether the user (or bot's owner) has 2 factor authentication enabled. */
   mfaEnabled: null | boolean = null;
+  /** The user's [Discord Nitro](https://dis.gd/nitro) subscription type.
+   * @see UserPremiumType
+   */
   premiumType: null | UserPremiumType = null;
+  /** Whether the user is part of the urgent message system */
   system: null | boolean = null;
+  /** The user's username */
   username: string;
-
+  /** Whether the user has verified their email address */
   verified: null | boolean = null;
 
   constructor(client: Client, data: APIUser & { id: Snowflake }) {
@@ -43,6 +55,7 @@ export class User extends Base {
     if ('premium_type' in data) this.premiumType = data.premium_type;
     return this;
   }
+  /** Get the avatar URL of the user */
   avatar(
     options: ImageURLOptions = { size: 512, format: 'webp', dynamic: false }
   ): string | null {

@@ -1,5 +1,6 @@
 'use strict';
 
+import { Snowflake } from 'discord-api-types';
 import { Util } from './util';
 
 let INCREMENT = 0;
@@ -58,4 +59,4 @@ export interface DeconstructedSnowflake {
   increment: number;
   binary: string;
 }
-export type Snowflake = `${number}`;
+export { Snowflake };
