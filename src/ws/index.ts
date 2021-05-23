@@ -28,9 +28,9 @@ export class WebSocketManager extends EventEmitter {
       ...readdirSync(pathDotJoin(__dirname, '..', 'events')).filter(
         (v) => v !== 'opcodes'
       ),
-      ...readdirSync(
-        pathDotJoin(__dirname, '..', 'events', 'opcodes')
-      ).map((v) => pathDotJoin('opcodes', v)),
+      ...readdirSync(pathDotJoin(__dirname, '..', 'events', 'opcodes')).map(
+        (v) => pathDotJoin('opcodes', v)
+      ),
     ].filter((v) => !v.endsWith('.d.ts'))) {
       const { default: data } = await import(
         pathDotJoin(__dirname, '..', 'events', file)
@@ -77,7 +77,7 @@ export class WebSocketManager extends EventEmitter {
     this._addListeners();
     return this.client.token;
   }
-  destroy() {
+  destroy(): void {
     this.socket.close(0, 'Client was destroyed.');
   }
   identify(resuming = false, options: IdentifyOptions = {}): void {

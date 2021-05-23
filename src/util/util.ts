@@ -14,7 +14,7 @@ export class Util {
    */
   static binaryToID(num: string): Snowflake {
     let dec = '';
-    let number: number = (num as unknown) as number;
+    let number: number = num as unknown as number;
     while (num.length > 50) {
       const high = parseInt(num.slice(0, -32), 2);
       const low = parseInt((high % 10).toString(2) + num.slice(-32), 2);
@@ -66,7 +66,7 @@ export class Util {
     }
     return bin;
   }
-  static noop(): void {}
+  static noop(): void {} // eslint-disable-line @typescript-eslint/no-empty-function
   static sleep(ms: number): Promise<void> {
     return new Promise((r) => setTimeout(r, ms));
   }
