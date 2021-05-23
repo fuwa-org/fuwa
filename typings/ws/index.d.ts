@@ -1,4 +1,3 @@
-/// <reference types="node" />
 import { EventEmitter } from 'events';
 import WebSocket from 'ws';
 import { Client } from '../client';
