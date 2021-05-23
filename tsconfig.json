@@ -2,9 +2,10 @@
   "compilerOptions": {
     "outDir": "./dist/",
     "declaration": true,
-    "declarationDir": "./typings/"
+    "declarationDir": "./typings/",
+    "target": "ES2015"
   },
-  "extends": "@splatterxl/tsconfig",
+  "extends": "@splatterxl/tsconfig/tsconfig.json",
   "include": ["./src/**/*"],
   "compileOnSave": false,
   "exclude": ["./dist/**"]

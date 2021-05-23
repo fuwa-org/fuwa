@@ -15,24 +15,63 @@
       2,
       {
         "order": [
-          "[constants]",
+          "[screaming-snake-case-static-properties]",
           "[alphabetical-static-properties]",
-          "[alphabetical-static-methods]",
           "[alphabetical-properties]",
-          "[conventional-private-properties]",
           "constructor",
-          "on",
+          "[alphabetical-static-methods]",
           "[alphabetical-methods]",
-          "[conventional-private-methods]",
+          "on",
+          "[everything-else]",
+          "[custom-inspect-method]",
           "toString",
           "toJSON"
         ],
         "groups": {
-          "constants": [
-            { "name": "/([A-Z0-9_])+/", "type": "method", "static": true }
+          "screaming-snake-case-static-properties": [
+            {
+              "name": "/^[A-Z_0-9]+$/"
+            },
+            {
+              "type": "property",
+              "sort": "none",
+              "static": true
+            }
+          ],
+          "alphabetical-static-properties": [
+            {
+              "type": "property",
+              "sort": "alphabetical",
+              "static": true
+            }
+          ],
+          "alphabetical-static-methods": [
+            {
+              "type": "method",
+              "sort": "alphabetical",
+              "static": true
+            }
+          ],
+          "alphabetical-methods": [
+            {
+              "type": "method",
+              "sort": "alphabetical"
+            }
+          ],
+          "alphabetical-properties": [
+            {
+              "type": "property",
+              "sort": "alphabetical",
+              "static": false
+            }
+          ],
+          "custom-inspect-method": [
+            {
+              "name": "[util.inspect.custom]",
+              "type": "method"
+            }
           ]
-        },
-        "accessorPairPositioning": "getThenSet"
+        }
       }
     ]
   }

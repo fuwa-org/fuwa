@@ -11,13 +11,18 @@ export interface Client {
   token: string;
 }
 export class Client extends EventEmitter {
-  options: ClientOptions;
-  rest = new RESTManager(this);
-  ws: WebSocketManager;
-  user: User = null as unknown as User;
   intervals: NodeJS.Timeout[] = [];
-  token: string;
+options: ClientOptions;
+  rest = new RESTManager(this);
   timeouts: NodeJS.Timeout[] = [];
+token: string;
+user: User = null as unknown as User;
+ws: WebSocketManager;
+  
+  
+  
+
+  
   constructor(token: string, options: ClientOptions) {
     super();
     if (!token) throw ERRORS.NO_TOKEN;
@@ -30,7 +35,16 @@ export class Client extends EventEmitter {
     this.options = options;
     this.ws = new WebSocketManager(this);
   }
-  destroy(): void {
+  private _connect() {
+    return this.ws.connect();
+  }
+private _request<T, R>(arg0: string, arg1: RequestOptions) {
+    return this.rest.request<T, R>(arg0, arg1);
+  }
+get connect(): WebSocketManager["connect"] {
+    return this._connect;
+  }
+destroy(): void {
     for (const x of this.timeouts) clearTimeout(x);
     for (const x of this.intervals) clearInterval(x);
     this.token = null;
@@ -40,13 +54,8 @@ export class Client extends EventEmitter {
   get request(): RESTManager["request"] {
     return this._request;
   }
-  get connect(): WebSocketManager["connect"] {
-    return this._connect;
-  }
-  private _request<T, R>(arg0: string, arg1: RequestOptions) {
-    return this.rest.request<T, R>(arg0, arg1);
-  }
-  private _connect() {
-    return this.ws.connect();
-  }
+  
+  
+
+  
 }

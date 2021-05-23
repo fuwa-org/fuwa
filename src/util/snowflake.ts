@@ -13,6 +13,22 @@ export class SnowflakeUtil extends Util {
    */
   static EPOCH = 1420070400000;
   /**
+   * Deconstructs a Discord snowflake.
+   */
+static deconstruct(snowflake: Snowflake): DeconstructedSnowflake {
+    const BINARY = Util.idToBinary(snowflake).padStart(64, "0");
+    return {
+      timestamp: parseInt(BINARY.substring(0, 42), 2) + this.EPOCH,
+      get date() {
+        return new Date(this.timestamp);
+      },
+      workerID: parseInt(BINARY.substring(42, 47), 2),
+      processID: parseInt(BINARY.substring(47, 52), 2),
+      increment: parseInt(BINARY.substring(52, 64), 2),
+      binary: BINARY,
+    };
+  }
+/**
    * Generates a Discord snowflake.
    * <info>This hardcodes the worker ID as 1 and the process ID as 0.</info>
    */
@@ -34,22 +50,8 @@ export class SnowflakeUtil extends Util {
     return Util.binaryToID(BINARY);
   }
 
-  /**
-   * Deconstructs a Discord snowflake.
-   */
-  static deconstruct(snowflake: Snowflake): DeconstructedSnowflake {
-    const BINARY = Util.idToBinary(snowflake).padStart(64, "0");
-    return {
-      timestamp: parseInt(BINARY.substring(0, 42), 2) + this.EPOCH,
-      get date() {
-        return new Date(this.timestamp);
-      },
-      workerID: parseInt(BINARY.substring(42, 47), 2),
-      processID: parseInt(BINARY.substring(47, 52), 2),
-      increment: parseInt(BINARY.substring(52, 64), 2),
-      binary: BINARY,
-    };
-  }
+  
+  
 }
 export interface DeconstructedSnowflake {
   timestamp: number;

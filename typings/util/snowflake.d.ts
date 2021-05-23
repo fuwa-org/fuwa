@@ -8,14 +8,16 @@ export declare class SnowflakeUtil extends Util {
      */
     static EPOCH: number;
     /**
+     * Deconstructs a Discord snowflake.
+     */
+static deconstruct(snowflake: Snowflake): DeconstructedSnowflake;
+/**
      * Generates a Discord snowflake.
      * <info>This hardcodes the worker ID as 1 and the process ID as 0.</info>
      */
     static generate(timestamp?: number | Date): Snowflake;
-    /**
-     * Deconstructs a Discord snowflake.
-     */
-    static deconstruct(snowflake: Snowflake): DeconstructedSnowflake;
+    
+    
 }
 export interface DeconstructedSnowflake {
     timestamp: number;

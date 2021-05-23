@@ -15,7 +15,6 @@
   "license": "AGPL-3.0-or-later",
   "dependencies": {
     "@discordjs/collection": "^0.1.6",
-    "@splatterxl/fetchbuilder": "^0.1.1-1",
     "discord-api-types": "^0.18.1",
     "node-fetch": "^2.6.1",
     "ws": "^7.4.3"

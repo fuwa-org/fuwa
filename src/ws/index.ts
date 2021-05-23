@@ -13,22 +13,40 @@ import { Client } from "../client";
 import { CONSTANTS, ERRORS } from "../constants";
 import { message } from "./events";
 export class WebSocketManager extends EventEmitter {
-  socket!: WebSocket;
   client: Client;
-  lastSequence = 0;
+lastSequence = 0;
+socket!: WebSocket;
+  
+  
   constructor(client: Client) {
     super();
     this.client = client;
   }
-declare on: (
-    event: "message",
-    handler: (data: GatewayReceivePayload) => void
-  ) => this;
-  
-  seq(): number {
-    return this.lastSequence;
+private async _addListeners(): Promise<void> {
+    this.on("message", message.bind(null, this));
+    for (const file of [
+      ...readdirSync(pathDotJoin(__dirname, "..", "events")).filter(
+        (v) => v !== "opcodes"
+      ),
+      ...readdirSync(pathDotJoin(__dirname, "..", "events", "opcodes")).map(
+        (v) => pathDotJoin("opcodes", v)
+      ),
+    ].filter((v) => !v.endsWith(".d.ts"))) {
+      const { default: data } = await import(
+        pathDotJoin(__dirname, "..", "events", file)
+      );
+      const func = data;
+      const event = file.replace(/(^opcodes\/|\.js$)/g, "");
+      this.on("message", (data: GatewayReceivePayload) => {
+        if (data.op === +event || (data as GatewayDispatchPayload).t === event)
+          func(this, data);
+      });
+    }
+    this.socket.on("close", (code, reason) => {
+      console.error("Socket closed with code", code, "and reason", reason);
+    });
   }
-  async connect(): Promise<string> {
+async connect(): Promise<string> {
     const { token } = this.client;
     if (!token || !token.length) throw ERRORS.NO_TOKEN;
     const prelimInfo = await this.client.request<void, APIGatewayBotInfo>(
@@ -65,29 +83,17 @@ declare on: (
     this._addListeners();
     return this.client.token;
   }
-
-  private async _addListeners(): Promise<void> {
-    this.on("message", message.bind(null, this));
-    for (const file of [
-      ...readdirSync(pathDotJoin(__dirname, "..", "events")).filter(
-        (v) => v !== "opcodes"
-      ),
-      ...readdirSync(pathDotJoin(__dirname, "..", "events", "opcodes")).map(
-        (v) => pathDotJoin("opcodes", v)
-      ),
-    ].filter((v) => !v.endsWith(".d.ts"))) {
-      const { default: data } = await import(
-        pathDotJoin(__dirname, "..", "events", file)
-      );
-      const func = data;
-      const event = file.replace(/(^opcodes\/|\.js$)/g, "");
-      this.on("message", (data: GatewayReceivePayload) => {
-        if (data.op === +event || (data as GatewayDispatchPayload).t === event)
-          func(this, data);
-      });
-    }
-    this.socket.on("close", (code, reason) => {
-      console.error("Socket closed with code", code, "and reason", reason);
-    });
+seq(): number {
+    return this.lastSequence;
   }
+declare on: (
+    event: "message",
+    handler: (data: GatewayReceivePayload) => void
+  ) => this;
+  
+  
+  
+
+
+  
 }

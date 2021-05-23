@@ -10,17 +10,28 @@ export interface Client {
     token: string;
 }
 export declare class Client extends EventEmitter {
-    options: ClientOptions;
-    rest: RESTManager;
-    ws: WebSocketManager;
-    user: User;
-    intervals: NodeJS.Timeout[];
-    token: string;
-    timeouts: NodeJS.Timeout[];
-    constructor(token: string, options: ClientOptions);
-    destroy(): void;
-    get request(): RESTManager["request"];
-    get connect(): WebSocketManager["connect"];
-    private _request;
     private _connect;
+private _request;
+intervals: NodeJS.Timeout[];
+options: ClientOptions;
+    rest: RESTManager;
+    timeouts: NodeJS.Timeout[];
+token: string;
+user: User;
+ws: WebSocketManager;
+    
+    
+    
+
+    
+    
+
+
+constructor(token: string, options: ClientOptions);
+    get connect(): WebSocketManager["connect"];
+destroy(): void;
+    get request(): RESTManager["request"];
+    
+    
+    
 }

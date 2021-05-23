@@ -4,18 +4,20 @@ export class BitField {
   constructor(bitfield: number) {
     this.bitfield = bitfield;
   }
-  remove(bit: number): number {
-    return (this.bitfield -= bit);
-  }
   add(bit: number): number {
     return (this.bitfield += bit);
   }
-  toString(): string {
-    return this.bitfield.toString();
+remove(bit: number): number {
+    return (this.bitfield -= bit);
   }
+  
   toArray(): string[] {
     return Object.entries((this.constructor as typeof BitField).FLAGS)
       .filter(([, bit]) => (this.bitfield & bit) === bit)
       .map(([K]) => K);
   }
+toString(): string {
+    return this.bitfield.toString();
+  }
+  
 }

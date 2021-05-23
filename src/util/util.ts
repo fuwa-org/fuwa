@@ -3,36 +3,16 @@ import { Response } from "node-fetch";
 import { ResponseRatelimitData } from "../rest";
 
 export class Util {
-  static sleep(ms: number): Promise<void> {
-    return new Promise((r) => setTimeout(r, ms));
+  constructor() {
+    throw new TypeError(
+      `The ${this.constructor.name} class may not be instantiated.`
+    );
   }
-  static noop(): void {} // eslint-disable-line @typescript-eslint/no-empty-function
-  static getURLBucket(url: string): string {
-    return url.replace(/\/\d+\//g, ":id"); // t
-  }
-  /**
-   * Transforms a snowflake from a decimal string to a bit string.
-   * @param  num Snowflake to be transformed
-   */
-  static idToBinary(num: Snowflake): string {
-    let bin = "";
-    let high = parseInt(num.slice(0, -10)) || 0;
-    let low = parseInt(num.slice(-10));
-    while (low > 0 || high > 0) {
-      bin = String(low & 1) + bin;
-      low = Math.floor(low / 2);
-      if (high > 0) {
-        low += 5000000000 * (high % 2);
-        high = Math.floor(high / 2);
-      }
-    }
-    return bin;
-  }
-  /**
+/**
    * Transforms a snowflake from a bit string to a decimal string.
    * @param  num Bit string to be transformed
    */
-  static binaryToID(num: string): Snowflake {
+static binaryToID(num: string): Snowflake {
     let dec = "";
     let number: number = num as unknown as number;
     while (num.length > 50) {
@@ -55,8 +35,7 @@ export class Util {
 
     return dec as `${number}`;
   }
-
-  static extractRatelimitHeaders(res: Response): ResponseRatelimitData {
+static extractRatelimitHeaders(res: Response): ResponseRatelimitData {
     const obj: ResponseRatelimitData = {} as ResponseRatelimitData;
     obj["X-RateLimit-Limit"] = +res.headers.get("X-RateLimit-Limit");
     obj["X-RateLimit-Reset"] = +res.headers.get("X-RateLimit-Reset");
@@ -65,9 +44,44 @@ export class Util {
     obj["X-RateLimit-Reset-After"] = +res.headers.get("X-RateLimit-Bucket");
     return obj;
   }
-  constructor() {
-    throw new TypeError(
-      `The ${this.constructor.name} class may not be instantiated.`
-    );
+// eslint-disable-line @typescript-eslint/no-empty-function
+static getURLBucket(url: string): string {
+    return url.replace(/\/\d+\//g, ":id"); // t
   }
+/**
+   * Transforms a snowflake from a decimal string to a bit string.
+   * @param  num Snowflake to be transformed
+   */
+static idToBinary(num: Snowflake): string {
+    let bin = "";
+    let high = parseInt(num.slice(0, -10)) || 0;
+    let low = parseInt(num.slice(-10));
+    while (low > 0 || high > 0) {
+      bin = String(low & 1) + bin;
+      low = Math.floor(low / 2);
+      if (high > 0) {
+        low += 5000000000 * (high % 2);
+        high = Math.floor(high / 2);
+      }
+    }
+    return bin;
+  }
+static noop(): void {}
+static sleep(ms: number): Promise<void> {
+    return new Promise((r) => setTimeout(r, ms));
+  }
+   
+
+
+
+
+  
+  
+  
+  
+  
+
+  
+
+  
 }

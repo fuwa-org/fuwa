@@ -2,7 +2,6 @@ lockfileVersion: 5.3
 
 specifiers:
   '@discordjs/collection': ^0.1.6
-  '@splatterxl/fetchbuilder': ^0.1.1-1
   '@splatterxl/tsconfig': ^1.0.0
   '@types/node': ^14.14.37
   '@types/node-fetch': ^2.5.10
@@ -18,7 +17,6 @@ specifiers:
 
 dependencies:
   '@discordjs/collection': 0.1.6
-  '@splatterxl/fetchbuilder': 0.1.1-1
   discord-api-types: 0.18.1
   node-fetch: 2.6.1
   ws: 7.4.5
@@ -95,12 +93,6 @@ packages:
       '@nodelib/fs.scandir': 2.1.4
       fastq: 1.11.0
     dev: true
-
-  /@splatterxl/fetchbuilder/0.1.1-1:
-    resolution: {integrity: sha512-U49XV3og9T+rfkSJQlRaLYZTQC9QyDxiI62Z9qIsxx0buqss4ZJaLfqvD5pW0Hhkr4udP0OTsvhX5oPNDtl0pQ==}
-    dependencies:
-      node-fetch: 2.6.1
-    dev: false
 
   /@splatterxl/tsconfig/1.0.0:
     resolution: {integrity: sha512-T1sNEzXe5vmeKyKOPF1bEYSR8mgteyGLDEgPSdPs6M9oHqD7yjdc0wH+dc52nfFwhTyHFeCGjpq97qNWtOutFA==}

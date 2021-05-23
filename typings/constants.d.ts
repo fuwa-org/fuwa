@@ -1,5 +1,5 @@
 /// <reference types="node" />
-import { ImageFormat, ImageSize } from "./types";
+import { ImageFormat, ImageSize } from './types';
 export declare const CONSTANTS: {
     urls: {
         base: string;
@@ -8,6 +8,7 @@ export declare const CONSTANTS: {
         cdn: {
             base: string;
             avatar(hash: string, format: ImageFormat, size: ImageSize): string;
+            defaultAvatar(disc: number): string;
         };
     };
     api: {
@@ -19,7 +20,7 @@ export declare const CONSTANTS: {
             $device: string;
         };
         headers: {
-            readonly "User-Agent": string;
+            readonly 'User-Agent': string;
         };
     };
     getUrl(str: string): string;
@@ -29,4 +30,4 @@ export declare const ERRORS: {
     NO_INTENTS: TypeError;
     SHARDING: TypeError;
 };
-export declare type HTTPMethod = "GET" | "HEAD" | "POST" | "PUT" | "PATCH" | "DELETE" | "CONNECT" | "OPTIONS" | "TRACE" | "get" | "head" | "post" | "put" | "patch" | "delete" | "connect" | "options" | "trace";
+export declare type HTTPMethod = 'GET' | 'HEAD' | 'POST' | 'PUT' | 'PATCH' | 'DELETE' | 'CONNECT' | 'OPTIONS' | 'TRACE' | 'get' | 'head' | 'post' | 'put' | 'patch' | 'delete' | 'connect' | 'options' | 'trace';
