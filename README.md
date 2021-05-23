@@ -36,6 +36,8 @@ const client = new Client("my_token", {
 client.on("ready", () => {
   console.log(`Logged in as ${client.user.username}#${client.user.tag}!`);
 });
+
+client.connect();
 ```
 
 ### Documentation
