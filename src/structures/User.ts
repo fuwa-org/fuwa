@@ -1,16 +1,20 @@
 import { APIUser } from 'discord-api-types';
 import { Client } from '../client';
-import { Base } from './Base';
-import { ImageURLOptions, UserPremiumType } from '../types';
-import { Snowflake } from '../util/snowflake';
 import { CONSTANTS } from '../constants';
+import { ImageURLOptions, UserPremiumType } from '../types';
+import { Snowflake, SnowflakeUtil } from '../util/snowflake';
 import { UserFlags } from '../util/UserFlags';
+import { Base } from './Base';
 /** A Bot or User on Discord. */
 export class User extends Base {
   /** The user's avatar hash. Set to `null` if the user has a default avatar. */
   avatarHash: null | string = null;
   /** Whether the user is a bot account. */
   bot = false;
+  /** The {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date} at which the user was created. */
+  createdAt: Date;
+  /** The UNIX timestamp at which the user was created */
+  createdTimestamp: number;
   /** The user's discriminator (e.g.: Discord#**0000**) */
   discriminator: string;
   /** The user's email address. Only available in Oauth2 connections. */
@@ -37,6 +41,8 @@ export class User extends Base {
   constructor(client: Client, data: APIUser & { id: Snowflake }) {
     super(client);
     this._patch(data);
+    this.createdAt = SnowflakeUtil.deconstruct(this.id).date;
+    this.createdTimestamp = this.createdAt.getTime();
   }
   _patch(data: APIUser & { id: Snowflake }): this {
     if ('bot' in data) this.bot = data.bot;

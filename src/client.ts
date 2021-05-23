@@ -9,7 +9,10 @@ import { APIGuild, APIUnavailableGuild } from 'discord-api-types';
 export interface ClientOptions {
   intents: number;
 }
-
+export interface ClientEvents {
+  ready: [];
+  debug: [string];
+}
 export interface Client {
   token: string;
 }
@@ -39,7 +42,7 @@ export class Client extends EventEmitter {
    */
   timeouts: NodeJS.Timeout[] = [];
   /** The client's User, returned by the READY dispatch */
-  user: User = (null as unknown) as User;
+  user: User = null as unknown as User;
   /** The WebSocket connection manager */
   ws: WebSocketManager;
   /**
@@ -82,4 +85,8 @@ export class Client extends EventEmitter {
   get request(): RESTManager['request'] {
     return this._request;
   }
+  declare on: <K extends keyof ClientEvents>(
+    event: K,
+    handler: (...args: ClientEvents[K]) => void
+  ) => this;
 }

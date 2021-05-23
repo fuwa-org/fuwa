@@ -4,5 +4,3 @@ set -e
 yarn build
 yarn lint
 yarn prettify
-yarn docs:build
-git add "docs"

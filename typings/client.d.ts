@@ -8,8 +8,13 @@ import { APIGuild, APIUnavailableGuild } from 'discord-api-types';
 export interface ClientOptions {
     intents: number;
 }
+export interface ClientEvents {
+    ready: [];
+    debug: [string];
+}
 export interface Client {
     token: string;
+    on: (<K extends keyof ClientEvents>(event: K, handler: (...args: ClientEvents[K]) => void) => this) | (<S extends string | symbol>(event: Exclude<S, keyof ClientEvents>, handler: (...args: any[]) => void) => this);
 }
 /** The main class of this wrapper and where all communication with Discord is based from.
  * <warning>Sharded clients are not supported by Wrappercord</warning>
@@ -18,7 +23,7 @@ export declare class Client extends EventEmitter {
     /** Cached guilds the bot is in
      * <info>Every guild is cached by default in un-sharded clients</info>
      */
-    guilds: Collection<`${bigint}`, APIUnavailableGuild | APIGuild | (APIUnavailableGuild & {
+    guilds: Collection<`${bigint}`, APIGuild | APIUnavailableGuild | (APIUnavailableGuild & {
         uncached: true;
     })>;
     /** Intervals that can be cleared with `Client#destroy()`
