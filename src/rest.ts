@@ -1,7 +1,7 @@
-import { Client } from "./client";
-import fetch, { RequestInit, BodyInit, Response } from "node-fetch";
-import { Util } from "./util/util";
-import { CONSTANTS, HTTPMethod } from "./constants";
+import { Client } from './client';
+import fetch, { RequestInit, BodyInit, Response } from 'node-fetch';
+import { Util } from './util/util';
+import { CONSTANTS, HTTPMethod } from './constants';
 
 export interface RequestOptions {
   headers?: Record<string, string>;
@@ -10,11 +10,11 @@ export interface RequestOptions {
   method?: HTTPMethod;
 }
 export interface ResponseRatelimitData {
-  "X-RateLimit-Limit": number;
-  "X-RateLimit-Remaining": number;
-  "X-RateLimit-Reset": number;
-  "X-RateLimit-Reset-After": number;
-  "X-RateLimit-Bucket": string;
+  'X-RateLimit-Limit': number;
+  'X-RateLimit-Remaining': number;
+  'X-RateLimit-Reset': number;
+  'X-RateLimit-Reset-After': number;
+  'X-RateLimit-Bucket': string;
 }
 export interface RESTManager {
   token: string;
@@ -24,7 +24,7 @@ export class RESTManager {
   rateLimits: Map<string, ResponseRatelimitData> = new Map();
   constructor(client: Client) {
     this.client = client;
-    Object.defineProperty(this, "token", {
+    Object.defineProperty(this, 'token', {
       value: client.token,
       enumerable: false,
     });
@@ -38,10 +38,10 @@ export class RESTManager {
       if (options.rawUrl) return;
       if (
         this.rateLimits.has(bucket) &&
-        this.rateLimits.get(bucket)["X-RateLimit-Remaining"] < 2
+        this.rateLimits.get(bucket)['X-RateLimit-Remaining'] < 2
       ) {
         await Util.sleep(
-          this.rateLimits.get(bucket)["X-RateLimit-Reset"] - Date.now()
+          this.rateLimits.get(bucket)['X-RateLimit-Reset'] - Date.now()
         );
         return waitUntilRateLimitIsOver.call(this);
       } else return;
@@ -66,7 +66,7 @@ export class RESTManager {
         data = JSON.parse(data.toString());
       } catch {} // eslint-disable-line no-empty
     } else {
-      if (res.status === 429) throw new Error("rate limit encountered");
+      if (res.status === 429) throw new Error('rate limit encountered');
     }
     this.rateLimits.set(bucket, Util.extractRatelimitHeaders(res));
     return { data: data as T extends void ? R : T, res };

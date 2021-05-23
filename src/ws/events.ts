@@ -1,5 +1,5 @@
-import { GatewayReceivePayload } from "discord-api-types";
-import { WebSocketManager } from ".";
+import { GatewayReceivePayload } from 'discord-api-types';
+import { WebSocketManager } from '.';
 export function message(
   manager: WebSocketManager,
   data: GatewayReceivePayload

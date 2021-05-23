@@ -8,26 +8,20 @@ import { UserFlags } from '../util/UserFlags';
 
 export class User extends Base {
   avatarHash: string;
-bot = false;
+  bot = false;
   discriminator: string;
-email: null | string = null;
-flags: UserFlags = new UserFlags(0);
-id: Snowflake;
-  
-  
+  email: null | string = null;
+  flags: UserFlags = new UserFlags(0);
+  id: Snowflake;
 
-  
   locale: null | string = null;
   mfaEnabled: null | boolean = null;
-premiumType: null | UserPremiumType = null;
-system: null | boolean = null;
+  premiumType: null | UserPremiumType = null;
+  system: null | boolean = null;
   username: string;
-  
-  
 
-verified: null | boolean = null;
-  
-  
+  verified: null | boolean = null;
+
   constructor(client: Client, data: APIUser & { id: Snowflake }) {
     super(client);
     this._patch(data);

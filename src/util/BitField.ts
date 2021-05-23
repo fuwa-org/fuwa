@@ -7,17 +7,16 @@ export class BitField {
   add(bit: number): number {
     return (this.bitfield += bit);
   }
-remove(bit: number): number {
+  remove(bit: number): number {
     return (this.bitfield -= bit);
   }
-  
+
   toArray(): string[] {
     return Object.entries((this.constructor as typeof BitField).FLAGS)
       .filter(([, bit]) => (this.bitfield & bit) === bit)
       .map(([K]) => K);
   }
-toString(): string {
+  toString(): string {
     return this.bitfield.toString();
   }
-  
 }

@@ -1,4 +1,4 @@
-import { BitField } from "./BitField";
+import { BitField } from './BitField';
 
 export class UserFlags extends BitField {
   static ALL = 262143;
@@ -26,7 +26,7 @@ export class UserFlags extends BitField {
     /** Team user */
     TEAM_USER: 1 << 10,
     /** Relates to partnership/verification applications */
-    "": 1 << 11,
+    '': 1 << 11,
     /** System user */
     SYSTEM: 1 << 12,
     /** Has an unread system message [not public] */

@@ -1,4 +1,4 @@
-import { BitField } from "./BitField";
+import { BitField } from './BitField';
 
 export class Intents extends BitField {
   static FLAGS = {
