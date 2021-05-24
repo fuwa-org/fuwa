@@ -1,4 +1,4 @@
-name: Build Documentation
+name: Run CI
 on:
   push:
     branches:
@@ -32,6 +32,6 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
       - name: Codecov
-        run: npm i; npx codecov
-        with:
+        run: "npm i; npx codecov"
+        env:
           "CODECOV_TOKEN": ${{ secrets.CODECOV_TOKEN }}
