@@ -26,7 +26,7 @@ export declare class Client extends EventEmitter {
     /** Cached guilds the bot is in
      * <info>Every guild is cached by default in un-sharded clients</info>
      */
-    guilds: Collection<`${bigint}`, APIGuild | APIUnavailableGuild | (APIUnavailableGuild & {
+    guilds: Collection<`${bigint}`, APIUnavailableGuild | APIGuild | (APIUnavailableGuild & {
         uncached: true;
     })>;
     /** Intervals that can be cleared with {@link Client#destroy}
