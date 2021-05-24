@@ -1,3 +1,4 @@
+/// <reference types="node" />
 import { ImageFormat, ImageSize } from './types';
 export declare const CONSTANTS: {
     urls: {
@@ -14,7 +15,7 @@ export declare const CONSTANTS: {
         version: string;
         userAgent: string;
         gatewayProperties: {
-            $os: any;
+            $os: NodeJS.Platform;
             $browser: string;
             $device: string;
         };

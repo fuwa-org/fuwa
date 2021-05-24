@@ -1,23 +1,27 @@
+import Collection from '@discordjs/collection';
+import { APIGuild, APIUnavailableGuild } from 'discord-api-types';
 import { EventEmitter } from 'events';
 import { ERRORS } from './constants';
 import { RequestOptions, RESTManager } from './rest';
+import { Message } from './structures/Message';
 import { User } from './structures/User';
-import { WebSocketManager } from './ws';
-import Collection from '@discordjs/collection';
 import { Snowflake } from './util/snowflake';
-import { APIGuild, APIUnavailableGuild } from 'discord-api-types';
+import { WebSocketManager } from './ws';
 export interface ClientOptions {
   intents: number;
 }
 export interface ClientEvents {
   ready: [];
-  debug: [string];
+  debug: [message: string];
+  messageCreate: [message: Message];
+  guildCreate: [APIGuild];
 }
 export interface Client {
   token: string;
 }
 /** The main class of this wrapper and where all communication with Discord is based from.
- * <warning>Sharded clients are not supported by Wrappercord</warning>
+ *
+ * <warning>Sharded Clients are not supported by Wrappercord.</warning>
  */
 export class Client extends EventEmitter {
   /** Cached guilds the bot is in
@@ -27,22 +31,20 @@ export class Client extends EventEmitter {
     Snowflake,
     APIGuild | APIUnavailableGuild | (APIUnavailableGuild & { uncached: true })
   >();
-  /** Intervals that can be cleared with `Client#destroy()`
-   * @see Client#destroy
+  /** Intervals that can be cleared with {@link Client#destroy}
    */
   intervals: NodeJS.Timeout[] = [];
-  /** Options passed to the constructor.
-   * @see Client
-   */
+  /** Options passed to the constructor. */
   options: ClientOptions;
   /** The main HTTP request manager */
   rest = new RESTManager(this);
-  /** Timeouts that can be cleared with `Client#destroy()`
-   * @see Client#destroy
+  /** Timeouts that can be cleared with {@link Client#destroy}
    */
   timeouts: NodeJS.Timeout[] = [];
-  /** The client's User, returned by the READY dispatch */
-  user: User = null as unknown as User;
+  /** The client's {@link User}, returned by the READY dispatch */
+  user: User | null = null;
+  /** {@link User}s the bot has cached. */
+  users = new Collection<Snowflake, User>();
   /** The WebSocket connection manager */
   ws: WebSocketManager;
   /**
@@ -81,7 +83,7 @@ export class Client extends EventEmitter {
     this.user = null;
     this.ws.destroy();
   }
-  /** Make a request to the API. Rate-limits are cached and managed by this function. */
+  /** Make a {@link RESTManager#request} to the API. Rate-limits are cached and managed by this function. */
   get request(): RESTManager['request'] {
     return this._request;
   }

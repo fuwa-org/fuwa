@@ -35,4 +35,8 @@ export default function (
       }
     }, 1000 * 60 * 30 /* 30 seconds */)
   );
+  manager.client.users.set(
+    manager.client.user!.id,
+    manager.client.user as User
+  );
 }

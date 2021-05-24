@@ -20,7 +20,7 @@ export declare class Intents extends BitField {
     /**
      * Every Gateway Intent.
      */
-    static ALL: any;
+    static ALL: number;
     /**
      * Non-priveledged [Gateway Intents](https://discord.com/developers/docs/topics/gateway#gateway-intents).
      */

@@ -1,23 +1,26 @@
 /// <reference types="node" />
-import { EventEmitter } from 'events';
-import { RESTManager } from './rest';
-import { User } from './structures/User';
-import { WebSocketManager } from './ws';
 import Collection from '@discordjs/collection';
 import { APIGuild, APIUnavailableGuild } from 'discord-api-types';
+import { EventEmitter } from 'events';
+import { RESTManager } from './rest';
+import { Message } from './structures/Message';
+import { User } from './structures/User';
+import { WebSocketManager } from './ws';
 export interface ClientOptions {
     intents: number;
 }
 export interface ClientEvents {
     ready: [];
-    debug: [string];
+    debug: [message: string];
+    messageCreate: [message: Message];
+    guildCreate: [APIGuild];
 }
 export interface Client {
     token: string;
-    on: (<K extends keyof ClientEvents>(event: K, handler: (...args: ClientEvents[K]) => void) => this) | (<S extends string | symbol>(event: Exclude<S, keyof ClientEvents>, handler: (...args: any[]) => void) => this);
 }
 /** The main class of this wrapper and where all communication with Discord is based from.
- * <warning>Sharded clients are not supported by Wrappercord</warning>
+ *
+ * <warning>Sharded Clients are not supported by Wrappercord.</warning>
  */
 export declare class Client extends EventEmitter {
     /** Cached guilds the bot is in
@@ -26,22 +29,20 @@ export declare class Client extends EventEmitter {
     guilds: Collection<`${bigint}`, APIGuild | APIUnavailableGuild | (APIUnavailableGuild & {
         uncached: true;
     })>;
-    /** Intervals that can be cleared with `Client#destroy()`
-     * @see Client#destroy
+    /** Intervals that can be cleared with {@link Client#destroy}
      */
     intervals: NodeJS.Timeout[];
-    /** Options passed to the constructor.
-     * @see Client
-     */
+    /** Options passed to the constructor. */
     options: ClientOptions;
     /** The main HTTP request manager */
     rest: RESTManager;
-    /** Timeouts that can be cleared with `Client#destroy()`
-     * @see Client#destroy
+    /** Timeouts that can be cleared with {@link Client#destroy}
      */
     timeouts: NodeJS.Timeout[];
-    /** The client's User, returned by the READY dispatch */
-    user: User;
+    /** The client's {@link User}, returned by the READY dispatch */
+    user: User | null;
+    /** {@link User}s the bot has cached. */
+    users: Collection<`${bigint}`, User>;
     /** The WebSocket connection manager */
     ws: WebSocketManager;
     /**
@@ -55,6 +56,7 @@ export declare class Client extends EventEmitter {
     get connect(): WebSocketManager['connect'];
     /** Destroys the client, terminates the connection to Discord and nullifies the token. */
     destroy(): void;
-    /** Make a request to the API. Rate-limits are cached and managed by this function. */
+    /** Make a {@link RESTManager#request} to the API. Rate-limits are cached and managed by this function. */
     get request(): RESTManager['request'];
+    on: <K extends keyof ClientEvents>(event: K, handler: (...args: ClientEvents[K]) => void) => this;
 }

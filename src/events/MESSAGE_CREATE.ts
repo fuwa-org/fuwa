@@ -5,5 +5,6 @@ export default function (
   manager: WebSocketManager,
   data: GatewayMessageCreateDispatch
 ): void {
-  const message = new Message(manager.client /*data.d*/);
+  const message = new Message(manager.client, data.d);
+  manager.client.emit('messageCreate', message);
 }
