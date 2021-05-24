@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>RESTManager | Wrappercord</title>
+	<title>MessageMentions | Wrappercord</title>
 	<meta name="description" content="Documentation for Wrappercord">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -53,21 +53,28 @@
 					<a href="../modules.html">Wrappercord</a>
 				</li>
 				<li>
-					<a href="restmanager.html">RESTManager</a>
+					<a href="messagementions.html">MessageMentions</a>
 				</li>
 			</ul>
-			<h1>Class RESTManager</h1>
+			<h1>Class MessageMentions</h1>
 		</div>
 	</div>
 </header>
 <div class="container container-main">
 	<div class="row">
 		<div class="col-8 col-content">
+			<section class="tsd-panel tsd-comment">
+				<div class="tsd-comment tsd-typography">
+					<div class="lead">
+						<p>Keeps track of mentions in a <a href="message.html">Message</a></p>
+					</div>
+				</div>
+			</section>
 			<section class="tsd-panel tsd-hierarchy">
 				<h3>Hierarchy</h3>
 				<ul class="tsd-hierarchy">
 					<li>
-						<span class="target">RESTManager</span>
+						<span class="target">MessageMentions</span>
 					</li>
 				</ul>
 			</section>
@@ -78,21 +85,17 @@
 						<section class="tsd-index-section ">
 							<h3>Constructors</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-constructor tsd-parent-kind-class"><a href="restmanager.html#constructor" class="tsd-kind-icon">constructor</a></li>
+								<li class="tsd-kind-constructor tsd-parent-kind-class"><a href="messagementions.html#constructor" class="tsd-kind-icon">constructor</a></li>
 							</ul>
 						</section>
 						<section class="tsd-index-section ">
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-property tsd-parent-kind-class"><a href="restmanager.html#client" class="tsd-kind-icon">client</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class"><a href="restmanager.html#ratelimits" class="tsd-kind-icon">rate<wbr>Limits</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class"><a href="restmanager.html#token" class="tsd-kind-icon">token</a></li>
-							</ul>
-						</section>
-						<section class="tsd-index-section ">
-							<h3>Methods</h3>
-							<ul class="tsd-index-list">
-								<li class="tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter"><a href="restmanager.html#request" class="tsd-kind-icon">request</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="messagementions.html#channels" class="tsd-kind-icon">channels</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="messagementions.html#client" class="tsd-kind-icon">client</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="messagementions.html#everyone" class="tsd-kind-icon">everyone</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="messagementions.html#roles" class="tsd-kind-icon">roles</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="messagementions.html#users" class="tsd-kind-icon">users</a></li>
 							</ul>
 						</section>
 					</div>
@@ -104,13 +107,13 @@
 					<a name="constructor" class="tsd-anchor"></a>
 					<h3>constructor</h3>
 					<ul class="tsd-signatures tsd-kind-constructor tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">new RESTManager<span class="tsd-signature-symbol">(</span>client<span class="tsd-signature-symbol">: </span><a href="default.html" class="tsd-signature-type" data-tsd-kind="Class">default</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="restmanager.html" class="tsd-signature-type" data-tsd-kind="Class">RESTManager</a></li>
+						<li class="tsd-signature tsd-kind-icon">new <wbr>Message<wbr>Mentions<span class="tsd-signature-symbol">(</span>client<span class="tsd-signature-symbol">: </span><a href="default.html" class="tsd-signature-type" data-tsd-kind="Class">default</a>, users<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">(</span><span class="tsd-signature-type">APIUser</span><span class="tsd-signature-symbol"> &amp; </span><span class="tsd-signature-symbol">{}</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">[]</span>, roles<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">`</span><span class="tsd-signature-symbol">${</span><span class="tsd-signature-type">bigint</span><span class="tsd-signature-symbol">}</span><span class="tsd-signature-symbol">`</span><span class="tsd-signature-symbol">[]</span>, everyone<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span>, channels<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">APIChannelMention</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="messagementions.html" class="tsd-signature-type" data-tsd-kind="Class">MessageMentions</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/nearlySplat/wrappercord/blob/ab4da02/src/rest.ts#L24">rest.ts:24</a></li>
+									<li>Defined in <a href="https://github.com/nearlySplat/wrappercord/blob/ab4da02/src/structures/MessageMentions.ts#L15">structures/MessageMentions.ts:15</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -118,8 +121,20 @@
 								<li>
 									<h5>client: <a href="default.html" class="tsd-signature-type" data-tsd-kind="Class">default</a></h5>
 								</li>
+								<li>
+									<h5>users: <span class="tsd-signature-symbol">(</span><span class="tsd-signature-type">APIUser</span><span class="tsd-signature-symbol"> &amp; </span><span class="tsd-signature-symbol">{}</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">[]</span></h5>
+								</li>
+								<li>
+									<h5>roles: <span class="tsd-signature-symbol">`</span><span class="tsd-signature-symbol">${</span><span class="tsd-signature-type">bigint</span><span class="tsd-signature-symbol">}</span><span class="tsd-signature-symbol">`</span><span class="tsd-signature-symbol">[]</span></h5>
+								</li>
+								<li>
+									<h5>everyone: <span class="tsd-signature-type">boolean</span></h5>
+								</li>
+								<li>
+									<h5><span class="tsd-flag ts-flagOptional">Optional</span> channels: <span class="tsd-signature-type">APIChannelMention</span><span class="tsd-signature-symbol">[]</span></h5>
+								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <a href="restmanager.html" class="tsd-signature-type" data-tsd-kind="Class">RESTManager</a></h4>
+							<h4 class="tsd-returns-title">Returns <a href="messagementions.html" class="tsd-signature-type" data-tsd-kind="Class">MessageMentions</a></h4>
 						</li>
 					</ul>
 				</section>
@@ -127,72 +142,74 @@
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Properties</h2>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+					<a name="channels" class="tsd-anchor"></a>
+					<h3>channels</h3>
+					<div class="tsd-signature tsd-kind-icon">channels<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">APIChannelMention</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol"> = []</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/nearlySplat/wrappercord/blob/ab4da02/src/structures/MessageMentions.ts#L8">structures/MessageMentions.ts:8</a></li>
+						</ul>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>Channels mentioned in the message.</p>
+						</div>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
 					<a name="client" class="tsd-anchor"></a>
 					<h3>client</h3>
 					<div class="tsd-signature tsd-kind-icon">client<span class="tsd-signature-symbol">:</span> <a href="default.html" class="tsd-signature-type" data-tsd-kind="Class">default</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/nearlySplat/wrappercord/blob/ab4da02/src/rest.ts#L23">rest.ts:23</a></li>
+							<li>Defined in <a href="https://github.com/nearlySplat/wrappercord/blob/ab4da02/src/structures/MessageMentions.ts#L9">structures/MessageMentions.ts:9</a></li>
 						</ul>
 					</aside>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
-					<a name="ratelimits" class="tsd-anchor"></a>
-					<h3>rate<wbr>Limits</h3>
-					<div class="tsd-signature tsd-kind-icon">rate<wbr>Limits<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Map</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">, </span><a href="../interfaces/responseratelimitdata.html" class="tsd-signature-type" data-tsd-kind="Interface">ResponseRatelimitData</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> = ...</span></div>
+					<a name="everyone" class="tsd-anchor"></a>
+					<h3>everyone</h3>
+					<div class="tsd-signature tsd-kind-icon">everyone<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol"> = false</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/nearlySplat/wrappercord/blob/ab4da02/src/rest.ts#L24">rest.ts:24</a></li>
+							<li>Defined in <a href="https://github.com/nearlySplat/wrappercord/blob/ab4da02/src/structures/MessageMentions.ts#L11">structures/MessageMentions.ts:11</a></li>
 						</ul>
 					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>Whether or not @everyone/@here has been mentioned.</p>
+						</div>
+					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
-					<a name="token" class="tsd-anchor"></a>
-					<h3>token</h3>
-					<div class="tsd-signature tsd-kind-icon">token<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+					<a name="roles" class="tsd-anchor"></a>
+					<h3>roles</h3>
+					<div class="tsd-signature tsd-kind-icon">roles<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">`</span><span class="tsd-signature-symbol">${</span><span class="tsd-signature-type">bigint</span><span class="tsd-signature-symbol">}</span><span class="tsd-signature-symbol">`</span><span class="tsd-signature-symbol">[]</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/nearlySplat/wrappercord/blob/ab4da02/src/rest.ts#L20">rest.ts:20</a></li>
+							<li>Defined in <a href="https://github.com/nearlySplat/wrappercord/blob/ab4da02/src/structures/MessageMentions.ts#L13">structures/MessageMentions.ts:13</a></li>
 						</ul>
 					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>Roles mentioned in the message.</p>
+						</div>
+					</div>
 				</section>
-			</section>
-			<section class="tsd-panel-group tsd-member-group ">
-				<h2>Methods</h2>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter">
-					<a name="request" class="tsd-anchor"></a>
-					<h3>request</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter">
-						<li class="tsd-signature tsd-kind-icon">request&lt;T, R&gt;<span class="tsd-signature-symbol">(</span>url<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, options<span class="tsd-signature-symbol">?: </span><a href="../interfaces/requestoptions.html" class="tsd-signature-type" data-tsd-kind="Interface">RequestOptions</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-symbol">{ </span>data<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol"> extends </span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol"> ? </span><span class="tsd-signature-type">R</span><span class="tsd-signature-symbol"> : </span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">Buffer</span><span class="tsd-signature-symbol">; </span>res<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Response</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol">&gt;</span></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-								<ul>
-									<li>Defined in <a href="https://github.com/nearlySplat/wrappercord/blob/ab4da02/src/rest.ts#L32">rest.ts:32</a></li>
-								</ul>
-							</aside>
-							<h4 class="tsd-type-parameters-title">Type parameters</h4>
-							<ul class="tsd-type-parameters">
-								<li>
-									<h4>T = <span class="tsd-signature-type">unknown</span></h4>
-								</li>
-								<li>
-									<h4>R = <span class="tsd-signature-type">T</span></h4>
-								</li>
-							</ul>
-							<h4 class="tsd-parameters-title">Parameters</h4>
-							<ul class="tsd-parameters">
-								<li>
-									<h5>url: <span class="tsd-signature-type">string</span></h5>
-								</li>
-								<li>
-									<h5>options: <a href="../interfaces/requestoptions.html" class="tsd-signature-type" data-tsd-kind="Interface">RequestOptions</a><span class="tsd-signature-symbol"> = {}</span></h5>
-								</li>
-							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-symbol">{ </span>data<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol"> extends </span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol"> ? </span><span class="tsd-signature-type">R</span><span class="tsd-signature-symbol"> : </span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">Buffer</span><span class="tsd-signature-symbol">; </span>res<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Response</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol">&gt;</span></h4>
-						</li>
-					</ul>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+					<a name="users" class="tsd-anchor"></a>
+					<h3>users</h3>
+					<div class="tsd-signature tsd-kind-icon">users<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Collection</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-symbol">`</span><span class="tsd-signature-symbol">${</span><span class="tsd-signature-type">bigint</span><span class="tsd-signature-symbol">}</span><span class="tsd-signature-symbol">`</span><span class="tsd-signature-symbol">, </span><a href="user.html" class="tsd-signature-type" data-tsd-kind="Class">User</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> = ...</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/nearlySplat/wrappercord/blob/ab4da02/src/structures/MessageMentions.ts#L15">structures/MessageMentions.ts:15</a></li>
+						</ul>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p><a href="user.html">User</a>s mentioned in the message.</p>
+						</div>
+					</div>
 				</section>
 			</section>
 		</div>
@@ -224,33 +241,36 @@
 					<li class=" tsd-kind-class">
 						<a href="messageflags.html" class="tsd-kind-icon">Message<wbr>Flags</a>
 					</li>
-					<li class=" tsd-kind-class">
-						<a href="messagementions.html" class="tsd-kind-icon">Message<wbr>Mentions</a>
-					</li>
 				</ul>
 				<ul class="current">
 					<li class="current tsd-kind-class">
-						<a href="restmanager.html" class="tsd-kind-icon">RESTManager</a>
+						<a href="messagementions.html" class="tsd-kind-icon">Message<wbr>Mentions</a>
 						<ul>
 							<li class=" tsd-kind-constructor tsd-parent-kind-class">
-								<a href="restmanager.html#constructor" class="tsd-kind-icon">constructor</a>
+								<a href="messagementions.html#constructor" class="tsd-kind-icon">constructor</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class">
-								<a href="restmanager.html#client" class="tsd-kind-icon">client</a>
+								<a href="messagementions.html#channels" class="tsd-kind-icon">channels</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class">
-								<a href="restmanager.html#ratelimits" class="tsd-kind-icon">rate<wbr>Limits</a>
+								<a href="messagementions.html#client" class="tsd-kind-icon">client</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class">
-								<a href="restmanager.html#token" class="tsd-kind-icon">token</a>
+								<a href="messagementions.html#everyone" class="tsd-kind-icon">everyone</a>
 							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter">
-								<a href="restmanager.html#request" class="tsd-kind-icon">request</a>
+							<li class=" tsd-kind-property tsd-parent-kind-class">
+								<a href="messagementions.html#roles" class="tsd-kind-icon">roles</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class">
+								<a href="messagementions.html#users" class="tsd-kind-icon">users</a>
 							</li>
 						</ul>
 					</li>
 				</ul>
 				<ul class="after-current">
+					<li class=" tsd-kind-class">
+						<a href="restmanager.html" class="tsd-kind-icon">RESTManager</a>
+					</li>
 					<li class=" tsd-kind-class">
 						<a href="snowflakeutil.html" class="tsd-kind-icon">Snowflake<wbr>Util</a>
 					</li>

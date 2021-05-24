@@ -66,9 +66,9 @@
 			<section class="tsd-panel tsd-comment">
 				<div class="tsd-comment tsd-typography">
 					<div class="lead">
-						<p>The main class of this wrapper and where all communication with Discord is based from.
-						<warning>Sharded clients are not supported by Wrappercord</warning></p>
+						<p>The main class of this wrapper and where all communication with Discord is based from.</p>
 					</div>
+					<p><warning>Sharded Clients are not supported by Wrappercord.</warning></p>
 				</div>
 			</section>
 			<section class="tsd-panel tsd-hierarchy">
@@ -105,6 +105,7 @@
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="default.html#timeouts" class="tsd-kind-icon">timeouts</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="default.html#token" class="tsd-kind-icon">token</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="default.html#user" class="tsd-kind-icon">user</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="default.html#users" class="tsd-kind-icon">users</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="default.html#ws" class="tsd-kind-icon">ws</a></li>
 							</ul>
 						</section>
@@ -138,7 +139,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/nearlySplat/wrappercord/blob/890838b/src/client.ts#L47">client.ts:47</a></li>
+									<li>Defined in <a href="https://github.com/nearlySplat/wrappercord/blob/ab4da02/src/client.ts#L49">client.ts:49</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -169,7 +170,7 @@
 					<div class="tsd-signature tsd-kind-icon">guilds<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Collection</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-symbol">`</span><span class="tsd-signature-symbol">${</span><span class="tsd-signature-type">bigint</span><span class="tsd-signature-symbol">}</span><span class="tsd-signature-symbol">`</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">APIGuild</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">APIUnavailableGuild</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-symbol">(</span><span class="tsd-signature-type">APIUnavailableGuild</span><span class="tsd-signature-symbol"> &amp; </span><span class="tsd-signature-symbol">{ </span>uncached<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">true</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> = ...</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/nearlySplat/wrappercord/blob/890838b/src/client.ts#L26">client.ts:26</a></li>
+							<li>Defined in <a href="https://github.com/nearlySplat/wrappercord/blob/ab4da02/src/client.ts#L30">client.ts:30</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -185,18 +186,13 @@
 					<div class="tsd-signature tsd-kind-icon">intervals<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Timeout</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol"> = []</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/nearlySplat/wrappercord/blob/890838b/src/client.ts#L33">client.ts:33</a></li>
+							<li>Defined in <a href="https://github.com/nearlySplat/wrappercord/blob/ab4da02/src/client.ts#L36">client.ts:36</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
 						<div class="lead">
-							<p>Intervals that can be cleared with <code>Client#destroy()</code></p>
+							<p>Intervals that can be cleared with {@link Client#destroy}</p>
 						</div>
-						<dl class="tsd-comment-tags">
-							<dt>see</dt>
-							<dd><p>Client#destroy</p>
-							</dd>
-						</dl>
 					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
@@ -205,7 +201,7 @@
 					<div class="tsd-signature tsd-kind-icon">on<span class="tsd-signature-symbol">:</span> &lt;K&gt;<span class="tsd-signature-symbol">(</span>event<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">K</span>, handler<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">...</span>args<span class="tsd-signature-symbol">: </span><a href="../interfaces/clientevents.html" class="tsd-signature-type" data-tsd-kind="Interface">ClientEvents</a><span class="tsd-signature-symbol">[</span><span class="tsd-signature-type">K</span><span class="tsd-signature-symbol">]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><a href="default.html" class="tsd-signature-type" data-tsd-kind="Class">default</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/nearlySplat/wrappercord/blob/890838b/src/client.ts#L88">client.ts:88</a></li>
+							<li>Defined in <a href="https://github.com/nearlySplat/wrappercord/blob/ab4da02/src/client.ts#L90">client.ts:90</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-type-declaration">
@@ -263,18 +259,13 @@
 					<div class="tsd-signature tsd-kind-icon">options<span class="tsd-signature-symbol">:</span> <a href="../interfaces/clientoptions.html" class="tsd-signature-type" data-tsd-kind="Interface">ClientOptions</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/nearlySplat/wrappercord/blob/890838b/src/client.ts#L37">client.ts:37</a></li>
+							<li>Defined in <a href="https://github.com/nearlySplat/wrappercord/blob/ab4da02/src/client.ts#L38">client.ts:38</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
 						<div class="lead">
 							<p>Options passed to the constructor.</p>
 						</div>
-						<dl class="tsd-comment-tags">
-							<dt>see</dt>
-							<dd><p>Client</p>
-							</dd>
-						</dl>
 					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
@@ -283,7 +274,7 @@
 					<div class="tsd-signature tsd-kind-icon">rest<span class="tsd-signature-symbol">:</span> <a href="restmanager.html" class="tsd-signature-type" data-tsd-kind="Class">RESTManager</a><span class="tsd-signature-symbol"> = ...</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/nearlySplat/wrappercord/blob/890838b/src/client.ts#L39">client.ts:39</a></li>
+							<li>Defined in <a href="https://github.com/nearlySplat/wrappercord/blob/ab4da02/src/client.ts#L40">client.ts:40</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -298,18 +289,13 @@
 					<div class="tsd-signature tsd-kind-icon">timeouts<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Timeout</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol"> = []</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/nearlySplat/wrappercord/blob/890838b/src/client.ts#L43">client.ts:43</a></li>
+							<li>Defined in <a href="https://github.com/nearlySplat/wrappercord/blob/ab4da02/src/client.ts#L43">client.ts:43</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
 						<div class="lead">
-							<p>Timeouts that can be cleared with <code>Client#destroy()</code></p>
+							<p>Timeouts that can be cleared with {@link Client#destroy}</p>
 						</div>
-						<dl class="tsd-comment-tags">
-							<dt>see</dt>
-							<dd><p>Client#destroy</p>
-							</dd>
-						</dl>
 					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
@@ -318,22 +304,37 @@
 					<div class="tsd-signature tsd-kind-icon">token<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/nearlySplat/wrappercord/blob/890838b/src/client.ts#L17">client.ts:17</a></li>
+							<li>Defined in <a href="https://github.com/nearlySplat/wrappercord/blob/ab4da02/src/client.ts#L20">client.ts:20</a></li>
 						</ul>
 					</aside>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
 					<a name="user" class="tsd-anchor"></a>
 					<h3>user</h3>
-					<div class="tsd-signature tsd-kind-icon">user<span class="tsd-signature-symbol">:</span> <a href="user.html" class="tsd-signature-type" data-tsd-kind="Class">User</a><span class="tsd-signature-symbol"> = ...</span></div>
+					<div class="tsd-signature tsd-kind-icon">user<span class="tsd-signature-symbol">:</span> <a href="user.html" class="tsd-signature-type" data-tsd-kind="Class">User</a><span class="tsd-signature-symbol"> = null</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/nearlySplat/wrappercord/blob/890838b/src/client.ts#L45">client.ts:45</a></li>
+							<li>Defined in <a href="https://github.com/nearlySplat/wrappercord/blob/ab4da02/src/client.ts#L45">client.ts:45</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
 						<div class="lead">
-							<p>The client&#39;s User, returned by the READY dispatch</p>
+							<p>The client&#39;s <a href="user.html">User</a>, returned by the READY dispatch</p>
+						</div>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+					<a name="users" class="tsd-anchor"></a>
+					<h3>users</h3>
+					<div class="tsd-signature tsd-kind-icon">users<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Collection</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-symbol">`</span><span class="tsd-signature-symbol">${</span><span class="tsd-signature-type">bigint</span><span class="tsd-signature-symbol">}</span><span class="tsd-signature-symbol">`</span><span class="tsd-signature-symbol">, </span><a href="user.html" class="tsd-signature-type" data-tsd-kind="Class">User</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> = ...</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/nearlySplat/wrappercord/blob/ab4da02/src/client.ts#L47">client.ts:47</a></li>
+						</ul>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p><a href="user.html">User</a>s the bot has cached.</p>
 						</div>
 					</div>
 				</section>
@@ -343,7 +344,7 @@
 					<div class="tsd-signature tsd-kind-icon">ws<span class="tsd-signature-symbol">:</span> <a href="websocketmanager.html" class="tsd-signature-type" data-tsd-kind="Class">WebSocketManager</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/nearlySplat/wrappercord/blob/890838b/src/client.ts#L47">client.ts:47</a></li>
+							<li>Defined in <a href="https://github.com/nearlySplat/wrappercord/blob/ab4da02/src/client.ts#L49">client.ts:49</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -365,7 +366,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/nearlySplat/wrappercord/blob/890838b/src/client.ts#L71">client.ts:71</a></li>
+									<li>Defined in <a href="https://github.com/nearlySplat/wrappercord/blob/ab4da02/src/client.ts#L73">client.ts:73</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -399,12 +400,12 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/nearlySplat/wrappercord/blob/890838b/src/client.ts#L85">client.ts:85</a></li>
+									<li>Defined in <a href="https://github.com/nearlySplat/wrappercord/blob/ab4da02/src/client.ts#L87">client.ts:87</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>Make a request to the API. Rate-limits are cached and managed by this function.</p>
+									<p>Make a {@link RESTManager#request} to the API. Rate-limits are cached and managed by this function.</p>
 								</div>
 							</div>
 							<h4 class="tsd-returns-title">Returns &lt;T, R&gt;<span class="tsd-signature-symbol">(</span>url<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, options<span class="tsd-signature-symbol">?: </span><a href="../interfaces/requestoptions.html" class="tsd-signature-type" data-tsd-kind="Interface">RequestOptions</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-symbol">{ </span>data<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol"> extends </span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol"> ? </span><span class="tsd-signature-type">R</span><span class="tsd-signature-symbol"> : </span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">Buffer</span><span class="tsd-signature-symbol">; </span>res<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Response</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol">&gt;</span></h4>
@@ -454,7 +455,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/nearlySplat/wrappercord/blob/890838b/src/client.ts#L64">client.ts:64</a></li>
+									<li>Defined in <a href="https://github.com/nearlySplat/wrappercord/blob/ab4da02/src/client.ts#L66">client.ts:66</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span></h4>
@@ -471,7 +472,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/nearlySplat/wrappercord/blob/890838b/src/client.ts#L67">client.ts:67</a></li>
+									<li>Defined in <a href="https://github.com/nearlySplat/wrappercord/blob/ab4da02/src/client.ts#L69">client.ts:69</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-type-parameters-title">Type parameters</h4>
@@ -506,7 +507,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/nearlySplat/wrappercord/blob/890838b/src/client.ts#L75">client.ts:75</a></li>
+									<li>Defined in <a href="https://github.com/nearlySplat/wrappercord/blob/ab4da02/src/client.ts#L77">client.ts:77</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -531,6 +532,12 @@
 			<nav class="tsd-navigation secondary menu-sticky">
 				<ul class="before-current">
 					<li class=" tsd-kind-class">
+						<a href="base.html" class="tsd-kind-icon">Base</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="bitfield.html" class="tsd-kind-icon">Bit<wbr>Field</a>
+					</li>
+					<li class=" tsd-kind-class">
 						<a href="client.html" class="tsd-kind-icon">Client</a>
 					</li>
 					<li class=" tsd-kind-class">
@@ -540,6 +547,12 @@
 						<a href="message.html" class="tsd-kind-icon">Message</a>
 					</li>
 					<li class=" tsd-kind-class">
+						<a href="messageflags.html" class="tsd-kind-icon">Message<wbr>Flags</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="messagementions.html" class="tsd-kind-icon">Message<wbr>Mentions</a>
+					</li>
+					<li class=" tsd-kind-class">
 						<a href="restmanager.html" class="tsd-kind-icon">RESTManager</a>
 					</li>
 					<li class=" tsd-kind-class">
@@ -547,6 +560,9 @@
 					</li>
 					<li class=" tsd-kind-class">
 						<a href="user.html" class="tsd-kind-icon">User</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="userflags.html" class="tsd-kind-icon">User<wbr>Flags</a>
 					</li>
 					<li class=" tsd-kind-class">
 						<a href="util.html" class="tsd-kind-icon">Util</a>
@@ -585,6 +601,9 @@
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class">
 								<a href="default.html#user" class="tsd-kind-icon">user</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class">
+								<a href="default.html#users" class="tsd-kind-icon">users</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class">
 								<a href="default.html#ws" class="tsd-kind-icon">ws</a>

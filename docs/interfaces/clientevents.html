@@ -79,6 +79,8 @@
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
 								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="clientevents.html#debug" class="tsd-kind-icon">debug</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="clientevents.html#guildcreate" class="tsd-kind-icon">guild<wbr>Create</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="clientevents.html#messagecreate" class="tsd-kind-icon">message<wbr>Create</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="clientevents.html#ready" class="tsd-kind-icon">ready</a></li>
 							</ul>
 						</section>
@@ -90,10 +92,30 @@
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
 					<a name="debug" class="tsd-anchor"></a>
 					<h3>debug</h3>
-					<div class="tsd-signature tsd-kind-icon">debug<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">[</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">]</span></div>
+					<div class="tsd-signature tsd-kind-icon">debug<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">[</span>message<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">]</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/nearlySplat/wrappercord/blob/890838b/src/client.ts#L14">client.ts:14</a></li>
+							<li>Defined in <a href="https://github.com/nearlySplat/wrappercord/blob/ab4da02/src/client.ts#L15">client.ts:15</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="guildcreate" class="tsd-anchor"></a>
+					<h3>guild<wbr>Create</h3>
+					<div class="tsd-signature tsd-kind-icon">guild<wbr>Create<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">[</span><span class="tsd-signature-type">APIGuild</span><span class="tsd-signature-symbol">]</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/nearlySplat/wrappercord/blob/ab4da02/src/client.ts#L17">client.ts:17</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="messagecreate" class="tsd-anchor"></a>
+					<h3>message<wbr>Create</h3>
+					<div class="tsd-signature tsd-kind-icon">message<wbr>Create<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">[</span>message<span class="tsd-signature-symbol">: </span><a href="../classes/message.html" class="tsd-signature-type" data-tsd-kind="Class">Message</a><span class="tsd-signature-symbol">]</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/nearlySplat/wrappercord/blob/ab4da02/src/client.ts#L16">client.ts:16</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -103,7 +125,7 @@
 					<div class="tsd-signature tsd-kind-icon">ready<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">[</span><span class="tsd-signature-symbol">]</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/nearlySplat/wrappercord/blob/890838b/src/client.ts#L13">client.ts:13</a></li>
+							<li>Defined in <a href="https://github.com/nearlySplat/wrappercord/blob/ab4da02/src/client.ts#L14">client.ts:14</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -120,6 +142,12 @@
 			<nav class="tsd-navigation secondary menu-sticky">
 				<ul class="before-current">
 					<li class=" tsd-kind-class">
+						<a href="../classes/base.html" class="tsd-kind-icon">Base</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="../classes/bitfield.html" class="tsd-kind-icon">Bit<wbr>Field</a>
+					</li>
+					<li class=" tsd-kind-class">
 						<a href="../classes/client.html" class="tsd-kind-icon">Client</a>
 					</li>
 					<li class=" tsd-kind-class">
@@ -129,6 +157,12 @@
 						<a href="../classes/message.html" class="tsd-kind-icon">Message</a>
 					</li>
 					<li class=" tsd-kind-class">
+						<a href="../classes/messageflags.html" class="tsd-kind-icon">Message<wbr>Flags</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="../classes/messagementions.html" class="tsd-kind-icon">Message<wbr>Mentions</a>
+					</li>
+					<li class=" tsd-kind-class">
 						<a href="../classes/restmanager.html" class="tsd-kind-icon">RESTManager</a>
 					</li>
 					<li class=" tsd-kind-class">
@@ -136,6 +170,9 @@
 					</li>
 					<li class=" tsd-kind-class">
 						<a href="../classes/user.html" class="tsd-kind-icon">User</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="../classes/userflags.html" class="tsd-kind-icon">User<wbr>Flags</a>
 					</li>
 					<li class=" tsd-kind-class">
 						<a href="../classes/util.html" class="tsd-kind-icon">Util</a>
@@ -153,6 +190,12 @@
 						<ul>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
 								<a href="clientevents.html#debug" class="tsd-kind-icon">debug</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="clientevents.html#guildcreate" class="tsd-kind-icon">guild<wbr>Create</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="clientevents.html#messagecreate" class="tsd-kind-icon">message<wbr>Create</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
 								<a href="clientevents.html#ready" class="tsd-kind-icon">ready</a>
