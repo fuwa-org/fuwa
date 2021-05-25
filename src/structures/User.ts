@@ -11,7 +11,7 @@ export class User extends Base {
   avatarHash: null | string = null;
   /** Whether the user is a bot account. */
   bot = false;
-  /** The {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date} at which the user was created. */
+  /** The {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date|`Date`} at which the user was created. */
   createdAt: Date;
   /** The UNIX timestamp at which the user was created */
   createdTimestamp: number;

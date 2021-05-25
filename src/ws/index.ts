@@ -78,7 +78,12 @@ export class WebSocketManager extends EventEmitter {
     return this.client.token;
   }
   destroy(): void {
-    this.socket.close(0, 'Client was destroyed.');
+    try {
+      this.socket.close(0, 'Client was destroyed.');
+    } catch {
+      this.socket.terminate();
+    }
+    this.socket = null;
   }
   identify(resuming = false, options: IdentifyOptions = {}): void {
     if (resuming)

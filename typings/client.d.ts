@@ -7,6 +7,7 @@ import { Message } from './structures/Message';
 import { User } from './structures/User';
 import { WebSocketManager } from './ws';
 export interface ClientOptions {
+    /** The {@link Intents} for this client */
     intents: number;
 }
 export interface ClientEvents {
@@ -29,16 +30,17 @@ export declare class Client extends EventEmitter {
     guilds: Collection<`${bigint}`, APIUnavailableGuild | APIGuild | (APIUnavailableGuild & {
         uncached: true;
     })>;
-    /** Intervals that can be cleared with {@link Client#destroy}
+    /** Intervals that can be cleared with {@link Client.destroy}
      */
     intervals: NodeJS.Timeout[];
     /** Options passed to the constructor. */
     options: ClientOptions;
     /** The main HTTP request manager */
     rest: RESTManager;
-    /** Timeouts that can be cleared with {@link Client#destroy}
-     */
+    /** Timeouts that can be cleared with {@link Client.destroy} */
     timeouts: NodeJS.Timeout[];
+    /** The client's token. */
+    token: string;
     /** The client's {@link User}, returned by the READY dispatch */
     user: User | null;
     /** {@link User}s the bot has cached. */
@@ -56,7 +58,7 @@ export declare class Client extends EventEmitter {
     get connect(): WebSocketManager['connect'];
     /** Destroys the client, terminates the connection to Discord and nullifies the token. */
     destroy(): void;
-    /** Make a {@link RESTManager#request} to the API. Rate-limits are cached and managed by this function. */
+    /** Make a {@link RESTManager.request} to the API. Rate-limits are cached and managed by this function. */
     get request(): RESTManager['request'];
     on: <K extends keyof ClientEvents>(event: K, handler: (...args: ClientEvents[K]) => void) => this;
 }

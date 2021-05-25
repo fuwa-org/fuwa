@@ -1,6 +1,4 @@
 #!/bin/sh
 set -e
 
-yarn build
-yarn lint
-yarn prettify
+yarn precommit

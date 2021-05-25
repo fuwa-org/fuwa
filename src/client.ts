@@ -8,6 +8,7 @@ import { User } from './structures/User';
 import { Snowflake } from './util/snowflake';
 import { WebSocketManager } from './ws';
 export interface ClientOptions {
+  /** The {@link Intents} for this client */
   intents: number;
 }
 export interface ClientEvents {
@@ -31,16 +32,17 @@ export class Client extends EventEmitter {
     Snowflake,
     APIGuild | APIUnavailableGuild | (APIUnavailableGuild & { uncached: true })
   >();
-  /** Intervals that can be cleared with {@link Client#destroy}
+  /** Intervals that can be cleared with {@link Client.destroy}
    */
   intervals: NodeJS.Timeout[] = [];
   /** Options passed to the constructor. */
   options: ClientOptions;
   /** The main HTTP request manager */
   rest = new RESTManager(this);
-  /** Timeouts that can be cleared with {@link Client#destroy}
-   */
+  /** Timeouts that can be cleared with {@link Client.destroy} */
   timeouts: NodeJS.Timeout[] = [];
+  /** The client's token. */
+  token: string = null as unknown as string;
   /** The client's {@link User}, returned by the READY dispatch */
   user: User | null = null;
   /** {@link User}s the bot has cached. */
@@ -53,12 +55,12 @@ export class Client extends EventEmitter {
    */
   constructor(token: string, options: ClientOptions) {
     super();
-    if (!token) throw ERRORS.NO_TOKEN;
-    if (!options || !options.intents) throw ERRORS.NO_INTENTS;
+    if (typeof token !== 'string' || !token) throw ERRORS.NO_TOKEN;
+    if (!options || typeof options.intents !== 'number')
+      throw ERRORS.NO_INTENTS;
     Object.defineProperty(this, 'token', {
       value: token,
       enumerable: false,
-      writable: false,
     });
     this.options = options;
     this.ws = new WebSocketManager(this);
@@ -83,7 +85,7 @@ export class Client extends EventEmitter {
     this.user = null;
     this.ws.destroy();
   }
-  /** Make a {@link RESTManager#request} to the API. Rate-limits are cached and managed by this function. */
+  /** Make a {@link RESTManager.request} to the API. Rate-limits are cached and managed by this function. */
   get request(): RESTManager['request'] {
     return this._request;
   }

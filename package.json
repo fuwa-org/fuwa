@@ -6,13 +6,14 @@
   "scripts": {
     "lint": "eslint . --ext .ts",
     "lint:fix": "yarn lint --fix",
-    "test": "node tests/index.test.js",
+    "test": "mocha",
     "build": "tsc",
     "docs:build": "typedoc",
     "docs:serve": "cd docs; python3 -m http.server",
-    "docs": "yarn docs:build",
+    "docs": "yarn docs:build && yarn docs:serve",
     "prepare": "git config --local core.hooksPath .hooks/",
-    "prettify": "precise-commits"
+    "prettify": "precise-commits",
+    "precommit": "yarn build && yarn lint --fix && yarn test && yarn prettify"
   },
   "repository": "https://github.com/nearlySplat/wrappercord.git",
   "keywords": [],
@@ -33,6 +34,7 @@
     "@types/ws": "^7.4.4",
     "@typescript-eslint/eslint-plugin": "^4.24.0",
     "@typescript-eslint/parser": "^4.24.0",
+    "chai": "^4.3.4",
     "eslint": "^7.26.0",
     "eslint-plugin-sort-class-members": "^1.11.0",
     "mocha": "^8.4.0",
