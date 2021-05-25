@@ -19,7 +19,7 @@ jobs:
       - name: Build project
         run: tsc -p tsconfig.json
       - name: Add bot token to environment
-        run: echo "TOKEN=$TOKEN\n" >> .env
+        run: echo "TOKEN=$TOKEN" >> .env
         env:
           TOKEN: ${{ secrets.BOT_TOKEN }}
       - name: Run tests
