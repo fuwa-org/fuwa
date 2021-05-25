@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>ResponseRatelimitData | Wrappercord</title>
+	<title>MessageAllowedMentions | Wrappercord</title>
 	<meta name="description" content="Documentation for Wrappercord">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -53,10 +53,10 @@
 					<a href="../modules.html">Wrappercord</a>
 				</li>
 				<li>
-					<a href="responseratelimitdata.html">ResponseRatelimitData</a>
+					<a href="messageallowedmentions.html">MessageAllowedMentions</a>
 				</li>
 			</ul>
-			<h1>Interface ResponseRatelimitData</h1>
+			<h1>Interface MessageAllowedMentions</h1>
 		</div>
 	</div>
 </header>
@@ -67,7 +67,7 @@
 				<h3>Hierarchy</h3>
 				<ul class="tsd-hierarchy">
 					<li>
-						<span class="target">ResponseRatelimitData</span>
+						<span class="target">MessageAllowedMentions</span>
 					</li>
 				</ul>
 			</section>
@@ -78,11 +78,9 @@
 						<section class="tsd-index-section ">
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="responseratelimitdata.html#x_ratelimit_bucket" class="tsd-kind-icon">X-<wbr><wbr>Rate<wbr>Limit-<wbr><wbr>Bucket</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="responseratelimitdata.html#x_ratelimit_limit" class="tsd-kind-icon">X-<wbr><wbr>Rate<wbr>Limit-<wbr><wbr>Limit</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="responseratelimitdata.html#x_ratelimit_remaining" class="tsd-kind-icon">X-<wbr><wbr>Rate<wbr>Limit-<wbr><wbr>Remaining</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="responseratelimitdata.html#x_ratelimit_reset" class="tsd-kind-icon">X-<wbr><wbr>Rate<wbr>Limit-<wbr><wbr>Reset</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="responseratelimitdata.html#x_ratelimit_reset_after" class="tsd-kind-icon">X-<wbr><wbr>Rate<wbr>Limit-<wbr><wbr>Reset-<wbr><wbr>After</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="messageallowedmentions.html#parse" class="tsd-kind-icon">parse</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="messageallowedmentions.html#roles" class="tsd-kind-icon">roles</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="messageallowedmentions.html#users" class="tsd-kind-icon">users</a></li>
 							</ul>
 						</section>
 					</div>
@@ -91,52 +89,32 @@
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Properties</h2>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="x_ratelimit_bucket" class="tsd-anchor"></a>
-					<h3>X-<wbr><wbr>Rate<wbr>Limit-<wbr><wbr>Bucket</h3>
-					<div class="tsd-signature tsd-kind-icon">X-<wbr><wbr>Rate<wbr>Limit-<wbr><wbr>Bucket<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+					<a name="parse" class="tsd-anchor"></a>
+					<h3>parse</h3>
+					<div class="tsd-signature tsd-kind-icon">parse<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">(</span><span class="tsd-signature-type">&quot;user&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;role&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;everyone&quot;</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">[]</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/nearlySplat/wrappercord/blob/0ced5f8/src/rest.ts#L16">rest.ts:16</a></li>
+							<li>Defined in <a href="https://github.com/nearlySplat/wrappercord/blob/0ced5f8/src/types.ts#L12">types.ts:12</a></li>
 						</ul>
 					</aside>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="x_ratelimit_limit" class="tsd-anchor"></a>
-					<h3>X-<wbr><wbr>Rate<wbr>Limit-<wbr><wbr>Limit</h3>
-					<div class="tsd-signature tsd-kind-icon">X-<wbr><wbr>Rate<wbr>Limit-<wbr><wbr>Limit<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
+					<a name="roles" class="tsd-anchor"></a>
+					<h3>roles</h3>
+					<div class="tsd-signature tsd-kind-icon">roles<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">`</span><span class="tsd-signature-symbol">${</span><span class="tsd-signature-type">bigint</span><span class="tsd-signature-symbol">}</span><span class="tsd-signature-symbol">`</span><span class="tsd-signature-symbol">[]</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/nearlySplat/wrappercord/blob/0ced5f8/src/rest.ts#L12">rest.ts:12</a></li>
+							<li>Defined in <a href="https://github.com/nearlySplat/wrappercord/blob/0ced5f8/src/types.ts#L14">types.ts:14</a></li>
 						</ul>
 					</aside>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="x_ratelimit_remaining" class="tsd-anchor"></a>
-					<h3>X-<wbr><wbr>Rate<wbr>Limit-<wbr><wbr>Remaining</h3>
-					<div class="tsd-signature tsd-kind-icon">X-<wbr><wbr>Rate<wbr>Limit-<wbr><wbr>Remaining<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
+					<a name="users" class="tsd-anchor"></a>
+					<h3>users</h3>
+					<div class="tsd-signature tsd-kind-icon">users<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">`</span><span class="tsd-signature-symbol">${</span><span class="tsd-signature-type">bigint</span><span class="tsd-signature-symbol">}</span><span class="tsd-signature-symbol">`</span><span class="tsd-signature-symbol">[]</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/nearlySplat/wrappercord/blob/0ced5f8/src/rest.ts#L13">rest.ts:13</a></li>
-						</ul>
-					</aside>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="x_ratelimit_reset" class="tsd-anchor"></a>
-					<h3>X-<wbr><wbr>Rate<wbr>Limit-<wbr><wbr>Reset</h3>
-					<div class="tsd-signature tsd-kind-icon">X-<wbr><wbr>Rate<wbr>Limit-<wbr><wbr>Reset<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/nearlySplat/wrappercord/blob/0ced5f8/src/rest.ts#L14">rest.ts:14</a></li>
-						</ul>
-					</aside>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="x_ratelimit_reset_after" class="tsd-anchor"></a>
-					<h3>X-<wbr><wbr>Rate<wbr>Limit-<wbr><wbr>Reset-<wbr><wbr>After</h3>
-					<div class="tsd-signature tsd-kind-icon">X-<wbr><wbr>Rate<wbr>Limit-<wbr><wbr>Reset-<wbr><wbr>After<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/nearlySplat/wrappercord/blob/0ced5f8/src/rest.ts#L15">rest.ts:15</a></li>
+							<li>Defined in <a href="https://github.com/nearlySplat/wrappercord/blob/0ced5f8/src/types.ts#L13">types.ts:13</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -209,39 +187,33 @@
 					<li class=" tsd-kind-interface">
 						<a href="imageurloptions.html" class="tsd-kind-icon">ImageURLOptions</a>
 					</li>
-					<li class=" tsd-kind-interface">
+				</ul>
+				<ul class="current">
+					<li class="current tsd-kind-interface">
 						<a href="messageallowedmentions.html" class="tsd-kind-icon">Message<wbr>Allowed<wbr>Mentions</a>
+						<ul>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="messageallowedmentions.html#parse" class="tsd-kind-icon">parse</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="messageallowedmentions.html#roles" class="tsd-kind-icon">roles</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="messageallowedmentions.html#users" class="tsd-kind-icon">users</a>
+							</li>
+						</ul>
 					</li>
+				</ul>
+				<ul class="after-current">
 					<li class=" tsd-kind-interface">
 						<a href="messageoptions.html" class="tsd-kind-icon">Message<wbr>Options</a>
 					</li>
 					<li class=" tsd-kind-interface">
 						<a href="requestoptions.html" class="tsd-kind-icon">Request<wbr>Options</a>
 					</li>
-				</ul>
-				<ul class="current">
-					<li class="current tsd-kind-interface">
+					<li class=" tsd-kind-interface">
 						<a href="responseratelimitdata.html" class="tsd-kind-icon">Response<wbr>Ratelimit<wbr>Data</a>
-						<ul>
-							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="responseratelimitdata.html#x_ratelimit_bucket" class="tsd-kind-icon">X-<wbr><wbr>Rate<wbr>Limit-<wbr><wbr>Bucket</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="responseratelimitdata.html#x_ratelimit_limit" class="tsd-kind-icon">X-<wbr><wbr>Rate<wbr>Limit-<wbr><wbr>Limit</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="responseratelimitdata.html#x_ratelimit_remaining" class="tsd-kind-icon">X-<wbr><wbr>Rate<wbr>Limit-<wbr><wbr>Remaining</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="responseratelimitdata.html#x_ratelimit_reset" class="tsd-kind-icon">X-<wbr><wbr>Rate<wbr>Limit-<wbr><wbr>Reset</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="responseratelimitdata.html#x_ratelimit_reset_after" class="tsd-kind-icon">X-<wbr><wbr>Rate<wbr>Limit-<wbr><wbr>Reset-<wbr><wbr>After</a>
-							</li>
-						</ul>
 					</li>
-				</ul>
-				<ul class="after-current">
 					<li class=" tsd-kind-type-alias">
 						<a href="../modules.html#imageformat" class="tsd-kind-icon">Image<wbr>Format</a>
 					</li>
