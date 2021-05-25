@@ -1,11 +1,11 @@
+import fetch, { BodyInit, RequestInit, Response } from 'node-fetch';
 import { Client } from './client';
-import fetch, { RequestInit, BodyInit, Response } from 'node-fetch';
-import { Util } from './util/util';
 import { CONSTANTS, HTTPMethod } from './constants';
+import { Util } from './util/util';
 
 export interface RequestOptions {
   headers?: Record<string, string>;
-  data?: BodyInit;
+  data?: BodyInit | Record<string, unknown> | unknown;
   rawUrl?: boolean;
   method?: HTTPMethod;
 }
@@ -48,7 +48,10 @@ export class RESTManager {
     }
     await waitUntilRateLimitIsOver.call(this);
     const requestOptions: RequestInit = {
-      body: options.data,
+      body:
+        typeof options.data !== 'string'
+          ? JSON.stringify(options.data)
+          : options.data,
       headers: {
         ...(options.headers ?? {}),
         ...CONSTANTS.api.headers,
@@ -59,9 +62,8 @@ export class RESTManager {
       options.rawUrl ? url : CONSTANTS.urls.base + url,
       requestOptions
     );
-    let data: T extends void
-      ? R
-      : T = ((await res.buffer()) as unknown) as T extends void ? R : T;
+    let data: T extends void ? R : T =
+      (await res.buffer()) as unknown as T extends void ? R : T;
     if (res.ok) {
       try {
         data = JSON.parse(data.toString());

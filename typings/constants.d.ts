@@ -1,4 +1,5 @@
 /// <reference types="node" />
+import { Snowflake } from 'discord-api-types';
 import { ImageFormat, ImageSize } from './types';
 export declare const CONSTANTS: {
     urls: {
@@ -10,6 +11,7 @@ export declare const CONSTANTS: {
             avatar(hash: string, format: ImageFormat, size: ImageSize): string;
             defaultAvatar(disc: number): string;
         };
+        message(channelid: Snowflake, id: Snowflake): string;
     };
     api: {
         version: string;

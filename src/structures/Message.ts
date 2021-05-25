@@ -5,6 +5,8 @@ import {
   Snowflake,
 } from 'discord-api-types';
 import { Client } from '../client';
+import { CONSTANTS } from '../constants';
+import { MessageContent, MessageOptions } from '../types';
 import { MessageFlags } from '../util/MessageFlags';
 import { Base } from './Base';
 import { MessageMentions } from './MessageMentions';
@@ -17,6 +19,8 @@ export class Message extends Base {
   channel: Snowflake;
   /** The message's content. */
   content: string;
+  /** Whether this message has been deleted or not. */
+  deleted = false;
   /** The message's embeds. */
   embeds: APIEmbed[];
   /** The message's flags. */
@@ -38,13 +42,14 @@ export class Message extends Base {
   _patch(data: APIMessage): void {
     if ('id' in data) this.id = data.id;
     if ('channel_id' in data) this.channel = data.channel_id;
-    this.mentions = new MessageMentions(
-      this.client,
-      data.mentions || [],
-      data.mention_roles || [],
-      data.mention_everyone || false,
-      data.mention_channels || []
-    );
+    if ('mentions' in data)
+      this.mentions = new MessageMentions(
+        this.client,
+        data.mentions || [],
+        data.mention_roles || [],
+        data.mention_everyone || false,
+        data.mention_channels || []
+      );
     if ('content' in data) this.content = data.content;
     if ('author' in data) {
       if (this.client.users.has(data.author.id))
@@ -58,6 +63,36 @@ export class Message extends Base {
     if ('tts' in data) this.tts = data.tts;
     if ('embeds' in data) this.embeds = data.embeds;
     if ('nonce' in data) this.nonce = data.nonce;
-    this.flags = new MessageFlags(data.flags);
+    if ('flags' in data) this.flags = new MessageFlags(data.flags);
+  }
+  async delete(): Promise<this> {
+    const result = await this.client.request<''>(
+      CONSTANTS.urls.message(this.channel, this.id)
+    );
+    if (!result.res.ok) throw result.data;
+    this.deleted = true;
+    return this;
+  }
+  async edit(
+    content: MessageContent,
+    options: MessageOptions = {}
+  ): Promise<this> {
+    const result = await this.client.request<void, APIMessage>(
+      CONSTANTS.urls.message(this.channel, this.id),
+      {
+        data: {
+          content,
+          allowedMentions: options.allowedMentions,
+          embed: options.embed,
+        },
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        method: 'patch',
+      }
+    );
+    if (!result.res.ok) throw result.data;
+    this._patch(result.data);
+    return this;
   }
 }

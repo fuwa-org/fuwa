@@ -1,10 +1,10 @@
 /// <reference types="node" />
-import { Client } from './client';
 import { BodyInit, Response } from 'node-fetch';
+import { Client } from './client';
 import { HTTPMethod } from './constants';
 export interface RequestOptions {
     headers?: Record<string, string>;
-    data?: BodyInit;
+    data?: BodyInit | Record<string, unknown> | unknown;
     rawUrl?: boolean;
     method?: HTTPMethod;
 }

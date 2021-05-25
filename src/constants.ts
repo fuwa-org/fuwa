@@ -1,3 +1,4 @@
+import { Snowflake } from 'discord-api-types';
 import fs from 'fs';
 import path from 'path';
 import { ImageFormat, ImageSize } from './types';
@@ -19,6 +20,9 @@ export const CONSTANTS = {
       defaultAvatar(disc: number): string {
         return `${this.base}/embed/avatars/${disc % 5}.png`;
       },
+    },
+    message(channelid: Snowflake, id: Snowflake): string {
+      return `${this.base}/channels/${channelid}/messages/${id}`;
     },
   },
   api: {

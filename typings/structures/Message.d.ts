@@ -1,5 +1,6 @@
 import { APIEmbed, APIMessage, MessageType, Snowflake } from 'discord-api-types';
 import { Client } from '../client';
+import { MessageContent, MessageOptions } from '../types';
 import { MessageFlags } from '../util/MessageFlags';
 import { Base } from './Base';
 import { MessageMentions } from './MessageMentions';
@@ -12,6 +13,8 @@ export declare class Message extends Base {
     channel: Snowflake;
     /** The message's content. */
     content: string;
+    /** Whether this message has been deleted or not. */
+    deleted: boolean;
     /** The message's embeds. */
     embeds: APIEmbed[];
     /** The message's flags. */
@@ -28,4 +31,6 @@ export declare class Message extends Base {
     type: MessageType;
     constructor(client: Client, data: APIMessage);
     _patch(data: APIMessage): void;
+    delete(): Promise<this>;
+    edit(content: MessageContent, options?: MessageOptions): Promise<this>;
 }
