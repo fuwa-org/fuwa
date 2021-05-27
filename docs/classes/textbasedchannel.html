@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>MessageAllowedMentions | 不和 (Fuwa)</title>
+	<title>TextBasedChannel | 不和 (Fuwa)</title>
 	<meta name="description" content="Documentation for 不和 (Fuwa)">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -53,10 +53,10 @@
 					<a href="../modules.html">不和 (Fuwa)</a>
 				</li>
 				<li>
-					<a href="messageallowedmentions.html">MessageAllowedMentions</a>
+					<a href="textbasedchannel.html">TextBasedChannel</a>
 				</li>
 			</ul>
-			<h1>Interface MessageAllowedMentions</h1>
+			<h1>Class TextBasedChannel</h1>
 		</div>
 	</div>
 </header>
@@ -67,7 +67,12 @@
 				<h3>Hierarchy</h3>
 				<ul class="tsd-hierarchy">
 					<li>
-						<span class="target">MessageAllowedMentions</span>
+						<a href="guildchannel.html" class="tsd-signature-type" data-tsd-kind="Class">GuildChannel</a>
+						<ul class="tsd-hierarchy">
+							<li>
+								<span class="target">TextBasedChannel</span>
+							</li>
+						</ul>
 					</li>
 				</ul>
 			</section>
@@ -75,46 +80,58 @@
 				<h2>Index</h2>
 				<section class="tsd-panel tsd-index-panel">
 					<div class="tsd-index-content">
-						<section class="tsd-index-section ">
+						<section class="tsd-index-section tsd-is-inherited">
+							<h3>Constructors</h3>
+							<ul class="tsd-index-list">
+								<li class="tsd-kind-constructor tsd-parent-kind-class tsd-is-inherited"><a href="textbasedchannel.html#constructor" class="tsd-kind-icon">constructor</a></li>
+							</ul>
+						</section>
+						<section class="tsd-index-section tsd-is-inherited">
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="messageallowedmentions.html#parse" class="tsd-kind-icon">parse</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="messageallowedmentions.html#roles" class="tsd-kind-icon">roles</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="messageallowedmentions.html#users" class="tsd-kind-icon">users</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="textbasedchannel.html#client" class="tsd-kind-icon">client</a></li>
 							</ul>
 						</section>
 					</div>
 				</section>
 			</section>
-			<section class="tsd-panel-group tsd-member-group ">
+			<section class="tsd-panel-group tsd-member-group tsd-is-inherited">
+				<h2>Constructors</h2>
+				<section class="tsd-panel tsd-member tsd-kind-constructor tsd-parent-kind-class tsd-is-inherited">
+					<a name="constructor" class="tsd-anchor"></a>
+					<h3>constructor</h3>
+					<ul class="tsd-signatures tsd-kind-constructor tsd-parent-kind-class tsd-is-inherited">
+						<li class="tsd-signature tsd-kind-icon">new <wbr>Text<wbr>Based<wbr>Channel<span class="tsd-signature-symbol">(</span>client<span class="tsd-signature-symbol">: </span><a href="client.html" class="tsd-signature-type" data-tsd-kind="Class">Client</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="textbasedchannel.html" class="tsd-signature-type" data-tsd-kind="Class">TextBasedChannel</a></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<p>Inherited from <a href="guildchannel.html">GuildChannel</a>.<a href="guildchannel.html#constructor">constructor</a></p>
+								<ul>
+									<li>Defined in <a href="https://github.com/nearlySplat/fuwa/blob/815cc92/src/structures/Base.ts#L4">structures/Base.ts:4</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>client: <a href="client.html" class="tsd-signature-type" data-tsd-kind="Class">Client</a></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <a href="textbasedchannel.html" class="tsd-signature-type" data-tsd-kind="Class">TextBasedChannel</a></h4>
+						</li>
+					</ul>
+				</section>
+			</section>
+			<section class="tsd-panel-group tsd-member-group tsd-is-inherited">
 				<h2>Properties</h2>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="parse" class="tsd-anchor"></a>
-					<h3>parse</h3>
-					<div class="tsd-signature tsd-kind-icon">parse<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">(</span><span class="tsd-signature-type">&quot;user&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;role&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;everyone&quot;</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">[]</span></div>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
+					<a name="client" class="tsd-anchor"></a>
+					<h3>client</h3>
+					<div class="tsd-signature tsd-kind-icon">client<span class="tsd-signature-symbol">:</span> <a href="client.html" class="tsd-signature-type" data-tsd-kind="Class">Client</a></div>
 					<aside class="tsd-sources">
+						<p>Inherited from <a href="guildchannel.html">GuildChannel</a>.<a href="guildchannel.html#client">client</a></p>
 						<ul>
-							<li>Defined in <a href="https://github.com/nearlySplat/fuwa/blob/815cc92/src/types.ts#L12">types.ts:12</a></li>
-						</ul>
-					</aside>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="roles" class="tsd-anchor"></a>
-					<h3>roles</h3>
-					<div class="tsd-signature tsd-kind-icon">roles<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">`</span><span class="tsd-signature-symbol">${</span><span class="tsd-signature-type">bigint</span><span class="tsd-signature-symbol">}</span><span class="tsd-signature-symbol">`</span><span class="tsd-signature-symbol">[]</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/nearlySplat/fuwa/blob/815cc92/src/types.ts#L14">types.ts:14</a></li>
-						</ul>
-					</aside>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="users" class="tsd-anchor"></a>
-					<h3>users</h3>
-					<div class="tsd-signature tsd-kind-icon">users<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">`</span><span class="tsd-signature-symbol">${</span><span class="tsd-signature-type">bigint</span><span class="tsd-signature-symbol">}</span><span class="tsd-signature-symbol">`</span><span class="tsd-signature-symbol">[]</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/nearlySplat/fuwa/blob/815cc92/src/types.ts#L13">types.ts:13</a></li>
+							<li>Defined in <a href="https://github.com/nearlySplat/fuwa/blob/815cc92/src/structures/Base.ts#L4">structures/Base.ts:4</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -131,103 +148,100 @@
 			<nav class="tsd-navigation secondary menu-sticky">
 				<ul class="before-current">
 					<li class=" tsd-kind-class">
-						<a href="../classes/application.html" class="tsd-kind-icon">Application</a>
+						<a href="application.html" class="tsd-kind-icon">Application</a>
 					</li>
 					<li class=" tsd-kind-class">
-						<a href="../classes/applicationflags.html" class="tsd-kind-icon">Application<wbr>Flags</a>
+						<a href="applicationflags.html" class="tsd-kind-icon">Application<wbr>Flags</a>
 					</li>
 					<li class=" tsd-kind-class">
-						<a href="../classes/base.html" class="tsd-kind-icon">Base</a>
+						<a href="base.html" class="tsd-kind-icon">Base</a>
 					</li>
 					<li class=" tsd-kind-class">
-						<a href="../classes/bitfield.html" class="tsd-kind-icon">Bit<wbr>Field</a>
+						<a href="bitfield.html" class="tsd-kind-icon">Bit<wbr>Field</a>
 					</li>
 					<li class=" tsd-kind-class">
-						<a href="../classes/channel.html" class="tsd-kind-icon">Channel</a>
+						<a href="channel.html" class="tsd-kind-icon">Channel</a>
 					</li>
 					<li class=" tsd-kind-class">
-						<a href="../classes/client.html" class="tsd-kind-icon">Client</a>
+						<a href="client.html" class="tsd-kind-icon">Client</a>
 					</li>
 					<li class=" tsd-kind-class">
-						<a href="../classes/dmchannel.html" class="tsd-kind-icon">DMChannel</a>
+						<a href="dmchannel.html" class="tsd-kind-icon">DMChannel</a>
 					</li>
 					<li class=" tsd-kind-class">
-						<a href="../classes/guildchannel.html" class="tsd-kind-icon">Guild<wbr>Channel</a>
+						<a href="guildchannel.html" class="tsd-kind-icon">Guild<wbr>Channel</a>
 					</li>
 					<li class=" tsd-kind-class">
-						<a href="../classes/intents.html" class="tsd-kind-icon">Intents</a>
+						<a href="intents.html" class="tsd-kind-icon">Intents</a>
 					</li>
 					<li class=" tsd-kind-class">
-						<a href="../classes/message.html" class="tsd-kind-icon">Message</a>
+						<a href="message.html" class="tsd-kind-icon">Message</a>
 					</li>
 					<li class=" tsd-kind-class">
-						<a href="../classes/messageflags.html" class="tsd-kind-icon">Message<wbr>Flags</a>
+						<a href="messageflags.html" class="tsd-kind-icon">Message<wbr>Flags</a>
 					</li>
 					<li class=" tsd-kind-class">
-						<a href="../classes/messagementions.html" class="tsd-kind-icon">Message<wbr>Mentions</a>
+						<a href="messagementions.html" class="tsd-kind-icon">Message<wbr>Mentions</a>
 					</li>
 					<li class=" tsd-kind-class">
-						<a href="../classes/restmanager.html" class="tsd-kind-icon">RESTManager</a>
+						<a href="restmanager.html" class="tsd-kind-icon">RESTManager</a>
 					</li>
 					<li class=" tsd-kind-class">
-						<a href="../classes/snowflakeutil.html" class="tsd-kind-icon">Snowflake<wbr>Util</a>
-					</li>
-					<li class=" tsd-kind-class">
-						<a href="../classes/textbasedchannel.html" class="tsd-kind-icon">Text<wbr>Based<wbr>Channel</a>
-					</li>
-					<li class=" tsd-kind-class">
-						<a href="../classes/user.html" class="tsd-kind-icon">User</a>
-					</li>
-					<li class=" tsd-kind-class">
-						<a href="../classes/userflags.html" class="tsd-kind-icon">User<wbr>Flags</a>
-					</li>
-					<li class=" tsd-kind-class">
-						<a href="../classes/util.html" class="tsd-kind-icon">Util</a>
-					</li>
-					<li class=" tsd-kind-class">
-						<a href="../classes/websocketmanager.html" class="tsd-kind-icon">Web<wbr>Socket<wbr>Manager</a>
-					</li>
-					<li class=" tsd-kind-interface">
-						<a href="clientevents.html" class="tsd-kind-icon">Client<wbr>Events</a>
-					</li>
-					<li class=" tsd-kind-interface">
-						<a href="clientoptions.html" class="tsd-kind-icon">Client<wbr>Options</a>
-					</li>
-					<li class=" tsd-kind-interface">
-						<a href="deconstructedsnowflake.html" class="tsd-kind-icon">Deconstructed<wbr>Snowflake</a>
-					</li>
-					<li class=" tsd-kind-interface">
-						<a href="identifyoptions.html" class="tsd-kind-icon">Identify<wbr>Options</a>
-					</li>
-					<li class=" tsd-kind-interface">
-						<a href="imageurloptions.html" class="tsd-kind-icon">ImageURLOptions</a>
+						<a href="snowflakeutil.html" class="tsd-kind-icon">Snowflake<wbr>Util</a>
 					</li>
 				</ul>
 				<ul class="current">
-					<li class="current tsd-kind-interface">
-						<a href="messageallowedmentions.html" class="tsd-kind-icon">Message<wbr>Allowed<wbr>Mentions</a>
+					<li class="current tsd-kind-class">
+						<a href="textbasedchannel.html" class="tsd-kind-icon">Text<wbr>Based<wbr>Channel</a>
 						<ul>
-							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="messageallowedmentions.html#parse" class="tsd-kind-icon">parse</a>
+							<li class=" tsd-kind-constructor tsd-parent-kind-class tsd-is-inherited">
+								<a href="textbasedchannel.html#constructor" class="tsd-kind-icon">constructor</a>
 							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="messageallowedmentions.html#roles" class="tsd-kind-icon">roles</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="messageallowedmentions.html#users" class="tsd-kind-icon">users</a>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
+								<a href="textbasedchannel.html#client" class="tsd-kind-icon">client</a>
 							</li>
 						</ul>
 					</li>
 				</ul>
 				<ul class="after-current">
-					<li class=" tsd-kind-interface">
-						<a href="messageoptions.html" class="tsd-kind-icon">Message<wbr>Options</a>
+					<li class=" tsd-kind-class">
+						<a href="user.html" class="tsd-kind-icon">User</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="userflags.html" class="tsd-kind-icon">User<wbr>Flags</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="util.html" class="tsd-kind-icon">Util</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="websocketmanager.html" class="tsd-kind-icon">Web<wbr>Socket<wbr>Manager</a>
 					</li>
 					<li class=" tsd-kind-interface">
-						<a href="requestoptions.html" class="tsd-kind-icon">Request<wbr>Options</a>
+						<a href="../interfaces/clientevents.html" class="tsd-kind-icon">Client<wbr>Events</a>
 					</li>
 					<li class=" tsd-kind-interface">
-						<a href="responseratelimitdata.html" class="tsd-kind-icon">Response<wbr>Ratelimit<wbr>Data</a>
+						<a href="../interfaces/clientoptions.html" class="tsd-kind-icon">Client<wbr>Options</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="../interfaces/deconstructedsnowflake.html" class="tsd-kind-icon">Deconstructed<wbr>Snowflake</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="../interfaces/identifyoptions.html" class="tsd-kind-icon">Identify<wbr>Options</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="../interfaces/imageurloptions.html" class="tsd-kind-icon">ImageURLOptions</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="../interfaces/messageallowedmentions.html" class="tsd-kind-icon">Message<wbr>Allowed<wbr>Mentions</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="../interfaces/messageoptions.html" class="tsd-kind-icon">Message<wbr>Options</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="../interfaces/requestoptions.html" class="tsd-kind-icon">Request<wbr>Options</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="../interfaces/responseratelimitdata.html" class="tsd-kind-icon">Response<wbr>Ratelimit<wbr>Data</a>
 					</li>
 					<li class=" tsd-kind-type-alias">
 						<a href="../modules.html#imageformat" class="tsd-kind-icon">Image<wbr>Format</a>
