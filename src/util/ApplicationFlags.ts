@@ -1,0 +1,15 @@
+import { BitField } from './BitField';
+
+export class ApplicationFlags extends BitField {
+  FLAGS = {
+    MANAGED_EMOJI: 4,
+    GROUP_DM_CREATE: 16,
+    RPC_HAS_CONNECTED: 2048,
+    GATEWAY_PRESENCE: 4096,
+    GATEWAY_PRESENCE_LIMITED: 8192,
+    GATEWAY_GUILD_MEMBERS: 16384,
+    GATEWAY_GUILD_MEMBERS_LIMITED: 32768,
+    VERIFICATION_PENDING_GUILD_LIMIT: 65536,
+    EMBEDDED: 131072,
+  } as const;
+}

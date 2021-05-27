@@ -1,5 +1,5 @@
 const { expect } = require('chai');
-const Wrappercord = require('..');
+const Fuwa = require('..');
 process.env.TOKEN = require('fs')
   .readFileSync(require('path').join(__dirname, '..', '.env'))
   .slice(6, -1);
@@ -19,29 +19,29 @@ describe('Client', () => {
     it(
       'should error if no parameters are passed',
       invertError(() => {
-        new Wrappercord.Client();
+        new Fuwa.Client();
       })
     );
     it(
       'should error when an empty string is provided as a token',
       invertError(() => {
-        new Wrappercord.Client('');
+        new Fuwa.Client('');
       })
     );
     it(
       'should error when no intents are passed',
       invertError(() => {
-        new Wrappercord.Client('my_token', {});
+        new Fuwa.Client('my_token', {});
       })
     );
     // FIXME
     it("shouldn't error when intents of 0 are passed", () => {
-      new Wrappercord.Client('my_token', { intents: 0 });
+      new Fuwa.Client('my_token', { intents: 0 });
     });
   });
   describe('#connect', async () => {
-    const client = new Wrappercord.Client(process.env.TOKEN, {
-      intents: Wrappercord.Intents.NON_PRIVILEDGED,
+    const client = new Fuwa.Client(process.env.TOKEN, {
+      intents: Fuwa.Intents.NON_PRIVILEDGED,
     });
     it('should work with a valid token', async () => {
       await client.connect();
@@ -53,7 +53,7 @@ describe('Client', () => {
     it(
       'should error with an invalid, non-empty token string',
       invertError(() => {
-        const client = new Wrappercord.Client('my_token');
+        const client = new Fuwa.Client('my_token');
         client.connect();
       })
     );

@@ -31,5 +31,6 @@ export declare const ERRORS: {
     NO_TOKEN: TypeError;
     NO_INTENTS: TypeError;
     SHARDING: TypeError;
+    IDENTIFY_LIMIT: RangeError;
 };
 export declare type HTTPMethod = 'GET' | 'HEAD' | 'POST' | 'PUT' | 'PATCH' | 'DELETE' | 'CONNECT' | 'OPTIONS' | 'TRACE' | 'get' | 'head' | 'post' | 'put' | 'patch' | 'delete' | 'connect' | 'options' | 'trace';

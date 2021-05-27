@@ -22,7 +22,7 @@ export interface Client {
 }
 /** The main class of this wrapper and where all communication with Discord is based from.
  *
- * <warning>Sharded Clients are not supported by Wrappercord.</warning>
+ * <warning>Sharded Clients are not supported by Fuwa.</warning>
  */
 export class Client extends EventEmitter {
   /** Cached guilds the bot is in

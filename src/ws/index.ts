@@ -59,6 +59,7 @@ export class WebSocketManager extends EventEmitter {
         throw ERRORS.SHARDING;
       })().then(() => process.exit(1));
     }
+    if (data.session_start_limit.remaining === 0) throw ERRORS.IDENTIFY_LIMIT;
     if (!prelimInfo.res.ok) throw ERRORS.NO_TOKEN;
     this.socket = new WebSocket(CONSTANTS.urls.socketUrl);
     this.socket.on('message', (data) => {

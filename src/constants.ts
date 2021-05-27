@@ -27,11 +27,11 @@ export const CONSTANTS = {
   },
   api: {
     version: 'v9',
-    userAgent: `DiscordBot (https://github.com/nearlysplat/wrappercord, ${version}) Wrappercord/${version} Node.js/${process.version}`,
+    userAgent: `DiscordBot (https://github.com/nearlySplat/fuwa, ${version}) Fuwa/${version} Node.js/${process.version}`,
     gatewayProperties: {
       $os: process.platform,
-      $browser: 'wrappercord',
-      $device: 'wrappercord',
+      $browser: 'fuwa',
+      $device: 'fuwa',
     },
     headers: {
       get 'User-Agent'(): string {
@@ -48,7 +48,10 @@ export const CONSTANTS = {
 export const ERRORS = {
   NO_TOKEN: new TypeError('An invalid token was provided for the client.'),
   NO_INTENTS: new TypeError('No intents were provided for the Client.'),
-  SHARDING: new TypeError('Sharding is not supported by wrappercord.'),
+  SHARDING: new TypeError('Sharding is not supported by Fuwa.'),
+  IDENTIFY_LIMIT: new RangeError(
+    'Your client has exceeded the 1000 daily log-in limit.'
+  ),
 };
 
 export type HTTPMethod =

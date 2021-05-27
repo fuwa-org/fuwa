@@ -1,7 +1,7 @@
 {
-  "name": "wrappercord",
+  "name": "fuwa",
   "version": "1.0.0",
-  "description": "A javascript discord api library",
+  "description": "不和 (fuwa) is a Discord API wrapper.",
   "main": "./dist/index.js",
   "scripts": {
     "lint": "eslint . --ext .ts",
@@ -15,7 +15,7 @@
     "prettify": "precise-commits",
     "precommit": "yarn build && yarn lint --fix && yarn test && yarn prettify"
   },
-  "repository": "https://github.com/nearlySplat/wrappercord.git",
+  "repository": "https://github.com/nearlySplat/fuwa.git",
   "keywords": [],
   "author": "nearlySplat <splatterxl@outlook.ie>",
   "license": "AGPL-3.0-or-later",
