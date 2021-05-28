@@ -1,5 +1,6 @@
-import { Channel } from './Channel';
+import { ChannelType } from 'discord-api-types';
+import { TextBasedChannel } from './TextBasedChannel';
 
-export class DMChannel extends Channel {
-  type: 'dm';
+export class DMChannel extends TextBasedChannel {
+  type: ChannelType.DM;
 }

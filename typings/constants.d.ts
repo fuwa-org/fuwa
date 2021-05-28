@@ -12,6 +12,7 @@ export declare const CONSTANTS: {
             defaultAvatar(disc: number): string;
         };
         message(channelid: Snowflake, id: Snowflake): string;
+        channelMessages(channelid: Snowflake): string;
     };
     api: {
         version: string;

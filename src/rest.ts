@@ -53,20 +53,19 @@ export class RESTManager {
           ? JSON.stringify(options.data)
           : options.data,
       headers: {
-        ...(options.headers ?? {}),
+        ...(options.headers || {}),
         ...CONSTANTS.api.headers,
         Authorization: `Bot ${this.client.token}`,
       },
+      method: options.method || 'GET',
     };
-    const res = await fetch(
-      options.rawUrl ? url : CONSTANTS.urls.base + url,
-      requestOptions
-    );
-    let data: T extends void ? R : T =
-      (await res.buffer()) as unknown as T extends void ? R : T;
+    const res = await fetch(url, requestOptions);
+    let data: T extends void ? R : T = (
+      await res.buffer()
+    ).toString() as unknown as T extends void ? R : T;
     if (res.ok) {
       try {
-        data = JSON.parse(data.toString());
+        data = JSON.parse(data.toString().toString());
       } catch {} // eslint-disable-line no-empty
     } else {
       if (res.status === 429) throw new Error('rate limit encountered');

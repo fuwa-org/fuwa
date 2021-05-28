@@ -22,7 +22,10 @@ export const CONSTANTS = {
       },
     },
     message(channelid: Snowflake, id: Snowflake): string {
-      return `${this.base}/channels/${channelid}/messages/${id}`;
+      return `${this.channelMessages(channelid)}/${id}`;
+    },
+    channelMessages(channelid: Snowflake): string {
+      return `${this.base}/channels/${channelid}/messages`;
     },
   },
   api: {

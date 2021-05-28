@@ -13,7 +13,7 @@
     "docs": "yarn docs:build && yarn docs:serve",
     "prepare": "git config --local core.hooksPath .hooks/",
     "prettify": "precise-commits",
-    "precommit": "yarn build && yarn lint --fix && yarn test && yarn prettify"
+    "precommit": "yarn build && yarn lint --fix && yarn prettify"
   },
   "repository": "https://github.com/nearlySplat/fuwa.git",
   "keywords": [],

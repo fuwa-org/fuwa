@@ -4,13 +4,14 @@ import { MessageContent, MessageOptions } from '../types';
 import { MessageFlags } from '../util/MessageFlags';
 import { Base } from './Base';
 import { MessageMentions } from './MessageMentions';
+import { TextBasedChannel } from './TextBasedChannel';
 import { User } from './User';
 /** A Message sent in a text based channel. */
-export declare class Message extends Base {
+export declare class Message extends Base<APIMessage> {
     /** The message's author */
     author: User;
-    /** The {@link Channel} the message was sent in. */
-    channel: Snowflake;
+    /** The Channel the message was sent in. */
+    channel: TextBasedChannel;
     /** The message's content. */
     content: string;
     /** Whether this message has been deleted or not. */
@@ -19,6 +20,8 @@ export declare class Message extends Base {
     embeds: APIEmbed[];
     /** The message's flags. */
     flags: MessageFlags;
+    /** The {@link Guild} this message was created in */
+    guild: Snowflake;
     /** The {@link Snowflake} of the message. */
     id: Snowflake;
     /** Entities this message mentions */

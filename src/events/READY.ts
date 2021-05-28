@@ -20,7 +20,7 @@ export default function (
       unavailable: true,
       id: guild.id,
       uncached: true,
-    } as APIUnavailableGuild);
+    } as unknown as APIUnavailableGuild);
   }
   manager.gatewayVersion = data.d.v;
   manager.session = data.d.session_id;
@@ -28,7 +28,9 @@ export default function (
   manager.client.timeouts.push(
     setTimeout(() => {
       if (
-        manager.client.guilds.some((v) => (v as { uncached: boolean }).uncached)
+        manager.client.guilds.some(
+          (v) => (v as unknown as { uncached: boolean }).uncached
+        )
       ) {
         console.error('Client did not recieve guilds in time.');
         manager.client.destroy();

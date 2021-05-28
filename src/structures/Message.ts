@@ -10,13 +10,14 @@ import { MessageContent, MessageOptions } from '../types';
 import { MessageFlags } from '../util/MessageFlags';
 import { Base } from './Base';
 import { MessageMentions } from './MessageMentions';
+import { TextBasedChannel } from './TextBasedChannel';
 import { User } from './User';
 /** A Message sent in a text based channel. */
-export class Message extends Base {
+export class Message extends Base<APIMessage> {
   /** The message's author */
   author: User;
-  /** The {@link Channel} the message was sent in. */
-  channel: Snowflake;
+  /** The Channel the message was sent in. */
+  channel: TextBasedChannel;
   /** The message's content. */
   content: string;
   /** Whether this message has been deleted or not. */
@@ -25,6 +26,8 @@ export class Message extends Base {
   embeds: APIEmbed[];
   /** The message's flags. */
   flags: MessageFlags;
+  /** The {@link Guild} this message was created in */
+  guild: Snowflake;
   /** The {@link Snowflake} of the message. */
   id: Snowflake;
   /** Entities this message mentions */
@@ -41,7 +44,13 @@ export class Message extends Base {
   }
   _patch(data: APIMessage): void {
     if ('id' in data) this.id = data.id;
-    if ('channel_id' in data) this.channel = data.channel_id;
+    if ('channel_id' in data) {
+      this.channel = this.client.channels.get(
+        data.channel_id
+      ) as TextBasedChannel;
+      this.channel.messages.add(this);
+      this.client.channels.set(this.channel.id, this.channel);
+    }
     if ('mentions' in data)
       this.mentions = new MessageMentions(
         this.client,
@@ -64,10 +73,11 @@ export class Message extends Base {
     if ('embeds' in data) this.embeds = data.embeds;
     if ('nonce' in data) this.nonce = data.nonce;
     if ('flags' in data) this.flags = new MessageFlags(data.flags);
+    if ('guild_id' in data) this.guild = data.guild_id;
   }
   async delete(): Promise<this> {
     const result = await this.client.request<''>(
-      CONSTANTS.urls.message(this.channel, this.id)
+      CONSTANTS.urls.message(this.channel.id, this.id)
     );
     if (!result.res.ok) throw result.data;
     this.deleted = true;
@@ -78,7 +88,7 @@ export class Message extends Base {
     options: MessageOptions = {}
   ): Promise<this> {
     const result = await this.client.request<void, APIMessage>(
-      CONSTANTS.urls.message(this.channel, this.id),
+      CONSTANTS.urls.message(this.channel.id, this.id),
       {
         data: {
           content,

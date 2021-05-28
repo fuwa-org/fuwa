@@ -4,7 +4,9 @@
     "declaration": true,
     "declarationDir": "./typings/",
     "target": "ES2015",
-    "sourceMap": true
+    "sourceMap": true,
+    "extendedDiagnostics": false,
+    "diagnostics": false
   },
   "extends": "@splatterxl/tsconfig/tsconfig.json",
   "include": ["./src/**/*"],

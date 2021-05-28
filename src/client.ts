@@ -1,11 +1,13 @@
 import Collection from '@discordjs/collection';
-import { APIGuild, APIUnavailableGuild } from 'discord-api-types';
+import { APIGuild, APIUnavailableGuild, Snowflake } from 'discord-api-types';
 import { EventEmitter } from 'events';
 import { ERRORS } from './constants';
 import { RequestOptions, RESTManager } from './rest';
+import { DMChannel } from './structures/DMChannel';
+import { Guild } from './structures/Guild';
+import { GuildChannel } from './structures/GuildChannel';
 import { Message } from './structures/Message';
 import { User } from './structures/User';
-import { Snowflake } from './util/snowflake';
 import { WebSocketManager } from './ws';
 export interface ClientOptions {
   /** The {@link Intents} for this client */
@@ -25,13 +27,16 @@ export interface Client {
  * <warning>Sharded Clients are not supported by Fuwa.</warning>
  */
 export class Client extends EventEmitter {
-  /** Cached guilds the bot is in
+  /** Cached channels the bot can see.
+   *
+   * <info>Every channel in every guild in the Client's {@link Client.guilds|cache} is cached. This does not mean the Client can access these channels.</info>
+   */
+  channels = new Collection<string, DMChannel | GuildChannel>();
+  /** Cached guilds the bot is in.
+   *
    * <info>Every guild is cached by default in un-sharded clients</info>
    */
-  guilds = new Collection<
-    Snowflake,
-    APIGuild | APIUnavailableGuild | (APIUnavailableGuild & { uncached: true })
-  >();
+  guilds = new Collection<Snowflake, Guild | APIUnavailableGuild>();
   /** Intervals that can be cleared with {@link Client.destroy}
    */
   intervals: NodeJS.Timeout[] = [];

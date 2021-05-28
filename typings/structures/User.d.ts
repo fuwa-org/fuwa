@@ -5,7 +5,7 @@ import { Snowflake } from '../util/snowflake';
 import { UserFlags } from '../util/UserFlags';
 import { Base } from './Base';
 /** A Bot or User on Discord. */
-export declare class User extends Base {
+export declare class User extends Base<APIUser> {
     /** The user's avatar hash. Set to `null` if the user has a default avatar. */
     avatarHash: null | string;
     /** Whether the user is a bot account. */

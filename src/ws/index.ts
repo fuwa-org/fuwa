@@ -26,11 +26,11 @@ export class WebSocketManager extends EventEmitter {
     this.on('message', message.bind(null, this));
     for (const file of [
       ...readdirSync(pathDotJoin(__dirname, '..', 'events')).filter(
-        (v) => v !== 'opcodes'
+        (v) => v !== 'opcodes' && v.endsWith('.js')
       ),
-      ...readdirSync(pathDotJoin(__dirname, '..', 'events', 'opcodes')).map(
-        (v) => pathDotJoin('opcodes', v)
-      ),
+      ...readdirSync(pathDotJoin(__dirname, '..', 'events', 'opcodes'))
+        .filter((v) => v.endsWith('.js'))
+        .map((v) => pathDotJoin('opcodes', v)),
     ].filter((v) => !v.endsWith('.d.ts'))) {
       const { default: data } = await import(
         pathDotJoin(__dirname, '..', 'events', file)
@@ -53,14 +53,14 @@ export class WebSocketManager extends EventEmitter {
       CONSTANTS.getUrl('getGatewayBot'),
       { rawUrl: true }
     );
+    if (!prelimInfo.res.ok) throw ERRORS.NO_TOKEN;
     const { data } = prelimInfo;
     if (data.shards > 1) {
       (async () => {
         throw ERRORS.SHARDING;
       })().then(() => process.exit(1));
     }
-    if (data.session_start_limit.remaining === 0) throw ERRORS.IDENTIFY_LIMIT;
-    if (!prelimInfo.res.ok) throw ERRORS.NO_TOKEN;
+    if (data.session_start_limit?.remaining === 0) throw ERRORS.IDENTIFY_LIMIT;
     this.socket = new WebSocket(CONSTANTS.urls.socketUrl);
     this.socket.on('message', (data) => {
       data = data.toString();
