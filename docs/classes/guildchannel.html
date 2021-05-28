@@ -71,11 +71,6 @@
 						<ul class="tsd-hierarchy">
 							<li>
 								<span class="target">GuildChannel</span>
-								<ul class="tsd-hierarchy">
-									<li>
-										<a href="textbasedchannel.html" class="tsd-signature-type" data-tsd-kind="Class">TextBasedChannel</a>
-									</li>
-								</ul>
 							</li>
 						</ul>
 					</li>
@@ -95,6 +90,14 @@
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="guildchannel.html#client" class="tsd-kind-icon">client</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="guildchannel.html#id" class="tsd-kind-icon">id</a></li>
+							</ul>
+						</section>
+						<section class="tsd-index-section tsd-is-inherited">
+							<h3>Methods</h3>
+							<ul class="tsd-index-list">
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="guildchannel.html#_patch" class="tsd-kind-icon">_patch</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited tsd-is-static"><a href="guildchannel.html#from" class="tsd-kind-icon">from</a></li>
 							</ul>
 						</section>
 					</div>
@@ -106,20 +109,23 @@
 					<a name="constructor" class="tsd-anchor"></a>
 					<h3>constructor</h3>
 					<ul class="tsd-signatures tsd-kind-constructor tsd-parent-kind-class tsd-is-inherited">
-						<li class="tsd-signature tsd-kind-icon">new <wbr>Guild<wbr>Channel<span class="tsd-signature-symbol">(</span>client<span class="tsd-signature-symbol">: </span><a href="client.html" class="tsd-signature-type" data-tsd-kind="Class">Client</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="guildchannel.html" class="tsd-signature-type" data-tsd-kind="Class">GuildChannel</a></li>
+						<li class="tsd-signature tsd-kind-icon">new <wbr>Guild<wbr>Channel<span class="tsd-signature-symbol">(</span>client<span class="tsd-signature-symbol">: </span><a href="client.html" class="tsd-signature-type" data-tsd-kind="Class">Client</a>, data<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">APIChannel</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="guildchannel.html" class="tsd-signature-type" data-tsd-kind="Class">GuildChannel</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="channel.html">Channel</a>.<a href="channel.html#constructor">constructor</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/nearlySplat/fuwa/blob/815cc92/src/structures/Base.ts#L4">structures/Base.ts:4</a></li>
+									<li>Defined in <a href="https://github.com/nearlySplat/fuwa/blob/8c38cb3/src/structures/Channel.ts#L5">structures/Channel.ts:5</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
 									<h5>client: <a href="client.html" class="tsd-signature-type" data-tsd-kind="Class">Client</a></h5>
+								</li>
+								<li>
+									<h5>data: <span class="tsd-signature-type">APIChannel</span></h5>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <a href="guildchannel.html" class="tsd-signature-type" data-tsd-kind="Class">GuildChannel</a></h4>
@@ -136,9 +142,74 @@
 					<aside class="tsd-sources">
 						<p>Inherited from <a href="channel.html">Channel</a>.<a href="channel.html#client">client</a></p>
 						<ul>
-							<li>Defined in <a href="https://github.com/nearlySplat/fuwa/blob/815cc92/src/structures/Base.ts#L4">structures/Base.ts:4</a></li>
+							<li>Defined in <a href="https://github.com/nearlySplat/fuwa/blob/8c38cb3/src/structures/Base.ts#L3">structures/Base.ts:3</a></li>
 						</ul>
 					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
+					<a name="id" class="tsd-anchor"></a>
+					<h3>id</h3>
+					<div class="tsd-signature tsd-kind-icon">id<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">`</span><span class="tsd-signature-symbol">${</span><span class="tsd-signature-type">bigint</span><span class="tsd-signature-symbol">}</span><span class="tsd-signature-symbol">`</span></div>
+					<aside class="tsd-sources">
+						<p>Inherited from <a href="channel.html">Channel</a>.<a href="channel.html#id">id</a></p>
+						<ul>
+							<li>Defined in <a href="https://github.com/nearlySplat/fuwa/blob/8c38cb3/src/structures/Channel.ts#L5">structures/Channel.ts:5</a></li>
+						</ul>
+					</aside>
+				</section>
+			</section>
+			<section class="tsd-panel-group tsd-member-group tsd-is-inherited">
+				<h2>Methods</h2>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+					<a name="_patch" class="tsd-anchor"></a>
+					<h3>_patch</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+						<li class="tsd-signature tsd-kind-icon">_patch<span class="tsd-signature-symbol">(</span>data<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">APIChannel</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<p>Inherited from <a href="channel.html">Channel</a>.<a href="channel.html#_patch">_patch</a></p>
+								<ul>
+									<li>Defined in <a href="https://github.com/nearlySplat/fuwa/blob/8c38cb3/src/structures/Base.ts#L8">structures/Base.ts:8</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>data: <span class="tsd-signature-type">APIChannel</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-inherited tsd-is-static">
+					<a name="from" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagStatic">Static</span> from</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited tsd-is-static">
+						<li class="tsd-signature tsd-kind-icon">from<span class="tsd-signature-symbol">(</span>client<span class="tsd-signature-symbol">: </span><a href="client.html" class="tsd-signature-type" data-tsd-kind="Class">Client</a>, data<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">APIChannel</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="dmchannel.html" class="tsd-signature-type" data-tsd-kind="Class">DMChannel</a><span class="tsd-signature-symbol"> | </span><a href="guildchannel.html" class="tsd-signature-type" data-tsd-kind="Class">GuildChannel</a></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<p>Inherited from <a href="channel.html">Channel</a>.<a href="channel.html#from">from</a></p>
+								<ul>
+									<li>Defined in <a href="https://github.com/nearlySplat/fuwa/blob/8c38cb3/src/structures/Channel.ts#L9">structures/Channel.ts:9</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>client: <a href="client.html" class="tsd-signature-type" data-tsd-kind="Class">Client</a></h5>
+								</li>
+								<li>
+									<h5>data: <span class="tsd-signature-type">APIChannel</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <a href="dmchannel.html" class="tsd-signature-type" data-tsd-kind="Class">DMChannel</a><span class="tsd-signature-symbol"> | </span><a href="guildchannel.html" class="tsd-signature-type" data-tsd-kind="Class">GuildChannel</a></h4>
+						</li>
+					</ul>
 				</section>
 			</section>
 		</div>
@@ -158,7 +229,7 @@
 					<li class=" tsd-kind-class">
 						<a href="applicationflags.html" class="tsd-kind-icon">Application<wbr>Flags</a>
 					</li>
-					<li class=" tsd-kind-class">
+					<li class=" tsd-kind-class tsd-has-type-parameter">
 						<a href="base.html" class="tsd-kind-icon">Base</a>
 					</li>
 					<li class=" tsd-kind-class">
@@ -173,6 +244,9 @@
 					<li class=" tsd-kind-class">
 						<a href="dmchannel.html" class="tsd-kind-icon">DMChannel</a>
 					</li>
+					<li class=" tsd-kind-class">
+						<a href="guild.html" class="tsd-kind-icon">Guild</a>
+					</li>
 				</ul>
 				<ul class="current">
 					<li class="current tsd-kind-class">
@@ -183,6 +257,15 @@
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
 								<a href="guildchannel.html#client" class="tsd-kind-icon">client</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
+								<a href="guildchannel.html#id" class="tsd-kind-icon">id</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+								<a href="guildchannel.html#_patch" class="tsd-kind-icon">_patch</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited tsd-is-static">
+								<a href="guildchannel.html#from" class="tsd-kind-icon">from</a>
 							</li>
 						</ul>
 					</li>
@@ -205,9 +288,6 @@
 					</li>
 					<li class=" tsd-kind-class">
 						<a href="snowflakeutil.html" class="tsd-kind-icon">Snowflake<wbr>Util</a>
-					</li>
-					<li class=" tsd-kind-class">
-						<a href="textbasedchannel.html" class="tsd-kind-icon">Text<wbr>Based<wbr>Channel</a>
 					</li>
 					<li class=" tsd-kind-class">
 						<a href="user.html" class="tsd-kind-icon">User</a>

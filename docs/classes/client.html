@@ -97,6 +97,7 @@
 						<section class="tsd-index-section ">
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="client.html#channels" class="tsd-kind-icon">channels</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="client.html#guilds" class="tsd-kind-icon">guilds</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="client.html#intervals" class="tsd-kind-icon">intervals</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="client.html#on" class="tsd-kind-icon">on</a></li>
@@ -139,7 +140,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/nearlySplat/fuwa/blob/815cc92/src/client.ts#L51">client.ts:51</a></li>
+									<li>Defined in <a href="https://github.com/nearlySplat/fuwa/blob/8c38cb3/src/client.ts#L56">client.ts:56</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -165,19 +166,35 @@
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Properties</h2>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
-					<a name="guilds" class="tsd-anchor"></a>
-					<h3>guilds</h3>
-					<div class="tsd-signature tsd-kind-icon">guilds<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Collection</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-symbol">`</span><span class="tsd-signature-symbol">${</span><span class="tsd-signature-type">bigint</span><span class="tsd-signature-symbol">}</span><span class="tsd-signature-symbol">`</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">APIGuild</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">APIUnavailableGuild</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-symbol">(</span><span class="tsd-signature-type">APIUnavailableGuild</span><span class="tsd-signature-symbol"> &amp; </span><span class="tsd-signature-symbol">{ </span>uncached<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">true</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> = ...</span></div>
+					<a name="channels" class="tsd-anchor"></a>
+					<h3>channels</h3>
+					<div class="tsd-signature tsd-kind-icon">channels<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Collection</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">, </span><a href="dmchannel.html" class="tsd-signature-type" data-tsd-kind="Class">DMChannel</a><span class="tsd-signature-symbol"> | </span><a href="guildchannel.html" class="tsd-signature-type" data-tsd-kind="Class">GuildChannel</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> = ...</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/nearlySplat/fuwa/blob/815cc92/src/client.ts#L31">client.ts:31</a></li>
+							<li>Defined in <a href="https://github.com/nearlySplat/fuwa/blob/8c38cb3/src/client.ts#L34">client.ts:34</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
 						<div class="lead">
-							<p>Cached guilds the bot is in
-							<info>Every guild is cached by default in un-sharded clients</info></p>
+							<p>Cached channels the bot can see.</p>
 						</div>
+						<p><info>Every channel in every guild in the Client&#39;s <a href="client.html#guilds">cache</a> is cached. This does not mean the Client can access these channels.</info></p>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+					<a name="guilds" class="tsd-anchor"></a>
+					<h3>guilds</h3>
+					<div class="tsd-signature tsd-kind-icon">guilds<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Collection</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-symbol">`</span><span class="tsd-signature-symbol">${</span><span class="tsd-signature-type">bigint</span><span class="tsd-signature-symbol">}</span><span class="tsd-signature-symbol">`</span><span class="tsd-signature-symbol">, </span><a href="guild.html" class="tsd-signature-type" data-tsd-kind="Class">Guild</a><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">APIUnavailableGuild</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> = ...</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/nearlySplat/fuwa/blob/8c38cb3/src/client.ts#L39">client.ts:39</a></li>
+						</ul>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>Cached guilds the bot is in.</p>
+						</div>
+						<p><info>Every guild is cached by default in un-sharded clients</info></p>
 					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
@@ -186,7 +203,7 @@
 					<div class="tsd-signature tsd-kind-icon">intervals<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Timeout</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol"> = []</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/nearlySplat/fuwa/blob/815cc92/src/client.ts#L37">client.ts:37</a></li>
+							<li>Defined in <a href="https://github.com/nearlySplat/fuwa/blob/8c38cb3/src/client.ts#L42">client.ts:42</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -201,7 +218,7 @@
 					<div class="tsd-signature tsd-kind-icon">on<span class="tsd-signature-symbol">:</span> &lt;K&gt;<span class="tsd-signature-symbol">(</span>event<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">K</span>, handler<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">...</span>args<span class="tsd-signature-symbol">: </span><a href="../interfaces/clientevents.html" class="tsd-signature-type" data-tsd-kind="Interface">ClientEvents</a><span class="tsd-signature-symbol">[</span><span class="tsd-signature-type">K</span><span class="tsd-signature-symbol">]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><a href="client.html" class="tsd-signature-type" data-tsd-kind="Class">Client</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/nearlySplat/fuwa/blob/815cc92/src/client.ts#L92">client.ts:92</a></li>
+							<li>Defined in <a href="https://github.com/nearlySplat/fuwa/blob/8c38cb3/src/client.ts#L97">client.ts:97</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-type-declaration">
@@ -259,7 +276,7 @@
 					<div class="tsd-signature tsd-kind-icon">options<span class="tsd-signature-symbol">:</span> <a href="../interfaces/clientoptions.html" class="tsd-signature-type" data-tsd-kind="Interface">ClientOptions</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/nearlySplat/fuwa/blob/815cc92/src/client.ts#L39">client.ts:39</a></li>
+							<li>Defined in <a href="https://github.com/nearlySplat/fuwa/blob/8c38cb3/src/client.ts#L44">client.ts:44</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -274,7 +291,7 @@
 					<div class="tsd-signature tsd-kind-icon">rest<span class="tsd-signature-symbol">:</span> <a href="restmanager.html" class="tsd-signature-type" data-tsd-kind="Class">RESTManager</a><span class="tsd-signature-symbol"> = ...</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/nearlySplat/fuwa/blob/815cc92/src/client.ts#L41">client.ts:41</a></li>
+							<li>Defined in <a href="https://github.com/nearlySplat/fuwa/blob/8c38cb3/src/client.ts#L46">client.ts:46</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -289,7 +306,7 @@
 					<div class="tsd-signature tsd-kind-icon">timeouts<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Timeout</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol"> = []</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/nearlySplat/fuwa/blob/815cc92/src/client.ts#L43">client.ts:43</a></li>
+							<li>Defined in <a href="https://github.com/nearlySplat/fuwa/blob/8c38cb3/src/client.ts#L48">client.ts:48</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -304,7 +321,7 @@
 					<div class="tsd-signature tsd-kind-icon">token<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/nearlySplat/fuwa/blob/815cc92/src/client.ts#L21">client.ts:21</a></li>
+							<li>Defined in <a href="https://github.com/nearlySplat/fuwa/blob/8c38cb3/src/client.ts#L23">client.ts:23</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -314,7 +331,7 @@
 					<div class="tsd-signature tsd-kind-icon">user<span class="tsd-signature-symbol">:</span> <a href="user.html" class="tsd-signature-type" data-tsd-kind="Class">User</a><span class="tsd-signature-symbol"> = null</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/nearlySplat/fuwa/blob/815cc92/src/client.ts#L47">client.ts:47</a></li>
+							<li>Defined in <a href="https://github.com/nearlySplat/fuwa/blob/8c38cb3/src/client.ts#L52">client.ts:52</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -329,7 +346,7 @@
 					<div class="tsd-signature tsd-kind-icon">users<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Collection</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-symbol">`</span><span class="tsd-signature-symbol">${</span><span class="tsd-signature-type">bigint</span><span class="tsd-signature-symbol">}</span><span class="tsd-signature-symbol">`</span><span class="tsd-signature-symbol">, </span><a href="user.html" class="tsd-signature-type" data-tsd-kind="Class">User</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> = ...</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/nearlySplat/fuwa/blob/815cc92/src/client.ts#L49">client.ts:49</a></li>
+							<li>Defined in <a href="https://github.com/nearlySplat/fuwa/blob/8c38cb3/src/client.ts#L54">client.ts:54</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -344,7 +361,7 @@
 					<div class="tsd-signature tsd-kind-icon">ws<span class="tsd-signature-symbol">:</span> <a href="websocketmanager.html" class="tsd-signature-type" data-tsd-kind="Class">WebSocketManager</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/nearlySplat/fuwa/blob/815cc92/src/client.ts#L51">client.ts:51</a></li>
+							<li>Defined in <a href="https://github.com/nearlySplat/fuwa/blob/8c38cb3/src/client.ts#L56">client.ts:56</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -366,7 +383,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/nearlySplat/fuwa/blob/815cc92/src/client.ts#L75">client.ts:75</a></li>
+									<li>Defined in <a href="https://github.com/nearlySplat/fuwa/blob/8c38cb3/src/client.ts#L80">client.ts:80</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -400,7 +417,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/nearlySplat/fuwa/blob/815cc92/src/client.ts#L89">client.ts:89</a></li>
+									<li>Defined in <a href="https://github.com/nearlySplat/fuwa/blob/8c38cb3/src/client.ts#L94">client.ts:94</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -455,7 +472,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/nearlySplat/fuwa/blob/815cc92/src/client.ts#L68">client.ts:68</a></li>
+									<li>Defined in <a href="https://github.com/nearlySplat/fuwa/blob/8c38cb3/src/client.ts#L73">client.ts:73</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span></h4>
@@ -472,7 +489,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/nearlySplat/fuwa/blob/815cc92/src/client.ts#L71">client.ts:71</a></li>
+									<li>Defined in <a href="https://github.com/nearlySplat/fuwa/blob/8c38cb3/src/client.ts#L76">client.ts:76</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-type-parameters-title">Type parameters</h4>
@@ -507,7 +524,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/nearlySplat/fuwa/blob/815cc92/src/client.ts#L79">client.ts:79</a></li>
+									<li>Defined in <a href="https://github.com/nearlySplat/fuwa/blob/8c38cb3/src/client.ts#L84">client.ts:84</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -537,7 +554,7 @@
 					<li class=" tsd-kind-class">
 						<a href="applicationflags.html" class="tsd-kind-icon">Application<wbr>Flags</a>
 					</li>
-					<li class=" tsd-kind-class">
+					<li class=" tsd-kind-class tsd-has-type-parameter">
 						<a href="base.html" class="tsd-kind-icon">Base</a>
 					</li>
 					<li class=" tsd-kind-class">
@@ -553,6 +570,9 @@
 						<ul>
 							<li class=" tsd-kind-constructor tsd-parent-kind-class">
 								<a href="client.html#constructor" class="tsd-kind-icon">constructor</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class">
+								<a href="client.html#channels" class="tsd-kind-icon">channels</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class">
 								<a href="client.html#guilds" class="tsd-kind-icon">guilds</a>
@@ -607,6 +627,9 @@
 						<a href="dmchannel.html" class="tsd-kind-icon">DMChannel</a>
 					</li>
 					<li class=" tsd-kind-class">
+						<a href="guild.html" class="tsd-kind-icon">Guild</a>
+					</li>
+					<li class=" tsd-kind-class">
 						<a href="guildchannel.html" class="tsd-kind-icon">Guild<wbr>Channel</a>
 					</li>
 					<li class=" tsd-kind-class">
@@ -626,9 +649,6 @@
 					</li>
 					<li class=" tsd-kind-class">
 						<a href="snowflakeutil.html" class="tsd-kind-icon">Snowflake<wbr>Util</a>
-					</li>
-					<li class=" tsd-kind-class">
-						<a href="textbasedchannel.html" class="tsd-kind-icon">Text<wbr>Based<wbr>Channel</a>
 					</li>
 					<li class=" tsd-kind-class">
 						<a href="user.html" class="tsd-kind-icon">User</a>

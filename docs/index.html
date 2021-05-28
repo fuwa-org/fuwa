@@ -59,7 +59,7 @@
 				<a href="#不和-fuwa" id="不和-fuwa" style="color: inherit; text-decoration: none;">
 					<h1>不和 (fuwa)</h1>
 				</a>
-				<p>不和 (fuwa) is a small Discord API wrapper made as a kind of experiment and learning experience. Originally written in JavaScript, it is now being re-written in <a href="https://typescriptlang.org">TypeScript</a>.</p>
+				<p>不和 (fuwa, meaning &quot;discord&quot; or &quot;disagreement&quot;) is a small Discord API wrapper made as a kind of experiment and learning experience. Originally written in JavaScript, it is now being re-written in <a href="https://typescriptlang.org">TypeScript</a>.</p>
 				<p><strong>Note</strong>: This library is not published to the <a href="https://npmjs.com">npm</a> <a href="https://registry.npmjs.com">registry</a>, yet. It is planned to publish it once basic functionality is implemented.</p>
 				<a href="#installation" id="installation" style="color: inherit; text-decoration: none;">
 					<h2>Installation</h2>
@@ -90,6 +90,10 @@
 <span style="color: #000000">  </span><span style="color: #001080">console</span><span style="color: #000000">.</span><span style="color: #795E26">log</span><span style="color: #000000">(</span><span style="color: #A31515">`Logged in as </span><span style="color: #0000FF">${</span><span style="color: #001080">client</span><span style="color: #000000FF">.</span><span style="color: #001080">user</span><span style="color: #000000FF">.</span><span style="color: #001080">username</span><span style="color: #0000FF">}</span><span style="color: #A31515">#</span><span style="color: #0000FF">${</span><span style="color: #001080">client</span><span style="color: #000000FF">.</span><span style="color: #001080">user</span><span style="color: #000000FF">.</span><span style="color: #001080">tag</span><span style="color: #0000FF">}</span><span style="color: #A31515">!`</span><span style="color: #000000">);</span>
 <span style="color: #000000">});</span>
 
+<span style="color: #001080">client</span><span style="color: #000000">.</span><span style="color: #795E26">on</span><span style="color: #000000">(</span><span style="color: #A31515">&quot;messageCreate&quot;</span><span style="color: #000000">, (</span><span style="color: #001080">msg</span><span style="color: #000000">) </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> {</span>
+<span style="color: #000000">  </span><span style="color: #AF00DB">if</span><span style="color: #000000"> (</span><span style="color: #001080">msg</span><span style="color: #000000">.</span><span style="color: #001080">content</span><span style="color: #000000"> === </span><span style="color: #A31515">&quot;!ping&quot;</span><span style="color: #000000">) </span><span style="color: #001080">msg</span><span style="color: #000000">.</span><span style="color: #001080">channel</span><span style="color: #000000">.</span><span style="color: #001080">messages</span><span style="color: #000000">.</span><span style="color: #795E26">create</span><span style="color: #000000">(</span><span style="color: #A31515">&quot;Pong!&quot;</span><span style="color: #000000">);</span>
+<span style="color: #000000">})</span>
+
 <span style="color: #001080">client</span><span style="color: #000000">.</span><span style="color: #795E26">connect</span><span style="color: #000000">();</span>
 </code></pre>
 				<a href="#documentation" id="documentation" style="color: inherit; text-decoration: none;">
@@ -114,7 +118,7 @@
 					<li class=" tsd-kind-class">
 						<a href="classes/applicationflags.html" class="tsd-kind-icon">Application<wbr>Flags</a>
 					</li>
-					<li class=" tsd-kind-class">
+					<li class=" tsd-kind-class tsd-has-type-parameter">
 						<a href="classes/base.html" class="tsd-kind-icon">Base</a>
 					</li>
 					<li class=" tsd-kind-class">
@@ -128,6 +132,9 @@
 					</li>
 					<li class=" tsd-kind-class">
 						<a href="classes/dmchannel.html" class="tsd-kind-icon">DMChannel</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/guild.html" class="tsd-kind-icon">Guild</a>
 					</li>
 					<li class=" tsd-kind-class">
 						<a href="classes/guildchannel.html" class="tsd-kind-icon">Guild<wbr>Channel</a>
@@ -149,9 +156,6 @@
 					</li>
 					<li class=" tsd-kind-class">
 						<a href="classes/snowflakeutil.html" class="tsd-kind-icon">Snowflake<wbr>Util</a>
-					</li>
-					<li class=" tsd-kind-class">
-						<a href="classes/textbasedchannel.html" class="tsd-kind-icon">Text<wbr>Based<wbr>Channel</a>
 					</li>
 					<li class=" tsd-kind-class">
 						<a href="classes/user.html" class="tsd-kind-icon">User</a>
