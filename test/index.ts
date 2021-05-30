@@ -1,4 +1,4 @@
-import { Client, Intents } from '..';
+import { Client, Intents, Snowflake } from '..';
 import { inspect } from 'util';
 
 const client = new Client(process.argv[2].slice(6), {
@@ -18,7 +18,7 @@ client.on('messageCreate', async (m) => {
     m.edit('hello');
   else if (m.content.startsWith('lightbulb eval ')) {
     const code = m.content.slice('lightbulb eval '.length);
-    let result;
+    let result: unknown;
     try {
       result = await eval(code);
     } catch (e) {
@@ -26,6 +26,21 @@ client.on('messageCreate', async (m) => {
     }
     m.reply(`\`\`\`xl\n${inspect(result, { depth: 0 })}\n\`\`\``, {
       allowedMentions: { repliedUser: false },
+    });
+  } else if (m.content.startsWith('lightbulb user')) {
+    const user = client.users.get(
+      m.content.slice('lightbulb user '.length) as Snowflake
+    );
+    m.reply(`Here's information about **${user.username}**:`, {
+      embed: {
+        description: `**${user.username}#${user.discriminator}**`,
+        fields: [
+          { name: 'Created at', value: user.createdAt.toLocaleString() },
+        ],
+        thumbnail: {
+          url: user.avatar({ dynamic: true, format: 'png', size: 512 }),
+        },
+      },
     });
   }
 });
