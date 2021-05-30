@@ -115,8 +115,10 @@
 							<h3>Methods</h3>
 							<ul class="tsd-index-list">
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-overwrite"><a href="message.html#_patch" class="tsd-kind-icon">_patch</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><a href="message.html#_resolvemessage" class="tsd-kind-icon">_resolve<wbr>Message</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="message.html#delete" class="tsd-kind-icon">delete</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="message.html#edit" class="tsd-kind-icon">edit</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="message.html#reply" class="tsd-kind-icon">reply</a></li>
 							</ul>
 						</section>
 					</div>
@@ -135,7 +137,7 @@
 							<aside class="tsd-sources">
 								<p>Overrides <a href="base.html">Base</a>.<a href="base.html#constructor">constructor</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/nearlySplat/fuwa/blob/8c38cb3/src/structures/Message.ts#L40">structures/Message.ts:40</a></li>
+									<li>Defined in <a href="https://github.com/nearlySplat/fuwa/blob/cbf810c/src/structures/Message.ts#L42">structures/Message.ts:42</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -160,7 +162,7 @@
 					<div class="tsd-signature tsd-kind-icon">author<span class="tsd-signature-symbol">:</span> <a href="user.html" class="tsd-signature-type" data-tsd-kind="Class">User</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/nearlySplat/fuwa/blob/8c38cb3/src/structures/Message.ts#L18">structures/Message.ts:18</a></li>
+							<li>Defined in <a href="https://github.com/nearlySplat/fuwa/blob/cbf810c/src/structures/Message.ts#L19">structures/Message.ts:19</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -175,7 +177,7 @@
 					<div class="tsd-signature tsd-kind-icon">channel<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">TextBasedChannel</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/nearlySplat/fuwa/blob/8c38cb3/src/structures/Message.ts#L20">structures/Message.ts:20</a></li>
+							<li>Defined in <a href="https://github.com/nearlySplat/fuwa/blob/cbf810c/src/structures/Message.ts#L21">structures/Message.ts:21</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -191,7 +193,7 @@
 					<aside class="tsd-sources">
 						<p>Inherited from <a href="base.html">Base</a>.<a href="base.html#client">client</a></p>
 						<ul>
-							<li>Defined in <a href="https://github.com/nearlySplat/fuwa/blob/8c38cb3/src/structures/Base.ts#L3">structures/Base.ts:3</a></li>
+							<li>Defined in <a href="https://github.com/nearlySplat/fuwa/blob/cbf810c/src/structures/Base.ts#L3">structures/Base.ts:3</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -201,7 +203,7 @@
 					<div class="tsd-signature tsd-kind-icon">content<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/nearlySplat/fuwa/blob/8c38cb3/src/structures/Message.ts#L22">structures/Message.ts:22</a></li>
+							<li>Defined in <a href="https://github.com/nearlySplat/fuwa/blob/cbf810c/src/structures/Message.ts#L23">structures/Message.ts:23</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -216,7 +218,7 @@
 					<div class="tsd-signature tsd-kind-icon">deleted<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol"> = false</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/nearlySplat/fuwa/blob/8c38cb3/src/structures/Message.ts#L24">structures/Message.ts:24</a></li>
+							<li>Defined in <a href="https://github.com/nearlySplat/fuwa/blob/cbf810c/src/structures/Message.ts#L25">structures/Message.ts:25</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -231,7 +233,7 @@
 					<div class="tsd-signature tsd-kind-icon">embeds<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">APIEmbed</span><span class="tsd-signature-symbol">[]</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/nearlySplat/fuwa/blob/8c38cb3/src/structures/Message.ts#L26">structures/Message.ts:26</a></li>
+							<li>Defined in <a href="https://github.com/nearlySplat/fuwa/blob/cbf810c/src/structures/Message.ts#L27">structures/Message.ts:27</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -246,7 +248,7 @@
 					<div class="tsd-signature tsd-kind-icon">flags<span class="tsd-signature-symbol">:</span> <a href="messageflags.html" class="tsd-signature-type" data-tsd-kind="Class">MessageFlags</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/nearlySplat/fuwa/blob/8c38cb3/src/structures/Message.ts#L28">structures/Message.ts:28</a></li>
+							<li>Defined in <a href="https://github.com/nearlySplat/fuwa/blob/cbf810c/src/structures/Message.ts#L29">structures/Message.ts:29</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -261,7 +263,7 @@
 					<div class="tsd-signature tsd-kind-icon">guild<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">`</span><span class="tsd-signature-symbol">${</span><span class="tsd-signature-type">bigint</span><span class="tsd-signature-symbol">}</span><span class="tsd-signature-symbol">`</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/nearlySplat/fuwa/blob/8c38cb3/src/structures/Message.ts#L30">structures/Message.ts:30</a></li>
+							<li>Defined in <a href="https://github.com/nearlySplat/fuwa/blob/cbf810c/src/structures/Message.ts#L31">structures/Message.ts:31</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -276,7 +278,7 @@
 					<div class="tsd-signature tsd-kind-icon">id<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">`</span><span class="tsd-signature-symbol">${</span><span class="tsd-signature-type">bigint</span><span class="tsd-signature-symbol">}</span><span class="tsd-signature-symbol">`</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/nearlySplat/fuwa/blob/8c38cb3/src/structures/Message.ts#L32">structures/Message.ts:32</a></li>
+							<li>Defined in <a href="https://github.com/nearlySplat/fuwa/blob/cbf810c/src/structures/Message.ts#L33">structures/Message.ts:33</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -291,7 +293,7 @@
 					<div class="tsd-signature tsd-kind-icon">mentions<span class="tsd-signature-symbol">:</span> <a href="messagementions.html" class="tsd-signature-type" data-tsd-kind="Class">MessageMentions</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/nearlySplat/fuwa/blob/8c38cb3/src/structures/Message.ts#L34">structures/Message.ts:34</a></li>
+							<li>Defined in <a href="https://github.com/nearlySplat/fuwa/blob/cbf810c/src/structures/Message.ts#L35">structures/Message.ts:35</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -306,7 +308,7 @@
 					<div class="tsd-signature tsd-kind-icon">nonce<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">number</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/nearlySplat/fuwa/blob/8c38cb3/src/structures/Message.ts#L36">structures/Message.ts:36</a></li>
+							<li>Defined in <a href="https://github.com/nearlySplat/fuwa/blob/cbf810c/src/structures/Message.ts#L37">structures/Message.ts:37</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -321,7 +323,7 @@
 					<div class="tsd-signature tsd-kind-icon">tts<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/nearlySplat/fuwa/blob/8c38cb3/src/structures/Message.ts#L38">structures/Message.ts:38</a></li>
+							<li>Defined in <a href="https://github.com/nearlySplat/fuwa/blob/cbf810c/src/structures/Message.ts#L40">structures/Message.ts:40</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -336,7 +338,7 @@
 					<div class="tsd-signature tsd-kind-icon">type<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">MessageType</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/nearlySplat/fuwa/blob/8c38cb3/src/structures/Message.ts#L40">structures/Message.ts:40</a></li>
+							<li>Defined in <a href="https://github.com/nearlySplat/fuwa/blob/cbf810c/src/structures/Message.ts#L42">structures/Message.ts:42</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -359,7 +361,7 @@
 							<aside class="tsd-sources">
 								<p>Overrides <a href="base.html">Base</a>.<a href="base.html#_patch">_patch</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/nearlySplat/fuwa/blob/8c38cb3/src/structures/Message.ts#L45">structures/Message.ts:45</a></li>
+									<li>Defined in <a href="https://github.com/nearlySplat/fuwa/blob/cbf810c/src/structures/Message.ts#L47">structures/Message.ts:47</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -369,6 +371,29 @@
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-private">
+					<a name="_resolvemessage" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagPrivate">Private</span> _resolve<wbr>Message</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-private">
+						<li class="tsd-signature tsd-kind-icon">_resolve<wbr>Message<span class="tsd-signature-symbol">(</span>data<span class="tsd-signature-symbol">: </span><a href="../modules.html#messagereplyto" class="tsd-signature-type" data-tsd-kind="Type alias">MessageReplyTo</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">APIMessageReferenceSend</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/nearlySplat/fuwa/blob/cbf810c/src/structures/Message.ts#L80">structures/Message.ts:80</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>data: <a href="../modules.html#messagereplyto" class="tsd-signature-type" data-tsd-kind="Type alias">MessageReplyTo</a></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">APIMessageReferenceSend</span></h4>
 						</li>
 					</ul>
 				</section>
@@ -382,7 +407,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/nearlySplat/fuwa/blob/8c38cb3/src/structures/Message.ts#L78">structures/Message.ts:78</a></li>
+									<li>Defined in <a href="https://github.com/nearlySplat/fuwa/blob/cbf810c/src/structures/Message.ts#L101">structures/Message.ts:101</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="message.html" class="tsd-signature-type" data-tsd-kind="Class">Message</a><span class="tsd-signature-symbol">&gt;</span></h4>
@@ -399,7 +424,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/nearlySplat/fuwa/blob/8c38cb3/src/structures/Message.ts#L86">structures/Message.ts:86</a></li>
+									<li>Defined in <a href="https://github.com/nearlySplat/fuwa/blob/cbf810c/src/structures/Message.ts#L109">structures/Message.ts:109</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -412,6 +437,38 @@
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="message.html" class="tsd-signature-type" data-tsd-kind="Class">Message</a><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="reply" class="tsd-anchor"></a>
+					<h3>reply</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">reply<span class="tsd-signature-symbol">(</span>content<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, __namedParameters<span class="tsd-signature-symbol">?: </span><a href="../interfaces/messageoptions.html" class="tsd-signature-type" data-tsd-kind="Interface">MessageOptions</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="message.html" class="tsd-signature-type" data-tsd-kind="Class">Message</a><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/nearlySplat/fuwa/blob/cbf810c/src/structures/Message.ts#L138">structures/Message.ts:138</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Send an inline reply to the message</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>content: <span class="tsd-signature-type">string</span></h5>
+								</li>
+								<li>
+									<h5>__namedParameters: <a href="../interfaces/messageoptions.html" class="tsd-signature-type" data-tsd-kind="Interface">MessageOptions</a><span class="tsd-signature-symbol"> = {}</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="message.html" class="tsd-signature-type" data-tsd-kind="Class">Message</a><span class="tsd-signature-symbol">&gt;</span></h4>
+							<p>The new message.</p>
 						</li>
 					</ul>
 				</section>
@@ -507,11 +564,17 @@
 							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-overwrite">
 								<a href="message.html#_patch" class="tsd-kind-icon">_patch</a>
 							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-private">
+								<a href="message.html#_resolvemessage" class="tsd-kind-icon">_resolve<wbr>Message</a>
+							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
 								<a href="message.html#delete" class="tsd-kind-icon">delete</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
 								<a href="message.html#edit" class="tsd-kind-icon">edit</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="message.html#reply" class="tsd-kind-icon">reply</a>
 							</li>
 						</ul>
 					</li>
@@ -576,6 +639,9 @@
 					</li>
 					<li class=" tsd-kind-type-alias">
 						<a href="../modules.html#messagecontent" class="tsd-kind-icon">Message<wbr>Content</a>
+					</li>
+					<li class=" tsd-kind-type-alias">
+						<a href="../modules.html#messagereplyto" class="tsd-kind-icon">Message<wbr>Reply<wbr>To</a>
 					</li>
 				</ul>
 			</nav>
