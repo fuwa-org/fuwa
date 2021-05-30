@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>GuildChannel | 不和 (Fuwa)</title>
+	<title>TextBasedChannel | 不和 (Fuwa)</title>
 	<meta name="description" content="Documentation for 不和 (Fuwa)">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -55,10 +55,10 @@
 					<a href="../modules.html">不和 (Fuwa)</a>
 				</li>
 				<li>
-					<a href="guildchannel.html">GuildChannel</a>
+					<a href="textbasedchannel.html">TextBasedChannel</a>
 				</li>
 			</ul>
-			<h1>Class GuildChannel</h1>
+			<h1>Class TextBasedChannel</h1>
 		</div>
 	</div>
 </header>
@@ -72,7 +72,12 @@
 						<a href="channel.html" class="tsd-signature-type" data-tsd-kind="Class">Channel</a>
 						<ul class="tsd-hierarchy">
 							<li>
-								<span class="target">GuildChannel</span>
+								<span class="target">TextBasedChannel</span>
+								<ul class="tsd-hierarchy">
+									<li>
+										<a href="dmchannel.html" class="tsd-signature-type" data-tsd-kind="Class">DMChannel</a>
+									</li>
+								</ul>
 							</li>
 						</ul>
 					</li>
@@ -82,43 +87,44 @@
 				<h2>Index</h2>
 				<section class="tsd-panel tsd-index-panel">
 					<div class="tsd-index-content">
-						<section class="tsd-index-section tsd-is-inherited">
+						<section class="tsd-index-section ">
 							<h3>Constructors</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-constructor tsd-parent-kind-class tsd-is-inherited"><a href="guildchannel.html#constructor" class="tsd-kind-icon">constructor</a></li>
+								<li class="tsd-kind-constructor tsd-parent-kind-class tsd-is-overwrite"><a href="textbasedchannel.html#constructor" class="tsd-kind-icon">constructor</a></li>
 							</ul>
 						</section>
-						<section class="tsd-index-section tsd-is-inherited">
+						<section class="tsd-index-section ">
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="guildchannel.html#client" class="tsd-kind-icon">client</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="guildchannel.html#id" class="tsd-kind-icon">id</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="textbasedchannel.html#client" class="tsd-kind-icon">client</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="textbasedchannel.html#id" class="tsd-kind-icon">id</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="textbasedchannel.html#messages" class="tsd-kind-icon">messages</a></li>
 							</ul>
 						</section>
 						<section class="tsd-index-section tsd-is-inherited">
 							<h3>Methods</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="guildchannel.html#_patch" class="tsd-kind-icon">_patch</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited tsd-is-static"><a href="guildchannel.html#from" class="tsd-kind-icon">from</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="textbasedchannel.html#_patch" class="tsd-kind-icon">_patch</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited tsd-is-static"><a href="textbasedchannel.html#from" class="tsd-kind-icon">from</a></li>
 							</ul>
 						</section>
 					</div>
 				</section>
 			</section>
-			<section class="tsd-panel-group tsd-member-group tsd-is-inherited">
+			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Constructors</h2>
-				<section class="tsd-panel tsd-member tsd-kind-constructor tsd-parent-kind-class tsd-is-inherited">
+				<section class="tsd-panel tsd-member tsd-kind-constructor tsd-parent-kind-class tsd-is-overwrite">
 					<a name="constructor" class="tsd-anchor"></a>
 					<h3>constructor</h3>
-					<ul class="tsd-signatures tsd-kind-constructor tsd-parent-kind-class tsd-is-inherited">
-						<li class="tsd-signature tsd-kind-icon">new <wbr>Guild<wbr>Channel<span class="tsd-signature-symbol">(</span>client<span class="tsd-signature-symbol">: </span><a href="client.html" class="tsd-signature-type" data-tsd-kind="Class">Client</a>, data<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">APIChannel</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="guildchannel.html" class="tsd-signature-type" data-tsd-kind="Class">GuildChannel</a></li>
+					<ul class="tsd-signatures tsd-kind-constructor tsd-parent-kind-class tsd-is-overwrite">
+						<li class="tsd-signature tsd-kind-icon">new <wbr>Text<wbr>Based<wbr>Channel<span class="tsd-signature-symbol">(</span>client<span class="tsd-signature-symbol">: </span><a href="client.html" class="tsd-signature-type" data-tsd-kind="Class">Client</a>, data<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">APIChannel</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="textbasedchannel.html" class="tsd-signature-type" data-tsd-kind="Class">TextBasedChannel</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
-								<p>Inherited from <a href="channel.html">Channel</a>.<a href="channel.html#constructor">constructor</a></p>
+								<p>Overrides <a href="channel.html">Channel</a>.<a href="channel.html#constructor">constructor</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/nearlySplat/fuwa/blob/494ebda/src/structures/Channel.ts#L5">src/structures/Channel.ts:5</a></li>
+									<li>Defined in <a href="https://github.com/nearlySplat/fuwa/blob/494ebda/src/structures/TextBasedChannel.ts#L7">src/structures/TextBasedChannel.ts:7</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -130,12 +136,12 @@
 									<h5>data: <span class="tsd-signature-type">APIChannel</span></h5>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <a href="guildchannel.html" class="tsd-signature-type" data-tsd-kind="Class">GuildChannel</a></h4>
+							<h4 class="tsd-returns-title">Returns <a href="textbasedchannel.html" class="tsd-signature-type" data-tsd-kind="Class">TextBasedChannel</a></h4>
 						</li>
 					</ul>
 				</section>
 			</section>
-			<section class="tsd-panel-group tsd-member-group tsd-is-inherited">
+			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Properties</h2>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
 					<a name="client" class="tsd-anchor"></a>
@@ -156,6 +162,16 @@
 						<p>Inherited from <a href="channel.html">Channel</a>.<a href="channel.html#id">id</a></p>
 						<ul>
 							<li>Defined in <a href="https://github.com/nearlySplat/fuwa/blob/494ebda/src/structures/Channel.ts#L5">src/structures/Channel.ts:5</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+					<a name="messages" class="tsd-anchor"></a>
+					<h3>messages</h3>
+					<div class="tsd-signature tsd-kind-icon">messages<span class="tsd-signature-symbol">:</span> <a href="messagemanager.html" class="tsd-signature-type" data-tsd-kind="Class">MessageManager</a></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/nearlySplat/fuwa/blob/494ebda/src/structures/TextBasedChannel.ts#L7">src/structures/TextBasedChannel.ts:7</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -255,30 +271,9 @@
 					<li class=" tsd-kind-class">
 						<a href="guild.html" class="tsd-kind-icon">Guild</a>
 					</li>
-				</ul>
-				<ul class="current">
-					<li class="current tsd-kind-class">
+					<li class=" tsd-kind-class">
 						<a href="guildchannel.html" class="tsd-kind-icon">Guild<wbr>Channel</a>
-						<ul>
-							<li class=" tsd-kind-constructor tsd-parent-kind-class tsd-is-inherited">
-								<a href="guildchannel.html#constructor" class="tsd-kind-icon">constructor</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
-								<a href="guildchannel.html#client" class="tsd-kind-icon">client</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
-								<a href="guildchannel.html#id" class="tsd-kind-icon">id</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
-								<a href="guildchannel.html#_patch" class="tsd-kind-icon">_patch</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited tsd-is-static">
-								<a href="guildchannel.html#from" class="tsd-kind-icon">from</a>
-							</li>
-						</ul>
 					</li>
-				</ul>
-				<ul class="after-current">
 					<li class=" tsd-kind-class">
 						<a href="intents.html" class="tsd-kind-icon">Intents</a>
 					</li>
@@ -300,9 +295,33 @@
 					<li class=" tsd-kind-class">
 						<a href="snowflakeutil.html" class="tsd-kind-icon">Snowflake<wbr>Util</a>
 					</li>
-					<li class=" tsd-kind-class">
+				</ul>
+				<ul class="current">
+					<li class="current tsd-kind-class">
 						<a href="textbasedchannel.html" class="tsd-kind-icon">Text<wbr>Based<wbr>Channel</a>
+						<ul>
+							<li class=" tsd-kind-constructor tsd-parent-kind-class tsd-is-overwrite">
+								<a href="textbasedchannel.html#constructor" class="tsd-kind-icon">constructor</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
+								<a href="textbasedchannel.html#client" class="tsd-kind-icon">client</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
+								<a href="textbasedchannel.html#id" class="tsd-kind-icon">id</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class">
+								<a href="textbasedchannel.html#messages" class="tsd-kind-icon">messages</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+								<a href="textbasedchannel.html#_patch" class="tsd-kind-icon">_patch</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited tsd-is-static">
+								<a href="textbasedchannel.html#from" class="tsd-kind-icon">from</a>
+							</li>
+						</ul>
 					</li>
+				</ul>
+				<ul class="after-current">
 					<li class=" tsd-kind-class">
 						<a href="user.html" class="tsd-kind-icon">User</a>
 					</li>
