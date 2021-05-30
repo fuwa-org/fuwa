@@ -11,10 +11,22 @@ client.on('ready', () => {
   );
   console.error(inspect(client, { depth: 0, colors: true }));
 });
-client.on('messageCreate', (m) => {
+client.on('messageCreate', async (m) => {
   console.error(i(m));
-  if (m.content === 'lightbulb test') return m.channel.messages.create('hi');
+  if (m.content === 'lightbulb test') return m.reply('hi');
   else if (m.content === 'hi' && m.author.id === client.user.id)
     m.edit('hello');
+  else if (m.content.startsWith('lightbulb eval ')) {
+    const code = m.content.slice('lightbulb eval '.length);
+    let result;
+    try {
+      result = await eval(code);
+    } catch (e) {
+      result = e;
+    }
+    m.reply(`\`\`\`xl\n${inspect(result, { depth: 0 })}\n\`\`\``, {
+      allowedMentions: { repliedUser: false },
+    });
+  }
 });
 client.connect();

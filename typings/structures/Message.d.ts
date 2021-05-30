@@ -34,6 +34,12 @@ export declare class Message extends Base<APIMessage> {
     type: MessageType;
     constructor(client: Client, data: APIMessage);
     _patch(data: APIMessage): void;
+    private _resolveMessage;
     delete(): Promise<this>;
     edit(content: MessageContent, options?: MessageOptions): Promise<this>;
+    /**
+     * Send an inline reply to the message
+     * @returns The new message.
+     */
+    reply(content: string, { embed, allowedMentions, content: optionsDotContent, replyTo, }?: MessageOptions): Promise<Message>;
 }

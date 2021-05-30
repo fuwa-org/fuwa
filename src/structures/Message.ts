@@ -3,10 +3,11 @@ import {
   APIMessage,
   MessageType,
   Snowflake,
+  APIMessageReferenceSend,
 } from 'discord-api-types';
 import { Client } from '../client';
 import { CONSTANTS } from '../constants';
-import { MessageContent, MessageOptions } from '../types';
+import { MessageContent, MessageOptions, MessageReplyTo } from '../types';
 import { MessageFlags } from '../util/MessageFlags';
 import { Base } from './Base';
 import { MessageMentions } from './MessageMentions';
@@ -34,6 +35,7 @@ export class Message extends Base<APIMessage> {
   mentions: MessageMentions;
   /** A nonce that can be used for optimistic message sending (up to 25 characters) */
   nonce: string | number;
+
   /** Whether this is a TTS message */
   tts: boolean;
   /** The type of the message */
@@ -75,6 +77,27 @@ export class Message extends Base<APIMessage> {
     if ('flags' in data) this.flags = new MessageFlags(data.flags);
     if ('guild_id' in data) this.guild = data.guild_id;
   }
+  private _resolveMessage(data: MessageReplyTo): APIMessageReferenceSend {
+    if (data instanceof Message)
+      return {
+        message_id: data.id,
+        channel_id: data.channel.id,
+        guild_id: data.guild,
+      };
+    else if (typeof data === 'string')
+      return {
+        message_id: data,
+        channel_id: this.channel.id,
+        guild_id: this.guild,
+      };
+    else
+      return {
+        message_id: data.id,
+        guild_id: data.guild,
+        channel_id: data.channel,
+        fail_if_not_exists: data.failIfNotExists,
+      };
+  }
   async delete(): Promise<this> {
     const result = await this.client.request<''>(
       CONSTANTS.urls.message(this.channel.id, this.id)
@@ -92,7 +115,10 @@ export class Message extends Base<APIMessage> {
       {
         data: {
           content,
-          allowedMentions: options.allowedMentions,
+          allowedMentions: {
+            replied_user: options.allowedMentions?.repliedUser,
+            ...options.allowedMentions,
+          },
           embed: options.embed,
         },
         headers: {
@@ -104,5 +130,39 @@ export class Message extends Base<APIMessage> {
     if (!result.res.ok) throw result.data;
     this._patch(result.data);
     return this;
+  }
+  /**
+   * Send an inline reply to the message
+   * @returns The new message.
+   */
+  async reply(
+    content: string,
+    {
+      embed,
+      allowedMentions = {},
+      content: optionsDotContent,
+      replyTo = this,
+    }: MessageOptions = {}
+  ): Promise<Message> {
+    const result = await this.client.request<void, APIMessage>(
+      CONSTANTS.urls.channelMessages(this.channel.id),
+      {
+        method: 'POST',
+        data: {
+          content: content || optionsDotContent || '',
+          embed,
+          allowed_mentions: {
+            replied_user: allowedMentions.repliedUser,
+            ...allowedMentions,
+          },
+          message_reference: this._resolveMessage(replyTo),
+        },
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      }
+    );
+    if (!result.res.ok) throw result.data;
+    return new Message(this.client, result.data);
   }
 }

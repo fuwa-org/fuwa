@@ -36,7 +36,7 @@ export declare class Client extends EventEmitter {
      *
      * <info>Every guild is cached by default in un-sharded clients</info>
      */
-    guilds: Collection<`${bigint}`, Guild | APIUnavailableGuild>;
+    guilds: Collection<`${bigint}`, APIUnavailableGuild | Guild>;
     /** Intervals that can be cleared with {@link Client.destroy}
      */
     intervals: NodeJS.Timeout[];
