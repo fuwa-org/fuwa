@@ -11,6 +11,7 @@
   },
   "plugins": ["@typescript-eslint", "sort-class-members"],
   "rules": {
+    "@typescript-eslint/ban-ts-comment": "off",
     "sort-class-members/sort-class-members": [
       2,
       {

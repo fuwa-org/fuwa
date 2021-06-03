@@ -1,9 +1,10 @@
 import {
   APIEmbed,
   APIMessage,
+  APIMessageInteraction,
+  APIMessageReferenceSend,
   MessageType,
   Snowflake,
-  APIMessageReferenceSend,
 } from 'discord-api-types';
 import { Client } from '../client';
 import { CONSTANTS } from '../constants';
@@ -31,6 +32,9 @@ export class Message extends Base<APIMessage> {
   guild: Snowflake;
   /** The {@link Snowflake} of the message. */
   id: Snowflake;
+  /** The interaction the message is a response to */
+  interaction?: APIMessageInteraction;
+
   /** Entities this message mentions */
   mentions: MessageMentions;
   /** A nonce that can be used for optimistic message sending (up to 25 characters) */
@@ -76,6 +80,7 @@ export class Message extends Base<APIMessage> {
     if ('nonce' in data) this.nonce = data.nonce;
     if ('flags' in data) this.flags = new MessageFlags(data.flags);
     if ('guild_id' in data) this.guild = data.guild_id;
+    this.interaction = data.interaction;
   }
   private _resolveMessage(data: MessageReplyTo): APIMessageReferenceSend {
     if (data instanceof Message)

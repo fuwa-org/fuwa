@@ -1,4 +1,9 @@
-import { APIEmbed, Snowflake } from 'discord-api-types';
+import {
+  APIEmbed,
+  Snowflake,
+  APIGuildInteraction,
+  APIPartialEmoji,
+} from 'discord-api-types';
 import { Message } from './structures/Message.js';
 
 export type ImageFormat = 'webp' | 'gif' | 'jpg' | 'jpeg' | 'png';
@@ -33,3 +38,26 @@ export type MessageReplyTo =
       guild?: Snowflake;
       failIfNotExists?: boolean;
     };
+export enum InteractionType {
+  Ping = 1,
+  ApplicationCommand,
+  MessageComponent,
+}
+export enum MessageComponentStyle {
+  Primary = 1,
+  Secondary,
+  Success,
+  Danger,
+  Link,
+}
+// @ts-ignore
+export interface APIGuildMessageComponentInteraction
+  extends APIGuildInteraction {
+  type: InteractionType.MessageComponent;
+  style?: MessageComponentStyle;
+  label?: string;
+  emoji?: APIPartialEmoji;
+  custom_id?: string;
+  url?: string;
+  disabled?: string;
+}
