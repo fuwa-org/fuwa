@@ -1,4 +1,4 @@
-import { APIEmbed, APIMessage, MessageType, Snowflake } from 'discord-api-types';
+import { APIEmbed, APIMessage, APIMessageInteraction, MessageType, Snowflake } from 'discord-api-types';
 import { Client } from '../client';
 import { MessageContent, MessageOptions } from '../types';
 import { MessageFlags } from '../util/MessageFlags';
@@ -24,6 +24,8 @@ export declare class Message extends Base<APIMessage> {
     guild: Snowflake;
     /** The {@link Snowflake} of the message. */
     id: Snowflake;
+    /** The interaction the message is a response to */
+    interaction?: APIMessageInteraction;
     /** Entities this message mentions */
     mentions: MessageMentions;
     /** A nonce that can be used for optimistic message sending (up to 25 characters) */

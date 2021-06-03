@@ -2,3 +2,4 @@
 set -e
 
 yarn precommit
+git add "*"
