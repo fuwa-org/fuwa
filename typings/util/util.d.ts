@@ -1,6 +1,7 @@
 import { Snowflake } from './snowflake';
 import { Response } from 'node-fetch';
 import { ResponseRatelimitData } from '../rest';
+import { ColorResolvable } from '../structures/Embed';
 export declare class Util {
     constructor();
     /**
@@ -16,5 +17,11 @@ export declare class Util {
      */
     static idToBinary(num: Snowflake): string;
     static noop(): void;
+    /**
+     * Resolves a color from a {@link ColorResolvable|"resolvable color"}
+     * @param color The color to be resolved
+     * @returns The resolved color (in base 10)
+     */
+    static resolveColor(color: ColorResolvable): number;
     static sleep(ms: number): Promise<void>;
 }

@@ -9,6 +9,7 @@ export * from './structures/DMChannel';
 export * from './structures/Guild';
 export * from './structures/GuildChannel';
 export * from './structures/Message';
+export * from './structures/Embed';
 export * from './structures/MessageMentions';
 export * from './structures/TextBasedChannel';
 export * from './structures/User';

@@ -1,6 +1,8 @@
 import { Snowflake } from './snowflake';
 import { Response } from 'node-fetch';
 import { ResponseRatelimitData } from '../rest';
+import { ColorResolvable } from '../structures/Embed';
+import { COLORS } from '../constants';
 
 export class Util {
   constructor() {
@@ -14,7 +16,7 @@ export class Util {
    */
   static binaryToID(num: string): Snowflake {
     let dec = '';
-    let number: number = (num as unknown) as number;
+    let number: number = num as unknown as number;
     while (num.length > 50) {
       const high = parseInt(num.slice(0, -32), 2);
       const low = parseInt((high % 10).toString(2) + num.slice(-32), 2);
@@ -66,7 +68,22 @@ export class Util {
     }
     return bin;
   }
-  static noop(): void {} // eslint-disable-line @typescript-eslint/no-empty-function
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  static noop(): void {}
+  /**
+   * Resolves a color from a {@link ColorResolvable|"resolvable color"}
+   * @param color The color to be resolved
+   * @returns The resolved color (in base 10)
+   */
+  static resolveColor(color: ColorResolvable): number {
+    if (typeof color === 'number') return color;
+    else if (color in COLORS) return COLORS[color as keyof typeof COLORS];
+    else if (color === 'RANDOM') {
+      const values = Object.values(COLORS);
+      return values[Math.floor(Math.random() * values.length)];
+    } else if (color.startsWith('#')) return parseInt(color.slice(1), 16);
+    else return parseInt(color, 16);
+  }
   static sleep(ms: number): Promise<void> {
     return new Promise((r) => setTimeout(r, ms));
   }

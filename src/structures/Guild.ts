@@ -14,7 +14,7 @@ export class Guild extends Base<APIGuild> {
     super(client, data, false);
     this._patch(data);
   }
-  _patch(data: APIGuild) {
+  _patch(data: APIGuild): void {
     for (const chan of data.channels || []) {
       this.channels.set(chan.id, new GuildChannel(this.client, chan));
     }
