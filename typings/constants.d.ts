@@ -33,5 +33,7 @@ export declare const ERRORS: {
     NO_INTENTS: TypeError;
     SHARDING: TypeError;
     IDENTIFY_LIMIT: RangeError;
+    BASE_CLASS_USAGE: Error;
 };
 export declare type HTTPMethod = 'GET' | 'HEAD' | 'POST' | 'PUT' | 'PATCH' | 'DELETE' | 'CONNECT' | 'OPTIONS' | 'TRACE' | 'get' | 'head' | 'post' | 'put' | 'patch' | 'delete' | 'connect' | 'options' | 'trace';
+export declare type InteractionType = 'ping' | 'applicationCommand' | 'messageComponent';

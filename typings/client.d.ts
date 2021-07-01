@@ -3,11 +3,11 @@ import Collection from '@discordjs/collection';
 import { APIGuild, APIUnavailableGuild } from 'discord-api-types';
 import { EventEmitter } from 'events';
 import { RESTManager } from './rest';
-import { DMChannel } from './structures/DMChannel';
+import { Application } from './structures/Application.js';
 import { Guild } from './structures/Guild';
-import { GuildChannel } from './structures/GuildChannel';
 import { Message } from './structures/Message';
 import { User } from './structures/User';
+import { Channel } from './types';
 import { WebSocketManager } from './ws';
 export interface ClientOptions {
     /** The {@link Intents} for this client */
@@ -27,11 +27,13 @@ export interface Client {
  * <warning>Sharded Clients are not supported by Fuwa.</warning>
  */
 export declare class Client extends EventEmitter {
+    /** The client's application */
+    application: Application | null;
     /** Cached channels the bot can see.
      *
      * <info>Every channel in every guild in the Client's {@link Client.guilds|cache} is cached. This does not mean the Client can access these channels.</info>
      */
-    channels: Collection<string, DMChannel | GuildChannel>;
+    channels: Collection<string, Channel>;
     /** Cached guilds the bot is in.
      *
      * <info>Every guild is cached by default in un-sharded clients</info>

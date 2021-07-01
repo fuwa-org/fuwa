@@ -55,6 +55,7 @@ export const ERRORS = {
   IDENTIFY_LIMIT: new RangeError(
     'Your client has exceeded the 1000 daily log-in limit.'
   ),
+  BASE_CLASS_USAGE: new Error('A base class was instantiated.'),
 };
 
 export type HTTPMethod =
@@ -76,3 +77,8 @@ export type HTTPMethod =
   | 'connect'
   | 'options'
   | 'trace';
+
+export type InteractionType =
+  | 'ping'
+  | 'applicationCommand'
+  | 'messageComponent';

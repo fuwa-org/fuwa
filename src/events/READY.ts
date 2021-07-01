@@ -3,6 +3,7 @@ import {
   APIUser,
   GatewayReadyDispatch,
 } from 'discord-api-types';
+import { Application } from '../structures/Application.js';
 import { User } from '../structures/User';
 import { Snowflake } from '../util/snowflake';
 import { WebSocketManager } from '../ws';
@@ -38,4 +39,9 @@ export default function (
     }, 1000 * 60 * 30 /* 30 seconds */)
   );
   manager.client.users.set(manager.client.user.id, manager.client.user as User);
+  manager.client.application = new Application(
+    manager.client,
+    data.d.application,
+    false
+  );
 }

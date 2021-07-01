@@ -1,7 +1,7 @@
 import {
   APIGatewayBotInfo,
   GatewayDispatchPayload,
-  GatewayOPCodes,
+  GatewayOpcodes,
   GatewayReceivePayload,
 } from 'discord-api-types';
 import { EventEmitter } from 'events';
@@ -90,7 +90,7 @@ export class WebSocketManager extends EventEmitter {
     if (resuming)
       this.socket.send(
         JSON.stringify({
-          op: GatewayOPCodes.Resume,
+          op: GatewayOpcodes.Resume,
           d: {
             session_id: options.session,
             seq: options.seq,
@@ -100,7 +100,7 @@ export class WebSocketManager extends EventEmitter {
     else
       this.socket.send(
         JSON.stringify({
-          op: GatewayOPCodes.Identify,
+          op: GatewayOpcodes.Identify,
           d: {
             token: this.client.token,
             properties: CONSTANTS.api.gatewayProperties,

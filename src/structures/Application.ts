@@ -1,8 +1,14 @@
-import { GatewayReadyDispatchData, Snowflake } from 'discord-api-types';
+import {
+  GatewayReadyDispatchData,
+  Snowflake,
+  APIApplication,
+} from 'discord-api-types';
 import { ApplicationFlags } from '../util/ApplicationFlags';
 import { Base } from './Base';
 
-export class Application extends Base {
+export class Application extends Base<
+  APIApplication | Pick<APIApplication, 'id' | 'flags'>
+> {
   flags: ApplicationFlags;
   /** The application's ID. */
   id: Snowflake;
