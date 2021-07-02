@@ -1,6 +1,6 @@
 # 不和 (fuwa)
 
-不和 (fuwa, meaning "discord" or "disagreement") is a small Discord API wrapper made as a kind of experiment and learning experience. Originally written in JavaScript, it is now being re-written in [TypeScript](https://typescriptlang.org).
+不和 (fuwa, meaning "discord" or "disagreement") is a small Discord API wrapper for Node.js made as a kind of experiment and learning experience. Originally written in JavaScript, it is now being re-written in [TypeScript](https://typescriptlang.org).
 
 **Note**: This library is not published to the [npm](https://npmjs.com) [registry](https://registry.npmjs.com), yet. It is planned to publish it once basic functionality is implemented.
 
