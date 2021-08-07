@@ -7,8 +7,8 @@ specifiers:
   '@types/node': 14.14.41
   '@types/node-fetch': 2.5.10
   '@types/ws': 7.4.4
-  '@typescript-eslint/eslint-plugin': ^4.24.0
-  '@typescript-eslint/parser': ^4.24.0
+  '@typescript-eslint/eslint-plugin': 4.24.0
+  '@typescript-eslint/parser': 4.24.0
   chai: 4.3.4
   discord-api-types: ^0.18.1
   eslint: 7.26.0
@@ -759,7 +759,7 @@ packages:
       glob-parent: 5.1.2
       merge2: 1.4.1
       micromatch: 4.0.4
-      picomatch: 2.2.3
+      picomatch: 2.3.0
     dev: true
 
   /fast-json-stable-stringify/2.1.0:
@@ -1207,7 +1207,7 @@ packages:
     engines: {node: '>=8.6'}
     dependencies:
       braces: 3.0.2
-      picomatch: 2.2.3
+      picomatch: 2.3.0
     dev: true
 
   /mime-db/1.47.0:
@@ -1433,11 +1433,6 @@ packages:
 
   /pathval/1.1.1:
     resolution: {integrity: sha512-Dp6zGqpTdETdR63lehJYPeIOqpiNBNtc7BpWSLrOje7UaIsE5aY92r/AunQA7rsXvet3lrJ3JnZX29UPTKXyKQ==}
-    dev: true
-
-  /picomatch/2.2.3:
-    resolution: {integrity: sha512-KpELjfwcCDUb9PeigTs2mBJzXUPzAuP2oPcA989He8Rte0+YUAjw1JVedDhuTKPkHjSYzMN3npC9luThGYEKdg==}
-    engines: {node: '>=8.6'}
     dev: true
 
   /picomatch/2.3.0:
