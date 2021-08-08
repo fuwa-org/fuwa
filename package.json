@@ -21,7 +21,7 @@
   "author": "nearlySplat <splatterxl@outlook.ie>",
   "license": "AGPL-3.0-or-later",
   "dependencies": {
-    "@discordjs/collection": "^0.1.6",
+    "@discordjs/collection": "^0.2.0",
     "discord-api-types": "^0.18.1",
     "form-data": "^4.0.0",
     "node-fetch": "^2.6.1",
