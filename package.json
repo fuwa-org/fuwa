@@ -42,7 +42,7 @@
     "mocha": "9.0.3",
     "precise-commits": "1.0.2",
     "prettier": "2.3.0",
-    "typedoc": "0.21.5",
+    "typedoc": "0.21.8",
     "typescript": "4.3.5"
   }
 }
