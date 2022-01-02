@@ -33,7 +33,7 @@
     "@types/mocha": "9.0.0",
     "@types/node": "16.11.6",
     "@types/node-fetch": "2.5.10",
-    "@types/ws": "7.4.4",
+    "@types/ws": "7.4.7",
     "@typescript-eslint/eslint-plugin": "5.8.1",
     "@typescript-eslint/parser": "5.8.1",
     "chai": "4.3.4",

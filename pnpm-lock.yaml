@@ -6,7 +6,7 @@ specifiers:
   '@types/mocha': 9.0.0
   '@types/node': 16.11.6
   '@types/node-fetch': 2.5.10
-  '@types/ws': 7.4.4
+  '@types/ws': 7.4.7
   '@typescript-eslint/eslint-plugin': 5.8.1
   '@typescript-eslint/parser': 5.8.1
   chai: 4.3.4
@@ -34,7 +34,7 @@ devDependencies:
   '@types/mocha': 9.0.0
   '@types/node': 16.11.6
   '@types/node-fetch': 2.5.10
-  '@types/ws': 7.4.4
+  '@types/ws': 7.4.7
   '@typescript-eslint/eslint-plugin': 5.8.1_0242901da47b3c4bd76a0beaaf62c1e2
   '@typescript-eslint/parser': 5.8.1_eslint@8.6.0+typescript@4.4.2
   chai: 4.3.4
@@ -129,8 +129,8 @@ packages:
     resolution: {integrity: sha512-ua7PgUoeQFjmWPcoo9khiPum3Pd60k4/2ZGXt18sm2Slk0W0xZTqt5Y0Ny1NyBiN1EVQ/+FaF9NcY4Qe6rwk5w==}
     dev: true
 
-  /@types/ws/7.4.4:
-    resolution: {integrity: sha512-d/7W23JAXPodQNbOZNXvl2K+bqAQrCMwlh/nuQsPSQk6Fq0opHoPrUw43aHsvSbIiQPr8Of2hkFbnz1XBFVyZQ==}
+  /@types/ws/7.4.7:
+    resolution: {integrity: sha512-JQbbmxZTZehdc2iszGKs5oC3NFnjeay7mtAWrdt7qNtAVK0g19muApzAy4bm9byz79xa2ZnO/BOBC2R8RC5Lww==}
     dependencies:
       '@types/node': 16.11.6
     dev: true
