@@ -1,7 +1,7 @@
 lockfileVersion: 5.3
 
 specifiers:
-  '@discordjs/collection': ^0.2.0
+  '@discordjs/collection': ^0.5.0
   '@splatterxl/tsconfig': 1.0.0
   '@types/mocha': 9.0.0
   '@types/node': 16.11.6
@@ -23,7 +23,7 @@ specifiers:
   ws: ^8.0.0
 
 dependencies:
-  '@discordjs/collection': 0.2.1
+  '@discordjs/collection': 0.5.0
   discord-api-types: 0.18.1
   form-data: 4.0.0
   node-fetch: 2.6.1
@@ -48,9 +48,9 @@ devDependencies:
 
 packages:
 
-  /@discordjs/collection/0.2.1:
-    resolution: {integrity: sha512-vhxqzzM8gkomw0TYRF3tgx7SwElzUlXT/Aa41O7mOcyN6wIJfj5JmDWaO5XGKsGSsNx7F3i5oIlrucCCWV1Nog==}
-    engines: {node: '>=14.0.0'}
+  /@discordjs/collection/0.5.0:
+    resolution: {integrity: sha512-3Vr3y4/Kl6ThOsD/cbXkK4JmjawQahbM3ojHpD6XyTEOG4fwZFMYH/NTWKFd5WZUw38iQsvGC4Kt4VkL++1hFQ==}
+    engines: {node: '>=16.9.0'}
     dev: false
 
   /@eslint/eslintrc/1.0.5:
