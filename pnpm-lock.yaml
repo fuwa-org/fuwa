@@ -10,7 +10,7 @@ specifiers:
   '@typescript-eslint/eslint-plugin': 5.8.1
   '@typescript-eslint/parser': 5.8.1
   chai: 4.3.4
-  discord-api-types: ^0.18.1
+  discord-api-types: ^0.27.0
   eslint: 8.6.0
   eslint-plugin-sort-class-members: 1.11.0
   form-data: ^4.0.0
@@ -24,7 +24,7 @@ specifiers:
 
 dependencies:
   '@discordjs/collection': 0.2.1
-  discord-api-types: 0.18.1
+  discord-api-types: 0.27.0
   form-data: 4.0.0
   node-fetch: 2.6.1
   ws: 8.0.0
@@ -535,8 +535,8 @@ packages:
       path-type: 4.0.0
     dev: true
 
-  /discord-api-types/0.18.1:
-    resolution: {integrity: sha512-hNC38R9ZF4uaujaZQtQfm5CdQO58uhdkoHQAVvMfIL0LgOSZeW575W8H6upngQOuoxWd8tiRII3LLJm9zuQKYg==}
+  /discord-api-types/0.27.0:
+    resolution: {integrity: sha512-l7AnQKffohJTembJRN4Bz54R/esSn+WmulWE7bDIHVcuCLdsUhlvt+4tns8ox+wsEPVlT+gEEko2BF5AL8/zjw==}
     engines: {node: '>=12'}
     dev: false
 
