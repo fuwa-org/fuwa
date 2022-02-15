@@ -32,7 +32,7 @@
     "@splatterxl/tsconfig": "1.0.0",
     "@types/mocha": "9.0.0",
     "@types/node": "16.11.6",
-    "@types/node-fetch": "2.5.10",
+    "@types/node-fetch": "2.6.1",
     "@types/ws": "7.4.4",
     "@typescript-eslint/eslint-plugin": "5.8.1",
     "@typescript-eslint/parser": "5.8.1",
