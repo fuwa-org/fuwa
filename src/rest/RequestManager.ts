@@ -57,9 +57,7 @@ export class RequestManager {
     } else if (res.status < 500) {
       switch (res.status) {
         case 429: {
-          const [, majorId] = this.getBucket(req.route);
-
-          if (majorId == 'global' && res.headers['x-ratelimit-global']) {
+          if (res.headers['x-ratelimit-global']) {
             this.limit = +res.headers['x-ratelimit-global-limit'];
             this.remaining = +res.headers['x-ratelimit-global-remaining'];
             this.reset = +res.headers['x-ratelimit-global-reset'] * 1000;
@@ -71,10 +69,6 @@ export class RequestManager {
             } else {
               throw new RateLimitedError(req, res, bucket.id);
             }
-          } else if (majorId == 'global') {
-            throw new Error(
-              'Global rate limit exceeded, but no global rate limit header was found.'
-            );
           } else {
             return bucket.handleRateLimit(req, res);
           }
