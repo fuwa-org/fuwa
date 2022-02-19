@@ -4,19 +4,19 @@ specifiers:
   '@sapphire/async-queue': ^1.2.0
   '@sapphire/snowflake': ^3.1.0
   '@splatterxl/discord-api-types': 0.27.4
-  '@splatterxl/tsconfig': ^1.1.1
-  '@types/node': ^17.0.18
+  '@splatterxl/tsconfig': 1.1.1
+  '@types/node': 17.0.18
   '@types/ws': ^8.2.3
-  '@typescript-eslint/eslint-plugin': ^5.12.0
-  '@typescript-eslint/parser': ^5.12.0
+  '@typescript-eslint/eslint-plugin': 5.12.0
+  '@typescript-eslint/parser': 5.12.0
   axios: ^0.26.0
-  eslint: ^8.9.0
-  eslint-plugin-sort-class-members: ^1.14.1
-  precise-commits: ^1.0.2
-  prettier: ^2.5.1
+  eslint: 8.9.0
+  eslint-plugin-sort-class-members: 1.14.1
+  precise-commits: 1.0.2
+  prettier: 2.5.1
   tslib: ^2.3.1
-  typedoc: ^0.22.11
-  typescript: ^4.5.5
+  typedoc: 0.22.11
+  typescript: 4.5.5
   ws: ^8.5.0
 
 dependencies:
