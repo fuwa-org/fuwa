@@ -58,12 +58,14 @@ export class RESTClient {
     return headers;
   }
   public execute<T = any>(request: APIRequest): Promise<AxiosResponse<T>> {
-    return axios.request<T>({
-      url: this.formatRoute(request.route),
-      method: request.method,
-      headers: Object.assign(this.createHeaders(), request.headers),
-      data: request.data,
-    });
+    return axios
+      .request<T>({
+        url: this.formatRoute(request.route),
+        method: request.method,
+        headers: Object.assign(this.createHeaders(), request.headers),
+        data: request.data,
+      })
+      .catch((r) => r.response);
   }
 
   public formatRoute(route: RouteLike): string {

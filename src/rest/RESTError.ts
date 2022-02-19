@@ -10,7 +10,7 @@ export class RESTError extends Error {
     public data?: any
   ) {
     super();
-    this.message = `Error ${code} (${res.statusText} occurred while ${method} ${route}.`;
+    this.message = `${code} ${res.statusText} [${method} ${route}]`;
     this.name = 'RESTError';
   }
 }
@@ -21,7 +21,7 @@ export class RateLimitedError extends RESTError {
   constructor(req: APIRequest, res: AxiosResponse, bucket: string) {
     super(req.route, 429, req.method, res, req.data);
 
-    this.message = `Rate limit encountered while ${req.method} ${req.route} (bucket ${bucket}). Retried ${req.retries} times.`;
+    this.message = `429 Too Many Requests [${req.method} ${req.route}; bucket ${bucket}] (retried ${req.retries} times)`;
     this.name = 'RateLimitedError';
 
     this._message = res.data.message;

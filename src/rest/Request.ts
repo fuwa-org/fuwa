@@ -1,6 +1,5 @@
-import { AxiosRequestHeaders } from 'axios';
-import { RouteLike } from './RequestManager.js';
-import { RESTClient } from './RESTClient';
+import { AxiosRequestHeaders, AxiosResponse } from 'axios';
+import { RequestManager, RouteLike } from './RequestManager.js';
 
 export class APIRequest {
   public allowedRetries = 5;
@@ -26,8 +25,8 @@ export class APIRequest {
   static get(route: RouteLike): APIRequest {
     return new APIRequest(route, 'GET');
   }
-  public send(client: RESTClient) {
-    client.execute(this);
+  public send(manager: RequestManager): Promise<AxiosResponse> {
+    return manager.queue(this);
   }
 }
 
