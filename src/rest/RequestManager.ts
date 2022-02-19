@@ -1,4 +1,5 @@
 import { AxiosResponse } from 'axios';
+import { Client } from '../client/Client.js';
 import { BucketQueueManager } from './BucketQueueManager.js';
 import { APIRequest } from './Request';
 import { RESTClient } from './RESTClient';
@@ -7,11 +8,14 @@ import { RateLimitedError, RESTError } from './RESTError.js';
 // Yeah, copied from Discord.js because I can't even think for myself.
 export class RequestManager {
   // maybe this'll be of some use someday
+  // private buckets: Map<string, RateLimit> = new Map();
+
   /** The total amount of requests we can make until we're globally rate-limited. */
   public limit = Infinity;
   /** The time offset between us and Discord. */
   public offset = 0;
-  // private buckets: Map<string, RateLimit> = new Map();
+
+  /** Queue managers for different buckets */
   private queues: Map<string, BucketQueueManager> = new Map();
 
   /** The remaining requests we can make until we're globally rate-limited. */
@@ -19,7 +23,8 @@ export class RequestManager {
   /** When the global rate limit will reset. */
   public reset = -1;
 
-  constructor(public client: RESTClient) {}
+
+  constructor(public client: RESTClient, public _client: Client) {}
 
   public get durUntilReset() {
     return this.reset + this.offset - Date.now();
@@ -64,7 +69,7 @@ export class RequestManager {
 
             if (req.retries < req.allowedRetries) {
               req.retries++;
-              console.debug('got ratelimited at', bucket.id, '- retrying');
+              this._client.debug('got ratelimited at', bucket.id, '- retrying');
 
               return this.queue(req);
             } else {
@@ -84,7 +89,6 @@ export class RequestManager {
             res,
             req.data
           );
-          error.message = 'Unauthorized to execute this action.';
           throw error;
         }
         default:
@@ -94,7 +98,7 @@ export class RequestManager {
       throw new RESTError(req.route, res.status, req.method, res, req.data);
     }
   }
-  public queue(req: APIRequest): Promise<AxiosResponse> {
+  public queue<T>(req: APIRequest): Promise<AxiosResponse<T>> {
     const [endpoint, majorId] = this.getBucket(req.route);
 
     if (!this.queues.has(endpoint)) {

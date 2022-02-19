@@ -12,17 +12,31 @@ export interface ClientOptions {
    * @default {@link Intents.DEFAULT}
    */
   intents?: ClientOptionsIntents;
+
   /**
    * The API version to use across the REST and WebSocket servers.
    * @default 9
    */
   apiVersion?: number;
+
   /**
    * Base URL for connecting to the Discord REST API. **DO NOT SPECIFY THE API VERSION IN THIS**
    * @default https://discord.com/api
    */
   httpBaseUrl?: string;
   httpUserAgent?: string;
+
+  /**
+   * Whether to compress gateway packets. Requires [`zlib-sync`](https://npm.im/zlib-sync).
+   * @default false
+   */
+  compress?: boolean;
+
+  /** 
+   * Whether to use `erlpack` while processing gateway packets. Requires [the NPM package](https://npm.im/erlpack).
+   * @default false
+   */ 
+  etf?: boolean;
 }
 
 export type ClientOptionsIntents = number | Intents | (number | Intents)[];
@@ -33,7 +47,7 @@ export function resolveIntents(intents: ClientOptionsIntents): Intents {
   if (Array.isArray(intents))
     return new Intents(
       intents.reduce(
-        (prev: number, next) => prev + <number>((<Intents>next).bits ?? next),
+        (prev: number, next) => prev | (next instanceof Intents ? next.bits : next),
         0
       ) as number
     );
@@ -43,8 +57,10 @@ export function resolveIntents(intents: ClientOptionsIntents): Intents {
 }
 
 export const DefaultClientOptions: ClientOptions = {
-  intents: Intents.DEFAULT,
+  intents: [Intents.Bits.Guilds, Intents.Bits.GuildMessages],
   apiVersion: 10,
   httpBaseUrl: 'https://discord.com/api',
   httpUserAgent: `DiscordBot (${pkg.homepage}; ${pkg.version}) Node.js/${process.version}`,
+  compress: false,
+  etf: false,
 };

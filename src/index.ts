@@ -8,3 +8,5 @@ export * from './ws/intents';
 export * from './rest/RESTClient';
 export * from './rest/RESTError';
 export * from './rest/Request';
+export * from './rest/RequestManager';
+export * from './rest/BucketQueueManager';
