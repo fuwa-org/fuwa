@@ -64,6 +64,7 @@ export class RequestManager {
 
             if (req.retries < req.allowedRetries) {
               req.retries++;
+              console.debug('got ratelimited at', bucket.id, '- retrying');
 
               return this.queue(req);
             } else {
