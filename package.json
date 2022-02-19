@@ -30,7 +30,7 @@
   "types": "./typings/index.d.ts",
   "devDependencies": {
     "@splatterxl/tsconfig": "1.0.0",
-    "@types/mocha": "9.0.0",
+    "@types/mocha": "9.1.0",
     "@types/node": "16.11.6",
     "@types/node-fetch": "2.5.10",
     "@types/ws": "7.4.4",
@@ -39,7 +39,7 @@
     "chai": "4.3.4",
     "eslint": "8.6.0",
     "eslint-plugin-sort-class-members": "1.11.0",
-    "mocha": "9.1.1",
+    "mocha": "9.2.1",
     "precise-commits": "1.0.2",
     "prettier": "2.3.0",
     "typedoc": "0.21.9",
