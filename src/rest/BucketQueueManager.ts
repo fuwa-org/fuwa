@@ -1,51 +1,79 @@
-import { AsyncQueue } from "@sapphire/async-queue";
-import { APIRequest } from "./Request";
-import { RateLimit, RequestManager } from "./RequestManager";
-import { setTimeout as sleep } from "node:timers/promises";
-import { AxiosResponse } from "axios";
+import { AsyncQueue } from '@sapphire/async-queue';
+import { APIRequest } from './Request';
+import { RequestManager } from './RequestManager';
+import { setTimeout as sleep } from 'node:timers/promises';
+import { AxiosResponse } from 'axios';
+import { RateLimitedError } from './RESTError.js';
 
 export class BucketQueueManager {
-  public readonly id: string;
-
-  /** The UNIX timestamp at which this bucket's rate limit will expire. */
-  public reset = -1;
-  
+  #queue = new AsyncQueue();
+  /** The total amount of requests that can be made on this bucket before getting rate limited. */
+  public limit = Infinity;
   /** The remaining requests we can make until we are rate limited. */
   public remaining = 1;
+  /** The UNIX timestamp at which this bucket's rate limit will expire. */
+  public reset = -1;
 
-  /** The total amount of requests that can be made on this bucket before getting rate limited. */
-  public limit = Infinity; 
+  constructor(
+    private readonly manager: RequestManager,
+    public readonly id: string,
+    public readonly majorId: string
+  ) {}
 
-  #queue = new AsyncQueue();
-
-  constructor(private readonly manager: RequestManager, private readonly bucketId: string) {
-    this.id = bucketId;
+  private applyRateLimitInfo(res: AxiosResponse) {
+    if (res.headers['x-ratelimit-limit']) {
+      this.limit = +res.headers['x-ratelimit-limit'];
+      this.remaining = +res.headers['x-ratelimit-remaining'];
+      this.reset = +res.headers['x-ratelimit-reset'] * 1000;
+    } else {
+      throw new Error("Couldn't find rate limit headers.");
+    }
   }
+  public get durUntilReset() {
+    return this.reset + this.manager.offset - Date.now();
+  }
+  public handleRateLimit(req: APIRequest, res: AxiosResponse) {
+    this.applyRateLimitInfo(res);
 
+    if (req.retries < req.allowedRetries) {
+      req.retries++;
+
+      return this.queue(req);
+    } else {
+      throw new RateLimitedError(req, res, this.id);
+    }
+  }
+  public get limited() {
+    return this.manager.globalLimited || this.localLimited;
+  }
   public get localLimited() {
     return this.remaining === 0 && Date.now() < this.reset;
   }
 
-  public get limited() {
-    return this.localLimited
-  }
-
-  public get durUntilReset(): Promise<AxiosResponse> {
-    return this.reset - Date.now();
-  }
-
-  public queue(req: APIRequest) {
+  public async queue(req: APIRequest): Promise<AxiosResponse> {
     // let running requests finish
-    this.#queue.wait();
+    await this.#queue.wait();
 
     if (this.limited) {
-      sleep(this.durUntilReset);
-
-      try {
-        return await this.runRequest(req);
-      } finally {
-        this.#queue.shift();
+      if (this.localLimited) {
+        const dur = this.durUntilReset;
+        console.debug('[fuwa] Rate limited, sleeping for ' + dur + 'ms');
+        await sleep(dur);
+      } else if (this.manager.globalLimited) {
+        const dur = this.manager.durUntilReset;
+        console.debug('[fuwa] Rate limited, sleeping for ' + dur + 'ms');
+        await sleep(this.manager.durUntilReset);
       }
+    }
+
+    try {
+      const res = await this.manager.makeRequest(this, req);
+
+      this.applyRateLimitInfo(res);
+
+      return res;
+    } finally {
+      this.#queue.shift();
     }
   }
 }

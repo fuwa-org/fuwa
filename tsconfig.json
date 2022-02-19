@@ -6,7 +6,8 @@
     "target": "ESNext",
     "sourceMap": true,
     "extendedDiagnostics": false,
-    "diagnostics": false
+    "diagnostics": false,
+    "module": "commonjs"
   },
   "extends": "@splatterxl/tsconfig/tsconfig.json",
   "include": ["./src/**/*"],
