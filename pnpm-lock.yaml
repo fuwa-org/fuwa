@@ -3,7 +3,7 @@ lockfileVersion: 5.3
 specifiers:
   '@sapphire/async-queue': ^1.2.0
   '@sapphire/snowflake': ^3.1.0
-  '@splatterxl/tsconfig': ^1.1.1
+  '@splatterxl/tsconfig': 1.1.1
   '@types/node': ^17.0.18
   axios: ^0.26.0
   typedoc: ^0.22.11
