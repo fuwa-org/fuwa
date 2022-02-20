@@ -9,73 +9,9 @@
     "ecmaVersion": 12,
     "sourceType": "module"
   },
-  "plugins": ["@typescript-eslint", "sort-class-members"],
+  "plugins": ["@typescript-eslint"],
   "rules": {
-    "sort-class-members/sort-class-members": [
-      2,
-      {
-        "order": [
-          "[screaming-snake-case-static-properties]",
-          "[alphabetical-static-properties]",
-          "[alphabetical-properties]",
-          "constructor",
-          "[alphabetical-static-methods]",
-          "[alphabetical-methods]",
-          "on",
-          "[everything-else]",
-          "[custom-inspect-method]",
-          "toString",
-          "toJSON"
-        ],
-        "groups": {
-          "screaming-snake-case-static-properties": [
-            {
-              "name": "/^[A-Z_0-9]+$/"
-            },
-            {
-              "type": "property",
-              "sort": "none",
-              "static": true
-            }
-          ],
-          "alphabetical-static-properties": [
-            {
-              "type": "property",
-              "sort": "alphabetical",
-              "static": true
-            }
-          ],
-          "alphabetical-static-methods": [
-            {
-              "type": "method",
-              "sort": "alphabetical",
-              "static": true
-            }
-          ],
-          "alphabetical-methods": [
-            {
-              "type": "method",
-              "sort": "alphabetical"
-            }
-          ],
-          "alphabetical-properties": [
-            {
-              "type": "property",
-              "sort": "alphabetical",
-              "static": false
-            }
-          ],
-          "custom-inspect-method": [
-            {
-              "name": "[util.inspect.custom]",
-              "type": "method"
-            }
-          ]
-        }
-      }
-    ],
     "@typescript-eslint/no-explicit-any": "off",
-    "@typescript-eslint/no-namespace": "off",
     "@typescript-eslint/no-non-null-assertion": "off",
     "@typescript-eslint/ban-ts-comment": "off"
   }
