@@ -12,7 +12,8 @@
     "docs": "yarn docs:build && yarn docs:serve",
     "prepare": "git config --local core.hooksPath .hooks/",
     "precommit": "",
-    "prettify": "precise-commits"
+    "prettify": "precise-commits",
+    "release": "standard-version"
   },
   "repository": "https://github.com/nearlySplat/fuwa.git",
   "keywords": [],

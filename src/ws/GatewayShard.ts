@@ -7,7 +7,10 @@ import {
   GatewayResume,
   GatewaySendPayload,
   GatewayCloseCodes,
+  GatewayReceivePayload,
   GatewayDispatchPayload,
+  GatewayDispatchEvents,
+  GatewayReadyDispatchData,
 } from '@splatterxl/discord-api-types';
 import { Intents } from './intents';
 
@@ -31,9 +34,19 @@ export class GatewayShard {
   public compress: boolean;
   public erlpack: boolean;
   public id: number;
+  private heartbeat_interval = -1;
+  private heartbeat_at = -1;
+  private heartbeat_acked = true;
+  private url = "wss://gateway.discord.gg/?v=9&encoding=json";
+  
+  /** The latency between us and Discord, in milliseconds. */
+  public ping = -1;
 
   private s = -1;
   public session?: string;
+
+  #timers: NodeJS.Timer[] = [];
+  #timeouts: NodeJS.Timeout[] = [];
 
   constructor(
     public client: Client,
@@ -70,34 +83,60 @@ export class GatewayShard {
       });
     }
   }
-  public async connect(url: string) {
+
+  /** Opens a connection to Discord. */
+  public async connect(url = this.url) {
+    this.url = url;
+
     this._socket = new WebSocket(url);
 
-    this._socket.once('open', () => {
-      this.debug('connected, sending IDENTIFY');
-
+    this._socket.on('open', () => {
       this.authenticate();
     });
     this._socket.on('message', this.onMessage.bind(this));
     this._socket.on('close', (code, reason) => {
-      this.debug(`Gateway closed with code`, code, `reason`, reason.toString());
+      this.debug(`Gateway closed with code`, code, `reason`, reason?.toString() ?? GatewayCloseCodes[code]);
       switch (code) {
-        case 1000:
-          throw new Error(
-            `Gateway closed with code 1000: ` + reason.toString()
-          );
         case GatewayCloseCodes.InvalidIntents:
           throw new Error(
             `Gateway intents ${this.client.options.intents} are invalid.`
           );
-        default:
+        case GatewayCloseCodes.InvalidShard:
+          throw new Error("Invalid shard passed to GatewayShard");
+        case GatewayCloseCodes.DisallowedIntents:
+          throw new Error(`Gateway intents ${this.client.options.intents} are disallowed for the client.`);
+        case GatewayCloseCodes.AuthenticationFailed: 
+          throw new Error("Client token is invalid");
+        case 1000:
+          break;
+        case GatewayCloseCodes.InvalidSeq:
+        case GatewayCloseCodes.SessionTimedOut:
+          this.reset();
+        default: 
+          this.debug("Socket closed, reconnecting...")
+          this.connect(url);
+          break;
       }
     });
+  }
+
+  private reset() {
+    this.close(false);
+    this._socket = undefined;
+    this.#messageQueue = new AsyncQueue();
+    this.#timers.forEach(t => clearInterval(t));
+    this.#timeouts.forEach(t => clearTimeout(t));
+    this.heartbeat_interval = -1;
   }
 
   private debug(...data: any[]) {
     this.client.emit('debug', `[WS => ${this.id}]`, ...data);
   }
+
+  private debugPretty(message: string, data: Record<string, any>) {
+    this.debug(message, "\n", Object.entries(data).map(([K, V]) => `\t${K}\t\t:\t${V}`).join("\n"));
+  }
+
   private onMessage(message: Buffer) {
     let buffer = message;
 
@@ -105,15 +144,77 @@ export class GatewayShard {
       buffer = erlpack.unpack(buffer);
     }
 
-    const data: GatewayDispatchPayload = this.erlpack
+    const data: GatewayReceivePayload = this.erlpack
       ? (buffer as unknown as any)
       : JSON.parse(buffer.toString());
 
-    this.debug(data.op, data.t, data.s);
+    const payload: any = data.d;
+
+    if (data.s) {
+      this.s = data.s;
+    }
+
+    switch (data.op) {
+      case GatewayOpcodes.Hello: {
+        this.heartbeat_interval = payload.heartbeat_interval;     
+        this.debug("commencing heartbeating with interval of", this.heartbeat_interval);
+        this.startHeartbeat();
+
+        break;
+      }
+      case GatewayOpcodes.Heartbeat: {
+        this.heartbeat();
+
+        break;
+      }
+      case GatewayOpcodes.HeartbeatAck: {
+        this.heartbeat_acked = true;
+        this.ping = Date.now() - this.heartbeat_at;
+
+        this.debug("heartbeat acked with ping of " + this.ping + "ms")
+
+        break;
+      }
+      case GatewayOpcodes.Reconnect: {
+        this.reconnect();
+
+        break;
+      }
+      case GatewayOpcodes.InvalidSession: {
+        this.debug("invalid session passed");
+        this.close(false);
+        this.reset();
+        this.connect();
+
+        break;
+      }
+      case GatewayOpcodes.Dispatch: {
+        let event = payload as GatewayDispatchPayload["d"];
+
+        this.debug("dispatch", data.t, "received");
+
+        switch (data.t) {
+          case GatewayDispatchEvents.Ready: {
+            event = event as GatewayReadyDispatchData;
+
+            this.session = event.session_id;
+            this.debug("session", this.session, "started");
+            
+            this.debugPretty("ready as " + event.user.username, {
+              session: this.session,
+              shard: "[" + event.shard?.join(", ") + "]",
+              guilds: event.guilds?.length
+            })
+          }
+        }
+
+        break;
+      }
+    }
   }
 
   /**
-   * Send a packet to the {@link Client._socket|socket}. Use at your own risk.
+   * Send a packet to the {@link GatewayShard._socket|socket}. Use at your own risk.
    * @internal
    */
   public async send(packet: GatewaySendPayload) {
@@ -133,6 +234,61 @@ export class GatewayShard {
 
     this._socket!.send(data);
 
-    this.debug(`Sent opcode ${packet.op} (${GatewayOpcodes[packet.op]})`);
+    this.#messageQueue.shift();
+  }
+
+  /** 
+   * Send a heartbeat through the {@link GatewayShard._socket|socket}. Use at your own risk.
+   * 
+   * **Warning**: if you use this too soon after previously heartbeating, the internal property {@link GatewayShard.heartbeat_acked} may not be set correctly, causing the shard to assume a dead connection and close the socket.
+   */
+  public heartbeat() {
+    if (!this.heartbeat_acked) {
+      this.reconnect();
+    }
+
+    this.heartbeat_at = Date.now();
+
+    this.send({
+      op: GatewayOpcodes.Heartbeat,
+      d: this.s
+    });
+
+    this.heartbeat_acked = false;
+
+    this.debug("sent heartbeat, seq " + this.s);
+
+    this.#timeouts.push(setTimeout(() => {
+      if (!this.heartbeat_acked) {
+        this.reconnect();
+      }
+    }, 10e3));
+  }
+
+  /**
+   * Close the connection to Discord.
+   * @param resume Whether to keep the session ID and sequence intact. 
+   */
+  public close(resume = true) {
+    this.debug("closing socket");
+
+    this._socket?.close(resume ? GatewayCloseCodes.UnknownError : 1000);
+
+    if (!resume) {
+      this.session = undefined;
+      this.s = -1;
+    }
+
+    this.#timers.forEach(t => clearInterval(t));
+    this.#timeouts.forEach(t => clearInterval(t));
+  }
+
+  public reconnect() {
+    this.close(true);
+  }
+
+  private startHeartbeat() {
+    this.#timers.push(setInterval(this.heartbeat.bind(this), this.heartbeat_interval))
+    this.#timeouts.push(setTimeout(this.heartbeat.bind(this), this.heartbeat_interval * Math.random()));
   }
 }

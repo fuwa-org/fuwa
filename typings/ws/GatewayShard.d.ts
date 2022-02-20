@@ -8,12 +8,23 @@ export declare class GatewayShard {
     compress: boolean;
     erlpack: boolean;
     id: number;
+    private heartbeat_interval;
+    private heartbeat_at;
+    private heartbeat_acked;
+    private url;
+    ping: number;
     private s;
     session?: string;
     constructor(client: Client, shard: [number, number], token: string);
     private authenticate;
-    connect(url: string): Promise<void>;
+    connect(url?: string): Promise<void>;
+    private reset;
     private debug;
+    private debugPretty;
     private onMessage;
     send(packet: GatewaySendPayload): Promise<void>;
+    heartbeat(): void;
+    close(resume?: boolean): void;
+    reconnect(): void;
+    private startHeartbeat;
 }
