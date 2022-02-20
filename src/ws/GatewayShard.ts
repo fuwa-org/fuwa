@@ -119,6 +119,7 @@ export class GatewayShard {
         case GatewayCloseCodes.InvalidSeq:
         case GatewayCloseCodes.SessionTimedOut:
           this.reset();
+        // eslint-disable-next-line no-fallthrough
         default:
           this.debug('Socket closed, reconnecting...');
           this.connect(url);
