@@ -11,7 +11,7 @@
     "docs:serve": "cd docs; python3 -m http.server",
     "docs": "yarn docs:build && yarn docs:serve",
     "prepare": "git config --local core.hooksPath .hooks/",
-    "precommit": "yarn build && yarn lint && yarn prettify",
+    "precommit": "",
     "prettify": "precise-commits"
   },
   "repository": "https://github.com/nearlySplat/fuwa.git",
