@@ -1,4 +1,4 @@
-# $APP $VERSION Release
+# $APP@$VERSION
 
 ## Changes
 $CHANGES

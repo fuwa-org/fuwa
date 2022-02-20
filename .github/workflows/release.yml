@@ -2,7 +2,7 @@ name: Draft release
 on:
   push:
     branches:
-      - master
+      - main
 jobs:
   bump:
     runs-on: ubuntu-latest
