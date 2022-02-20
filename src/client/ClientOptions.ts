@@ -32,10 +32,10 @@ export interface ClientOptions {
    */
   compress?: boolean;
 
-  /** 
+  /**
    * Whether to use `erlpack` while processing gateway packets. Requires [the NPM package](https://npm.im/erlpack).
    * @default false
-   */ 
+   */
   etf?: boolean;
 }
 
@@ -47,7 +47,8 @@ export function resolveIntents(intents: ClientOptionsIntents): Intents {
   if (Array.isArray(intents))
     return new Intents(
       intents.reduce(
-        (prev: number, next) => prev | (next instanceof Intents ? next.bits : next),
+        (prev: number, next) =>
+          prev | (next instanceof Intents ? next.bits : next),
         0
       ) as number
     );

@@ -23,7 +23,6 @@ export class RequestManager {
   /** When the global rate limit will reset. */
   public reset = -1;
 
-
   constructor(public client: RESTClient, public _client: Client) {}
 
   public get durUntilReset() {
