@@ -18,6 +18,6 @@ jobs:
         run: npm ci
       - name: Build project
         run: tsc -p tsconfig.json
-      
+
       - name: Run tests
         run: npm run lint
