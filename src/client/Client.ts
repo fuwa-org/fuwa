@@ -9,6 +9,8 @@ import {
 import { APIGatewayBotInfo } from '@splatterxl/discord-api-types';
 import EventEmitter from 'events';
 import { GatewayShard } from '../ws/GatewayShard.js';
+import { GuildManager } from '../structures/managers/GuildManager.js';
+import { Guild } from '../structures/Guild.js';
 
 export class Client extends EventEmitter {
   #token: string;
@@ -16,6 +18,8 @@ export class Client extends EventEmitter {
   public options: Required<ClientOptions>;
 
   public ws?: GatewayShard;
+
+  public guilds: GuildManager;
 
   public constructor(token: string, options?: ClientOptions) {
     super();
@@ -32,6 +36,8 @@ export class Client extends EventEmitter {
       ),
       this
     );
+
+    this.guilds = new GuildManager(this);
   }
 
   public async connect(): Promise<void> {
@@ -67,7 +73,7 @@ export class Client extends EventEmitter {
 
     this.debug(
       `
-[fuwa] connecting to gateway 
+[WS => Manager] connecting to gateway 
 \t url \t:\t ${url}
 \t shard \t:\t [${shard.join(', ')}]
 `.trim()
@@ -91,26 +97,36 @@ export class Client extends EventEmitter {
 }
 
 export interface Client extends EventEmitter {
-  on<T extends keyof ClientEvents>(event: T, ...data: ClientEvents[T]): this;
+  on<T extends keyof ClientEvents>(
+    event: T, 
+    listener: (...data: ClientEvents[T]) => Awaitable<void>
+  ): this;
   on<T extends Exclude<string, keyof ClientEvents>>(
     event: T,
-    data: any[]
+    listener: (...data: any[]) => Awaitable<void>
   ): this;
-  once<T extends keyof ClientEvents>(event: T, ...data: ClientEvents[T]): this;
+  once<T extends keyof ClientEvents>(
+    event: T,
+    listener: (...data: ClientEvents[T]) => Awaitable<void>
+  ): this;
   once<T extends Exclude<string, keyof ClientEvents>>(
     event: T,
-    data: any[]
+    listener: (...data: any[]) => Awaitable<void>
   ): this;
   addEventListener<T extends keyof ClientEvents>(
     event: T,
-    ...data: ClientEvents[T]
+    listener: (...data: ClientEvents[T]) => Awaitable<void>
   ): this;
   addEventListener<T extends Exclude<string, keyof ClientEvents>>(
     event: T,
-    data: any[]
+    listener: (...data: any[]) => Awaitable<void>
   ): this;
 }
 
 export interface ClientEvents {
   debug: any[];
+  ready: [];
+  guildCreate: [Guild];
 }
+
+export type Awaitable<T> = Promise<T> | T

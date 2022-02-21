@@ -10,3 +10,4 @@ export interface ClientOptions {
 export declare type ClientOptionsIntents = number | Intents | (number | Intents)[];
 export declare function resolveIntents(intents: ClientOptionsIntents): Intents;
 export declare const DefaultClientOptions: ClientOptions;
+export declare type Snowflake = `${bigint}`;

@@ -15,6 +15,7 @@ export declare class GatewayShard {
     ping: number;
     private s;
     session?: string;
+    private _awaitedGuilds;
     constructor(client: Client, shard: [number, number], token: string);
     private authenticate;
     connect(url?: string): Promise<void>;
