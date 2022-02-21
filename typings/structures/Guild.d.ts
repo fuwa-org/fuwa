@@ -1,7 +1,7 @@
-import { Snowflake } from "../client/ClientOptions";
-import { Base } from "./Base";
-import { APIGuild, APIUnavailableGuild, GuildDefaultMessageNotifications, GuildExplicitContentFilter, GuildFeature, GuildMFALevel, GuildNSFWLevel, GuildPremiumTier, GuildVerificationLevel } from "@splatterxl/discord-api-types";
-import { GuildSystemChannelFlags } from "../util/GuildSystemChannelFlags";
+import { Snowflake } from '../client/ClientOptions';
+import { Base } from './Base';
+import { APIGuild, APIUnavailableGuild, GuildDefaultMessageNotifications, GuildExplicitContentFilter, GuildFeature, GuildMFALevel, GuildNSFWLevel, GuildPremiumTier, GuildVerificationLevel } from '@splatterxl/discord-api-types';
+import { GuildSystemChannelFlags } from '../util/GuildSystemChannelFlags';
 export declare class Guild extends Base<APIGuild | APIUnavailableGuild> {
     id: Snowflake;
     available: boolean;

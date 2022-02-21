@@ -1,4 +1,4 @@
-import { Client } from "../client/Client";
+import { Client } from '../client/Client';
 export declare abstract class Base<T> {
     client: Client;
     constructor(client: Client, data: T);

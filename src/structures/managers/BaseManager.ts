@@ -1,5 +1,5 @@
-import { Client } from "../../client/Client";
-import { Snowflake } from "../../client/ClientOptions";
+import { Client } from '../../client/Client';
+import { Snowflake } from '../../client/ClientOptions';
 
 export class BaseManager<T extends { id: Snowflake }> {
   public cache: Map<Snowflake, T> = new Map();

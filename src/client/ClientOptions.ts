@@ -66,4 +66,4 @@ export const DefaultClientOptions: ClientOptions = {
   etf: false,
 };
 
-export type Snowflake = `${bigint}`
+export type Snowflake = `${bigint}`;

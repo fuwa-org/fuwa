@@ -221,7 +221,7 @@ export class GatewayShard {
             event = event as GatewayReadyDispatchData;
 
             this.session = event.session_id;
-            this._awaitedGuilds = event.guilds.map(v => v.id as Snowflake);
+            this._awaitedGuilds = event.guilds.map((v) => v.id as Snowflake);
 
             this.debugPretty('ready for user ' + event.user.id, {
               session: this.session,
@@ -231,24 +231,31 @@ export class GatewayShard {
             break;
           }
           case GatewayDispatchEvents.Resumed: {
-            event = event as GatewayResumedDispatch["d"];
+            event = event as GatewayResumedDispatch['d'];
 
-            this.debug("resumed session ", this.session);
+            this.debug('resumed session ', this.session);
 
             break;
           }
           case GatewayDispatchEvents.GuildCreate: {
-            const data = event as GatewayGuildCreateDispatch["d"];
-            this.client.guilds.add(new Guild(this.client, data)._deserialise(data));
+            const data = event as GatewayGuildCreateDispatch['d'];
+            this.client.guilds.add(
+              new Guild(this.client, data)._deserialise(data)
+            );
 
             if (this._awaitedGuilds.includes(data.id as Snowflake)) {
-              this._awaitedGuilds = this._awaitedGuilds.filter(v => v !== data.id);
+              this._awaitedGuilds = this._awaitedGuilds.filter(
+                (v) => v !== data.id
+              );
 
               if (this._awaitedGuilds.length === 0) {
-                this.client.emit("ready");
+                this.client.emit('ready');
               }
             } else {
-              this.client.emit("guildCreate", this.client.guilds.cache.get(data.id as Snowflake));
+              this.client.emit(
+                'guildCreate',
+                this.client.guilds.cache.get(data.id as Snowflake)
+              );
             }
           }
         }

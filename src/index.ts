@@ -13,8 +13,8 @@ export * from './rest/Request';
 export * from './rest/RequestManager';
 export * from './rest/BucketQueueManager';
 
-export * from "./structures/Base";
-export * from "./structures/Guild";
+export * from './structures/Base';
+export * from './structures/Guild';
 
-export * from "./structures/managers/BaseManager"
-export * from "./structures/managers/GuildManager"
+export * from './structures/managers/BaseManager';
+export * from './structures/managers/GuildManager';

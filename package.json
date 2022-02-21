@@ -11,8 +11,7 @@
     "docs:serve": "cd docs; python3 -m http.server",
     "docs": "yarn docs:build && yarn docs:serve",
     "prepare": "git config --local core.hooksPath .hooks/",
-    "precommit": "",
-    "prettify": "precise-commits",
+    "prettify": "prettier -w .",
     "release": "standard-version"
   },
   "repository": "https://github.com/nearlySplat/fuwa.git",
@@ -36,7 +35,6 @@
     "@typescript-eslint/eslint-plugin": "5.12.1",
     "@typescript-eslint/parser": "5.12.1",
     "eslint": "8.9.0",
-    "precise-commits": "1.0.2",
     "prettier": "2.5.1",
     "standard-version": "9.3.2",
     "typedoc": "0.22.12",

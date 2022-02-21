@@ -98,7 +98,7 @@ export class Client extends EventEmitter {
 
 export interface Client extends EventEmitter {
   on<T extends keyof ClientEvents>(
-    event: T, 
+    event: T,
     listener: (...data: ClientEvents[T]) => Awaitable<void>
   ): this;
   on<T extends Exclude<string, keyof ClientEvents>>(
@@ -129,4 +129,4 @@ export interface ClientEvents {
   guildCreate: [Guild];
 }
 
-export type Awaitable<T> = Promise<T> | T
+export type Awaitable<T> = Promise<T> | T;
