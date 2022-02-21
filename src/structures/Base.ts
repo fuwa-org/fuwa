@@ -47,7 +47,7 @@ from<S>(
         if (typeof key[sourceKey] === "string") {
           this[key[sourceKey]] = source[sourceKey] ?? this[key[sourceKey]];
         } else if (typeof key[sourceKey] === "function") {
-          let [k, v] = key[sourceKey](source[sourceKey]);
+          const [k, v] = key[sourceKey](source[sourceKey]);
 
           this[k] = v ?? this[k];
         } 

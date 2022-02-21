@@ -103,7 +103,7 @@ export class Guild extends Base<APIGuild | APIUnavailableGuild> {
       if ("afk_channel_id" in data) {
         /* assign the channel, TODO */
         this.afkChannelId = data.afk_channel_id as Snowflake;
-      };
+      }
       if ("verification_level" in data) this.verificationLevel = data.verification_level;
       if ("explicit_content_filter" in data) this.explicitContentFilter = data.explicit_content_filter;
       if ("widget_enabled" in data) this.widgetEnabled = data.widget_enabled!;
