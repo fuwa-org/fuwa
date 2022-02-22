@@ -1,22 +1,24 @@
-import { Client } from '../client/Client';
-import WebSocket from 'ws';
 import { AsyncQueue } from '@sapphire/async-queue';
 import {
+  GatewayCloseCodes,
+  GatewayDispatchEvents,
+  GatewayDispatchPayload,
+  GatewayGuildCreateDispatchData,
+  GatewayGuildDeleteDispatchData,
+  GatewayGuildUpdateDispatchData,
   GatewayIdentify,
   GatewayOpcodes,
-  GatewayResume,
-  GatewaySendPayload,
-  GatewayCloseCodes,
-  GatewayReceivePayload,
-  GatewayDispatchPayload,
-  GatewayDispatchEvents,
   GatewayReadyDispatchData,
+  GatewayReceivePayload,
+  GatewayResume,
   GatewayResumedDispatch,
-  GatewayGuildCreateDispatch,
+  GatewaySendPayload,
 } from '@splatterxl/discord-api-types';
-import { Intents } from './intents';
+import WebSocket from 'ws';
+import { Client } from '../client/Client';
 import { Snowflake } from '../client/ClientOptions';
 import { Guild } from '../structures/Guild';
+import { Intents } from './intents';
 
 interface Erlpack {
   pack(data: any): Buffer;
@@ -34,6 +36,7 @@ try {
 export class GatewayShard {
   private _socket?: WebSocket;
   #messageQueue = new AsyncQueue();
+  private messageQueueCount = 0;
   #token: string;
   public compress: boolean;
   public erlpack: boolean;
@@ -125,7 +128,6 @@ export class GatewayShard {
         case GatewayCloseCodes.AuthenticationFailed:
           throw new Error('Client token is invalid');
         case 1000:
-          break;
         case GatewayCloseCodes.InvalidSeq:
         case GatewayCloseCodes.SessionTimedOut:
           this.reset();
@@ -139,16 +141,27 @@ export class GatewayShard {
   }
 
   private reset() {
+    this.debug('Shard undergoing reset, closing socket');
     this.close(false);
     this._socket = undefined;
     this.#messageQueue = new AsyncQueue();
+    this.messageQueueCount = 0;
     this.#timers.forEach((t) => clearInterval(t));
     this.#timeouts.forEach((t) => clearTimeout(t));
     this.heartbeat_interval = -1;
+    // to prevent the heartbeater to immediately panic and reconnect, creating an infinite loop
+    this.heartbeat_acked = true;
+    this._awaitedGuilds = [];
+    this.debug('Reset shard');
   }
 
-  private debug(...data: any[]) {
-    this.client.emit('debug', `[WS => ${this.id}]`, ...data);
+  public debug(...data: any[]) {
+    this.client.debug(
+      `[${this.client.logger.kleur().blue('WS')} => ${this.client.logger
+        .kleur()
+        .yellow(this.id.toString())}]`,
+      ...data
+    );
   }
 
   private debugPretty(message: string, data: Record<string, any>) {
@@ -237,15 +250,13 @@ export class GatewayShard {
           case GatewayDispatchEvents.Resumed: {
             event = event as GatewayResumedDispatch['d'];
 
-            this.debug('resumed session ', this.session);
+            this.debug('resumed session', this.session);
 
             break;
           }
           case GatewayDispatchEvents.GuildCreate: {
-            const data = event as GatewayGuildCreateDispatch['d'];
-            this.client.guilds.add(
-              new Guild(this.client, data)._deserialise(data)
-            );
+            const data = event as GatewayGuildCreateDispatchData;
+            this.client.guilds.add(new Guild(this.client)._deserialise(data));
 
             if (this._awaitedGuilds.includes(data.id as Snowflake)) {
               this._awaitedGuilds = this._awaitedGuilds.filter(
@@ -261,6 +272,25 @@ export class GatewayShard {
                 this.client.guilds.cache.get(data.id as Snowflake)
               );
             }
+            break;
+          }
+          case GatewayDispatchEvents.GuildUpdate: {
+            const data = event as GatewayGuildUpdateDispatchData;
+            const guild = this.client.guilds.cache.get(data.id as Snowflake);
+            const newGuild =
+              guild?._deserialise(data) ??
+              new Guild(this.client)._deserialise(data);
+
+            this.client.guilds.update(newGuild);
+
+            this.client.emit('guildUpdate', guild, newGuild);
+            break;
+          }
+          case GatewayDispatchEvents.GuildDelete: {
+            const data = event as GatewayGuildDeleteDispatchData;
+            this.client.guilds.remove(data.id as Snowflake);
+
+            this.client.emit('guildDelete', data.id);
           }
         }
 
@@ -277,8 +307,14 @@ export class GatewayShard {
     if (!this._socket)
       throw new Error("GatewayShard#send called when shard wasn't connected");
 
+    this.messageQueueCount++;
     // aaaaaaa
     await this.#messageQueue.wait();
+
+    if (this.messageQueueCount === 0) {
+      // we can't send this message
+      return;
+    }
 
     let data: Buffer;
 
@@ -291,6 +327,7 @@ export class GatewayShard {
     this._socket!.send(data);
 
     this.#messageQueue.shift();
+    this.messageQueueCount--;
   }
 
   /**
@@ -317,6 +354,7 @@ export class GatewayShard {
     this.#timeouts.push(
       setTimeout(() => {
         if (!this.heartbeat_acked) {
+          this.debug('closing due to heartbeat timeout');
           this.reconnect();
         }
       }, 10e3)
@@ -328,9 +366,7 @@ export class GatewayShard {
    * @param resume Whether to keep the session ID and sequence intact.
    */
   public close(resume = true) {
-    this.debug('closing socket');
-
-    this._socket?.close(resume ? GatewayCloseCodes.UnknownError : 1000);
+    this._socket?.close(resume ? 4000 : 1000);
 
     if (!resume) {
       this.session = undefined;

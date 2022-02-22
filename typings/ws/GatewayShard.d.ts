@@ -1,10 +1,11 @@
-import { Client } from '../client/Client';
 import { GatewaySendPayload } from '@splatterxl/discord-api-types';
+import { Client } from '../client/Client';
 export declare class GatewayShard {
     #private;
     client: Client;
     readonly shard: [number, number];
     private _socket?;
+    private messageQueueCount;
     compress: boolean;
     erlpack: boolean;
     id: number;
@@ -20,7 +21,7 @@ export declare class GatewayShard {
     private authenticate;
     connect(url?: string): Promise<void>;
     private reset;
-    private debug;
+    debug(...data: any[]): void;
     private debugPretty;
     private onMessage;
     send(packet: GatewaySendPayload): Promise<void>;
