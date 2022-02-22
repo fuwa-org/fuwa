@@ -6,7 +6,15 @@ export class BaseManager<T extends { id: Snowflake }> {
 
   constructor(public client: Client) {}
 
+  public get(id: T['id']): T | undefined {
+    return this.cache.get(id);
+  }
+
   public add(data: T) {
+    this.cache.set(data.id, data);
+  }
+
+  public update(data: T) {
     this.cache.set(data.id, data);
   }
 
