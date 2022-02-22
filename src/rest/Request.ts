@@ -25,7 +25,7 @@ export class APIRequest {
   static get(route: RouteLike): APIRequest {
     return new APIRequest(route, 'GET');
   }
-  public send(manager: RequestManager): Promise<AxiosResponse> {
+  public send<T>(manager: RequestManager): Promise<AxiosResponse<T>> {
     return manager.queue(this);
   }
 }
