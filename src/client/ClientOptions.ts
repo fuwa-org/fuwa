@@ -1,7 +1,8 @@
 import { Intents } from '../ws/intents';
 import fs from 'fs';
+import os from 'os';
 
-const pkg = JSON.parse(
+export const pkg = JSON.parse(
   fs.readFileSync(__dirname + '/../../package.json', 'utf-8')
 );
 
@@ -25,6 +26,10 @@ export interface ClientOptions {
    */
   httpBaseUrl?: string;
   httpUserAgent?: string;
+
+  wsBrowser?: string;
+  wsDevice?: string;
+  wsOS?: string;
 
   /**
    * Whether to compress gateway packets. Requires [`zlib-sync`](https://npm.im/zlib-sync).
@@ -62,6 +67,9 @@ export const DefaultClientOptions: ClientOptions = {
   apiVersion: 10,
   httpBaseUrl: 'https://discord.com/api',
   httpUserAgent: `DiscordBot (${pkg.homepage}; ${pkg.version}) Node.js/${process.version}`,
+  wsBrowser: 'fuwa',
+  wsDevice: 'fuwa',
+  wsOS: os.platform(),
   compress: false,
   etf: false,
 };

@@ -81,7 +81,11 @@ export class GatewayShard {
         op: GatewayOpcodes.Identify,
         d: {
           token: this.#token,
-          properties: {},
+          properties: {
+            $browser: this.client.options.wsBrowser,
+            $device: this.client.options.wsDevice,
+            $os: this.client.options.wsOS,
+          },
           compress: this.compress,
           shard: this.shard,
           intents: (this.client.options.intents as Intents).bits,
