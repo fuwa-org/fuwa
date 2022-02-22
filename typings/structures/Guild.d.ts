@@ -1,5 +1,5 @@
 import { Snowflake } from '../client/ClientOptions';
-import { Base } from './Base';
+import { Base } from './templates/BaseStructure';
 import { APIGuild, APIUnavailableGuild, GuildDefaultMessageNotifications, GuildExplicitContentFilter, GuildFeature, GuildMFALevel, GuildNSFWLevel, GuildPremiumTier, GuildVerificationLevel } from '@splatterxl/discord-api-types';
 import { GuildSystemChannelFlags } from '../util/GuildSystemChannelFlags';
 export declare class Guild extends Base<APIGuild | APIUnavailableGuild> {
@@ -44,4 +44,5 @@ export declare class Guild extends Base<APIGuild | APIUnavailableGuild> {
     systemChannelFlags: GuildSystemChannelFlags | null;
     publicUpdatesChannelId: Snowflake | null;
     _deserialise(data: APIGuild | APIUnavailableGuild): this;
+    fetch(force?: boolean): Promise<Guild>;
 }

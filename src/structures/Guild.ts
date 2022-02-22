@@ -1,5 +1,5 @@
 import { Snowflake } from '../client/ClientOptions';
-import { Base } from './Base';
+import { Base } from './templates/BaseStructure';
 import {
   APIGuild,
   APIUnavailableGuild,
@@ -90,79 +90,80 @@ export class Guild extends Base<APIGuild | APIUnavailableGuild> {
     this.available = !data.unavailable;
     this.created = new Date(DiscordSnowflake.timestampFrom(this.id));
 
-    if (!data.unavailable) {
-      data = data as APIGuild;
+    data = data as APIGuild;
 
-      if ('name' in data) this.name = data.name;
-      if ('description' in data) this.description = data.description;
-      if ('preferred_locale' in data)
-        this.preferredLocale = data.preferred_locale ?? 'en_US';
-      if ('owner_id' in data) this.ownerId = data.owner_id as Snowflake;
-      if ('features' in data) this.features = data.features;
-      if ('mfa_level' in data) this.mfaLevel = data.mfa_level;
-      if ('nsfw_level' in data) this.nsfwLevel = data.nsfw_level;
-      if ('rules_channel_id' in data)
-        this.rulesChannelId = data.rules_channel_id as Snowflake;
-      if ('system_channel_id' in data)
-        this.systemChannelId = data.system_channel_id as Snowflake;
-      if ('system_channel_flags' in data)
-        this.systemChannelFlags = new GuildSystemChannelFlags(
-          data.system_channel_flags
-        );
-      if ('approximate_member_count' in data)
-        this.approximateMemberCount = data.approximate_member_count!;
-      if ('approximate_presence_count' in data)
-        this.approximatePresenceCount = data.approximate_presence_count!;
-      if ('large' in data) this.large = !!data.large;
-      if ('icon' in data || 'icon_hash' in data)
-        this.icon = data.icon_hash ?? data.icon;
-      if ('banner' in data) this.banner = data.banner;
-      if ('splash' in data) this.splash = data.splash;
-      if ('discovery_splash' in data)
-        this.discoverySplash = data.discovery_splash;
-      if ('afk_timeout' in data) this.afkTimeout = data.afk_timeout;
-      if ('afk_channel_id' in data) {
-        /* assign the channel, TODO */
-        this.afkChannelId = data.afk_channel_id as Snowflake;
-      }
-      if ('verification_level' in data)
-        this.verificationLevel = data.verification_level;
-      if ('explicit_content_filter' in data)
-        this.explicitContentFilter = data.explicit_content_filter;
-      if ('widget_enabled' in data) this.widgetEnabled = data.widget_enabled!;
-      if ('widget_channel_id' in data) {
-        /* assign the channel, TODO */
-        this.widgetChannelId = data.widget_channel_id! as Snowflake;
-      }
-      if ('public_updates_channel_id' in data) {
-        this.publicUpdatesChannelId =
-          data.public_updates_channel_id as Snowflake;
-      }
-      if ('premium_tier' in data) this.premiumTier = data.premium_tier;
-      if ('premium_subscription_count' in data)
-        this.premiumSubscriptionCount = data.premium_subscription_count!;
-      if ('premium_progress_bar_enabled' in data)
-        this.premiumProgressBarEnabled = data.premium_progress_bar_enabled;
-      if ('member_count' in data) {
-        this.approximateMemberCount = data.member_count!;
-        this.memberCount = data.member_count!;
-      }
-      if ('presences' in data) {
-        // TODO: presences
-        this.presenceCount = data.presences!.length;
-        this.approximatePresenceCount = data.presences!.length;
-      }
-      if ('default_message_notifications' in data)
-        this.defaultMessageNotifications = data.default_message_notifications;
-      if ('max_members' in data) this.maxMembers = data.max_members!;
-      if ('max_presences' in data) this.maxPresences = data.max_presences!;
-      if ('max_video_channel_users' in data)
-        this.maxVideoChannelUsers = data.max_video_channel_users!;
-      if ('vanity_url_code' in data) this.vanityURLCode = data.vanity_url_code;
-
-      if ('joined_at' in data) this.joined = new Date(data.joined_at!);
+    if ('name' in data) this.name = data.name;
+    if ('description' in data) this.description = data.description;
+    if ('preferred_locale' in data)
+      this.preferredLocale = data.preferred_locale ?? 'en_US';
+    if ('owner_id' in data) this.ownerId = data.owner_id as Snowflake;
+    if ('features' in data) this.features = data.features;
+    if ('mfa_level' in data) this.mfaLevel = data.mfa_level;
+    if ('nsfw_level' in data) this.nsfwLevel = data.nsfw_level;
+    if ('rules_channel_id' in data)
+      this.rulesChannelId = data.rules_channel_id as Snowflake;
+    if ('system_channel_id' in data)
+      this.systemChannelId = data.system_channel_id as Snowflake;
+    if ('system_channel_flags' in data)
+      this.systemChannelFlags = new GuildSystemChannelFlags(
+        data.system_channel_flags
+      );
+    if ('approximate_member_count' in data)
+      this.approximateMemberCount = data.approximate_member_count!;
+    if ('approximate_presence_count' in data)
+      this.approximatePresenceCount = data.approximate_presence_count!;
+    if ('large' in data) this.large = !!data.large;
+    if ('icon' in data || 'icon_hash' in data)
+      this.icon = data.icon_hash ?? data.icon;
+    if ('banner' in data) this.banner = data.banner;
+    if ('splash' in data) this.splash = data.splash;
+    if ('discovery_splash' in data)
+      this.discoverySplash = data.discovery_splash;
+    if ('afk_timeout' in data) this.afkTimeout = data.afk_timeout;
+    if ('afk_channel_id' in data) {
+      /* assign the channel, TODO */
+      this.afkChannelId = data.afk_channel_id as Snowflake;
     }
+    if ('verification_level' in data)
+      this.verificationLevel = data.verification_level;
+    if ('explicit_content_filter' in data)
+      this.explicitContentFilter = data.explicit_content_filter;
+    if ('widget_enabled' in data) this.widgetEnabled = data.widget_enabled!;
+    if ('widget_channel_id' in data) {
+      /* assign the channel, TODO */
+      this.widgetChannelId = data.widget_channel_id! as Snowflake;
+    }
+    if ('public_updates_channel_id' in data) {
+      this.publicUpdatesChannelId = data.public_updates_channel_id as Snowflake;
+    }
+    if ('premium_tier' in data) this.premiumTier = data.premium_tier;
+    if ('premium_subscription_count' in data)
+      this.premiumSubscriptionCount = data.premium_subscription_count!;
+    if ('premium_progress_bar_enabled' in data)
+      this.premiumProgressBarEnabled = data.premium_progress_bar_enabled;
+    if ('member_count' in data) {
+      this.approximateMemberCount = data.member_count!;
+      this.memberCount = data.member_count!;
+    }
+    if ('presences' in data) {
+      // TODO: presences
+      this.presenceCount = data.presences!.length;
+      this.approximatePresenceCount = data.presences!.length;
+    }
+    if ('default_message_notifications' in data)
+      this.defaultMessageNotifications = data.default_message_notifications;
+    if ('max_members' in data) this.maxMembers = data.max_members!;
+    if ('max_presences' in data) this.maxPresences = data.max_presences!;
+    if ('max_video_channel_users' in data)
+      this.maxVideoChannelUsers = data.max_video_channel_users!;
+    if ('vanity_url_code' in data) this.vanityURLCode = data.vanity_url_code;
+
+    if ('joined_at' in data) this.joined = new Date(data.joined_at!);
 
     return this;
+  }
+
+  public fetch(force = true) {
+    return this.client.guilds.fetch(this.id);
   }
 }

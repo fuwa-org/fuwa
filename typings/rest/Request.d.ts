@@ -10,7 +10,7 @@ export declare class APIRequest {
     constructor(route: RouteLike, method?: string, allowedRetries?: number);
     static ensureMethod(str: string): HTTPMethod;
     static get(route: RouteLike): APIRequest;
-    send(manager: RequestManager): Promise<AxiosResponse>;
+    send<T>(manager: RequestManager): Promise<AxiosResponse<T>>;
 }
 declare type HTTPMethod = 'get';
 export {};

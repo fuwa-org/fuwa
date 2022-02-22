@@ -1,23 +1,12 @@
 // @ts-nocheck Let's just hope this works.
-import { Client } from '../client/Client';
+import { Client } from '../../client/Client';
 
 export abstract class Base<T> {
   client: Client;
-  constructor(client: Client, data: T) {
-    Object.defineProperty(this, '_data', {
-      value: data,
-    });
+  constructor(client: Client) {
     Object.defineProperty(this, 'client', {
       value: client,
     });
-
-    if (this._deserialise) {
-      this._deserialise(data);
-    } else {
-      this.client.debug(
-        'Structure cannot be deserialised: ' + this.constructor.name
-      );
-    }
   }
 
   abstract _deserialise(_data: T): void;
