@@ -13,8 +13,13 @@ export * from './rest/Request';
 export * from './rest/RequestManager';
 export * from './rest/BucketQueueManager';
 
-export * from './structures/Base';
+export * from './structures/templates/BaseStructure';
 export * from './structures/Guild';
 
 export * from './structures/managers/BaseManager';
 export * from './structures/managers/GuildManager';
+
+export * from './logging/ILogger';
+export * from './logging/LoggerOptions';
+export * from './logging/DefaultLogger';
+// we're not going to export DisabledLogger because that's internal

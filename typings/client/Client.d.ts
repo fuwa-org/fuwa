@@ -1,14 +1,16 @@
 /// <reference types="node" />
 import { RequestManager } from '../rest/RequestManager.js';
-import { ClientOptions } from './ClientOptions';
+import { ClientOptions, Snowflake } from './ClientOptions';
 import EventEmitter from 'events';
 import { GatewayShard } from '../ws/GatewayShard.js';
 import { GuildManager } from '../structures/managers/GuildManager.js';
 import { Guild } from '../structures/Guild.js';
+import { ILogger } from '../logging/ILogger.js';
 export declare class Client extends EventEmitter {
     #private;
     http: RequestManager;
     options: Required<ClientOptions>;
+    logger: ILogger;
     ws?: GatewayShard;
     guilds: GuildManager;
     constructor(token: string, options?: ClientOptions);
@@ -28,5 +30,7 @@ export interface ClientEvents {
     debug: any[];
     ready: [];
     guildCreate: [Guild];
+    guildUpdate: [old: Guild, new: Guild];
+    guildDelete: [id: Snowflake];
 }
 export declare type Awaitable<T> = Promise<T> | T;

@@ -1,6 +1,8 @@
 import { Intents } from '../ws/intents';
 import fs from 'fs';
 import os from 'os';
+import { ILogger } from '../logging/ILogger.js';
+import { LoggerOptions } from '../logging/LoggerOptions.js';
 
 export const pkg = JSON.parse(
   fs.readFileSync(__dirname + '/../../package.json', 'utf-8')
@@ -13,6 +15,8 @@ export interface ClientOptions {
    * @default {@link Intents.DEFAULT}
    */
   intents?: ClientOptionsIntents;
+
+  logger?: boolean | ILogger | LoggerOptions;
 
   /**
    * The API version to use across the REST and WebSocket servers.
@@ -72,6 +76,7 @@ export const DefaultClientOptions: ClientOptions = {
   wsOS: os.platform(),
   compress: false,
   etf: false,
+  logger: true,
 };
 
 export type Snowflake = `${bigint}`;

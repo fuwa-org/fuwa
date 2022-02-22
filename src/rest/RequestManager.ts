@@ -57,6 +57,13 @@ export class RequestManager {
     if (res.status < 200) {
       throw new RESTError(req.route, res.status, req.method, res, req.data);
     } else if (res.status < 300) {
+      this._client.debug(
+        `[${this._client.logger.kleur().green('REST')} => ${this._client.logger
+          .kleur()
+          .green('Manager')}] ${req.method.toUpperCase()} ${
+          req.route
+        } -> 200 OK`
+      );
       return res;
     } else if (res.status < 500) {
       switch (res.status) {

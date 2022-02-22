@@ -5,17 +5,27 @@ import {
   ClientOptions,
   DefaultClientOptions,
   resolveIntents,
+  Snowflake,
 } from './ClientOptions';
 import { APIGatewayBotInfo } from '@splatterxl/discord-api-types';
 import EventEmitter from 'events';
 import { GatewayShard } from '../ws/GatewayShard.js';
 import { GuildManager } from '../structures/managers/GuildManager.js';
 import { Guild } from '../structures/Guild.js';
+import { ILogger } from '../logging/ILogger.js';
+import { DisabledLogger } from '../logging/DisabledLogger.js';
+import { DefaultLogger } from '../logging/DefaultLogger.js';
+import {
+  DefaultLoggerOptions,
+  LoggerOptions,
+} from '../logging/LoggerOptions.js';
 
 export class Client extends EventEmitter {
   #token: string;
   public http: RequestManager;
   public options: Required<ClientOptions>;
+
+  public logger: ILogger;
 
   public ws?: GatewayShard;
 
@@ -36,6 +46,16 @@ export class Client extends EventEmitter {
       ),
       this
     );
+
+    if (!this.options.logger) {
+      this.logger = new DisabledLogger();
+    } else if (typeof this.options.logger === 'boolean') {
+      this.logger = new DefaultLogger(DefaultLoggerOptions);
+    } else if (!('warn' in this.options.logger)) {
+      this.logger = new DefaultLogger(this.options.logger as LoggerOptions);
+    } else {
+      this.logger = this.options.logger;
+    }
 
     this.guilds = new GuildManager(this);
   }
@@ -73,7 +93,9 @@ export class Client extends EventEmitter {
 
     this.debug(
       `
-[WS => Manager] connecting to gateway 
+[${this.logger.kleur().blue('WS')} => ${this.logger
+        .kleur()
+        .green('Manager')}] connecting to gateway 
 \t url \t:\t ${url}
 \t shard \t:\t [${shard.join(', ')}]
 `.trim()
@@ -85,14 +107,13 @@ export class Client extends EventEmitter {
   }
 
   private constructGatewayURL(url: string) {
-    this.debug(this.options.etf);
     return `${url}?v=${this.options.apiVersion}&encoding=${
       this.options.etf ? 'etf' : 'json'
     }`;
   }
 
   public debug(...data: any[]) {
-    this.emit('debug', ...data);
+    this.logger.debug(...data);
   }
 }
 
@@ -127,6 +148,8 @@ export interface ClientEvents {
   debug: any[];
   ready: [];
   guildCreate: [Guild];
+  guildUpdate: [old: Guild, new: Guild];
+  guildDelete: [id: Snowflake];
 }
 
 export type Awaitable<T> = Promise<T> | T;
