@@ -1,9 +1,9 @@
 import { AsyncQueue } from '@sapphire/async-queue';
-import { APIRequest } from './Request';
+import { APIRequest } from './APIRequest';
 import { RequestManager } from './RequestManager';
 import { setTimeout as sleep } from 'node:timers/promises';
-import { AxiosResponse } from 'axios';
 import { RateLimitedError } from './RESTError.js';
+import { ResponseData } from 'undici/types/dispatcher';
 
 export class BucketQueueManager {
   #queue = new AsyncQueue();
@@ -20,11 +20,11 @@ export class BucketQueueManager {
     public readonly majorId: string
   ) {}
 
-  private applyRateLimitInfo(res: AxiosResponse) {
+  private applyRateLimitInfo(res: ResponseData) {
     if (res.headers['x-ratelimit-limit']) {
       this.limit = +res.headers['x-ratelimit-limit'];
-      this.remaining = +res.headers['x-ratelimit-remaining'];
-      this.reset = +res.headers['x-ratelimit-reset'] * 1000;
+      this.remaining = +res.headers['x-ratelimit-remaining']!;
+      this.reset = +res.headers['x-ratelimit-reset']! * 1000;
     } else {
       throw new Error("Couldn't find rate limit headers.");
     }
@@ -32,11 +32,11 @@ export class BucketQueueManager {
   public get durUntilReset() {
     return this.reset + this.manager.offset - Date.now();
   }
-  public handleRateLimit(req: APIRequest, res: AxiosResponse) {
+  public handleRateLimit(req: APIRequest, res: ResponseData) {
     this.applyRateLimitInfo(res);
 
-    if (req.retries < req.allowedRetries) {
-      req.retries++;
+    if (req.retries! < req.allowedRetries!) {
+      req.retries!++;
 
       return this.queue(req);
     } else {
@@ -50,18 +50,18 @@ export class BucketQueueManager {
     return this.remaining === 0 && Date.now() < this.reset;
   }
 
-  public async queue(req: APIRequest): Promise<AxiosResponse> {
+  public async queue(req: APIRequest): Promise<ResponseData> {
     // let running requests finish
     await this.#queue.wait();
 
     if (this.limited) {
       if (this.localLimited) {
         const dur = this.durUntilReset;
-        console.debug('[fuwa] Rate limited, sleeping for ' + dur + 'ms');
+        this.debug(`Rate limited, sleeping for ${dur}ms`)
         await sleep(dur);
       } else if (this.manager.globalLimited) {
         const dur = this.manager.durUntilReset;
-        console.debug('[fuwa] Rate limited, sleeping for ' + dur + 'ms');
+        this.debug(`Rate limited, sleeping for ${dur}ms`)
         await sleep(this.manager.durUntilReset);
       }
     }
@@ -75,5 +75,9 @@ export class BucketQueueManager {
     } finally {
       this.#queue.shift();
     }
+  }
+
+  private debug(...data: any[]) {
+        this.manager._client.debug(`[${this.manager._client.logger.kleur().blueBright("REST")} => ${this.manager._client.logger.kleur().green("Queue")}]`, ...data);
   }
 }

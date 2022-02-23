@@ -1,7 +1,8 @@
-import { AxiosResponse } from 'axios';
+import { STATUS_CODES } from 'node:http';
+import { ResponseData } from 'undici/types/dispatcher';
 import { Client } from '../client/Client.js';
+import { APIRequest, resolveRequest } from './APIRequest.js';
 import { BucketQueueManager } from './BucketQueueManager.js';
-import { APIRequest } from './Request';
 import { RESTClient } from './RESTClient';
 import { RateLimitedError, RESTError } from './RESTError.js';
 
@@ -11,7 +12,7 @@ export class RequestManager {
   // private buckets: Map<string, RateLimit> = new Map();
 
   /** The total amount of requests we can make until we're globally rate-limited. */
-  public limit = Infinity;
+  public limit = 50;
   /** The time offset between us and Discord. */
   public offset = 0;
 
@@ -19,9 +20,9 @@ export class RequestManager {
   private queues: Map<string, BucketQueueManager> = new Map();
 
   /** The remaining requests we can make until we're globally rate-limited. */
-  public remaining = 1;
+  public remaining = 50;
   /** When the global rate limit will reset. */
-  public reset = -1;
+  public reset = Date.now() + 1e3;
 
   constructor(public client: RESTClient, public _client: Client) {}
 
@@ -48,30 +49,32 @@ export class RequestManager {
 
   public async makeRequest(
     bucket: BucketQueueManager,
-    req: APIRequest
-  ): Promise<AxiosResponse> {
+    requestData: APIRequest
+  ): Promise<ResponseData> {
+    const req = resolveRequest(requestData);
+
     const res = await this.client.execute(req);
 
     this.updateOffset(res);
 
-    if (res.status < 200) {
-      throw new RESTError(req.route, res.status, req.method, res, req.data);
-    } else if (res.status < 300) {
+    if (res.statusCode < 200) {
+      throw new RESTError(req, res);
+    } else if (res.statusCode < 300) {
       this._client.debug(
         `[${this._client.logger.kleur().green('REST')} => ${this._client.logger
           .kleur()
           .green('Manager')}] ${req.method.toUpperCase()} ${
           req.route
-        } -> 200 OK`
+        } -> ${res.statusCode} ${STATUS_CODES[res.statusCode]}`
       );
       return res;
-    } else if (res.status < 500) {
-      switch (res.status) {
+    } else if (res.statusCode < 500) {
+      switch (res.statusCode) {
         case 429: {
           if (res.headers['x-ratelimit-global']) {
-            this.limit = +res.headers['x-ratelimit-global-limit'];
-            this.remaining = +res.headers['x-ratelimit-global-remaining'];
-            this.reset = +res.headers['x-ratelimit-global-reset'] * 1000;
+            this.limit = +res.headers['x-ratelimit-global-limit']!;
+            this.remaining = +res.headers['x-ratelimit-global-remaining']!;
+            this.reset = +res.headers['x-ratelimit-global-reset']! * 1000;
 
             if (req.retries < req.allowedRetries) {
               req.retries++;
@@ -87,24 +90,14 @@ export class RequestManager {
         }
         case 401:
           throw new Error('Token has been invalidated or was never valid');
-        case 403: {
-          const error = new RESTError(
-            req.route,
-            res.status,
-            req.method,
-            res,
-            req.data
-          );
-          throw error;
-        }
         default:
-          throw new RESTError(req.route, res.status, req.method, res, req.data);
+          throw new RESTError(req, res, await res.body.text());
       }
     } else {
-      throw new RESTError(req.route, res.status, req.method, res, req.data);
+          throw new RESTError(req, res);
     }
   }
-  public queue<T>(req: APIRequest): Promise<AxiosResponse<T>> {
+  public queue(req: APIRequest): Promise<ResponseData> {
     const [endpoint, majorId] = this.getBucket(req.route);
 
     if (!this.queues.has(endpoint)) {
@@ -117,8 +110,8 @@ export class RequestManager {
     return this.queues.get(endpoint)!.queue(req);
   }
 
-  private updateOffset(res: AxiosResponse) {
-    const discordDate = new Date(res.headers['date']).getTime();
+  private updateOffset(res: ResponseData) {
+    const discordDate = new Date(res.headers['date']!).getTime();
     const local = Date.now();
 
     this.offset = local - discordDate;
@@ -126,9 +119,3 @@ export class RequestManager {
 }
 
 export type RouteLike = `/${string}`;
-export interface RateLimit {
-  global: boolean;
-  limit: number;
-  /** The UNIX timestamp this rate limit expires at. */
-  reset: number;
-}

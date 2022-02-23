@@ -32,12 +32,12 @@ export class DefaultLogger implements ILogger {
 
   /** Utility function to supply a color formatter if it's installed, and to fallback to a proxy if not */
   public kleur() {
-    return DefaultKleurFactory(this.options);
+    return DefaultKleurFactory()
   }
 
   public info(...data: any[]): void {
     if (this.options.level.includes('info')) {
-      this.log(`${this.kleur().blueBright('info')}:`, ...data);
+      this.log(`${this.kleur().blue('info')}:`, ...data);
     }
   }
 

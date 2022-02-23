@@ -45,4 +45,5 @@ export declare class Guild extends Base<APIGuild | APIUnavailableGuild> {
     publicUpdatesChannelId: Snowflake | null;
     _deserialise(data: APIGuild | APIUnavailableGuild): this;
     fetch(force?: boolean): Promise<Guild>;
+    edit(data: Partial<Guild>): void;
 }

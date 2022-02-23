@@ -17,9 +17,14 @@ export const DefaultLoggerOptions: LoggerOptions = {
   level: ['info', 'warn', 'error'],
 };
 
-export function DefaultKleurFactory(options: LoggerOptions = {}) {
-  if (options.colors && kleur) return kleur;
+export function DefaultKleurFactory() {
+  if (kleur) return kleur;
   else {
+    return DisabledKleurFactory();
+  }
+}
+
+export function DisabledKleurFactory() {
     const handler = () => {
       return (v: any) => {
         if (v) return v;
@@ -38,5 +43,4 @@ export function DefaultKleurFactory(options: LoggerOptions = {}) {
         get: handler,
       }
     );
-  }
 }

@@ -1,6 +1,6 @@
-import { APIRequest } from './Request';
+import { APIRequest } from './APIRequest';
 import { RequestManager } from './RequestManager';
-import { AxiosResponse } from 'axios';
+import { ResponseData } from 'undici/types/dispatcher';
 export declare class BucketQueueManager {
     #private;
     private readonly manager;
@@ -12,8 +12,9 @@ export declare class BucketQueueManager {
     constructor(manager: RequestManager, id: string, majorId: string);
     private applyRateLimitInfo;
     get durUntilReset(): number;
-    handleRateLimit(req: APIRequest, res: AxiosResponse): Promise<AxiosResponse<any, any>>;
+    handleRateLimit(req: APIRequest, res: ResponseData): Promise<ResponseData>;
     get limited(): boolean;
     get localLimited(): boolean;
-    queue(req: APIRequest): Promise<AxiosResponse>;
+    queue(req: APIRequest): Promise<ResponseData>;
+    private debug;
 }

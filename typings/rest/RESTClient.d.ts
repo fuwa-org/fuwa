@@ -1,7 +1,7 @@
-import { AxiosRequestHeaders, AxiosResponse } from 'axios';
 import { ClientOptions } from '../client/ClientOptions';
-import { APIRequest } from './Request';
+import { APIRequest } from './APIRequest';
 import { RouteLike } from './RequestManager.js';
+import { ResponseData } from 'undici/types/dispatcher';
 export declare class RESTClient {
     #private;
     baseUrl: string;
@@ -9,14 +9,16 @@ export declare class RESTClient {
     version?: number;
     constructor(options: RESTClientOptions);
     static createRESTOptions(clientOptions: ClientOptions, token: string, tokenType: 'Bot' | 'Bearer'): RESTClientOptions;
-    createHeaders(): AxiosRequestHeaders;
-    execute<T = any>(request: APIRequest): Promise<AxiosResponse<T>>;
-    formatRoute(route: RouteLike): string;
+    createHeaders(originalHeaders?: {}, auth?: boolean): Record<string, string>;
+    formatRoute(route: RouteLike, versioned?: boolean): string;
+    resolveBody(req: APIRequest): APIRequest;
+    createURL(request: APIRequest): string;
+    execute(request: APIRequest): Promise<ResponseData>;
 }
 export interface RESTClientOptions {
     baseUrl: string;
     version?: number;
     auth?: string;
     userAgent?: string;
-    headers?: AxiosRequestHeaders;
+    headers?: Record<string, string>;
 }

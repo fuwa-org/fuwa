@@ -166,4 +166,8 @@ export class Guild extends Base<APIGuild | APIUnavailableGuild> {
   public fetch(force = true) {
     return this.client.guilds.fetch(this.id);
   }
+
+  public edit(data: Partial<Guild>) {
+
+  }
 }

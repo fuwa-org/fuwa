@@ -4,4 +4,5 @@ export interface LoggerOptions {
 }
 export declare type LogLevel = 'debug' | 'info' | 'warn' | 'error';
 export declare const DefaultLoggerOptions: LoggerOptions;
-export declare function DefaultKleurFactory(options?: LoggerOptions): any;
+export declare function DefaultKleurFactory(): any;
+export declare function DisabledKleurFactory(): {};

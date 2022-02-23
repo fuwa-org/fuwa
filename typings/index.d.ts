@@ -6,7 +6,7 @@ export * from './ws/intents';
 export * from './ws/GatewayShard';
 export * from './rest/RESTClient';
 export * from './rest/RESTError';
-export * from './rest/Request';
+export * from './rest/APIRequest';
 export * from './rest/RequestManager';
 export * from './rest/BucketQueueManager';
 export * from './structures/templates/BaseStructure';

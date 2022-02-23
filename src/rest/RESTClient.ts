@@ -1,7 +1,9 @@
-import axios, { AxiosRequestHeaders, AxiosResponse } from 'axios';
 import { ClientOptions } from '../client/ClientOptions';
-import { APIRequest } from './Request';
+import { APIRequest } from './APIRequest';
 import { RouteLike } from './RequestManager.js';
+import FormData from "form-data";
+import undici from 'undici';
+import { ResponseData } from 'undici/types/dispatcher';
 
 /**
  * Utility class for easy HTTP requests to the Discord API. Can be used for other APIs if needed.
@@ -45,32 +47,77 @@ export class RESTClient {
     };
   }
 
-  public createHeaders(): AxiosRequestHeaders {
-    const headers: AxiosRequestHeaders = {};
+  public createHeaders(originalHeaders = {}, auth = false): Record<string, string> {
+    let headers: Record<string, string> = originalHeaders ?? {};
 
     if (this.options.headers) Object.assign(headers, this.options.headers);
     headers['user-agent'] =
       headers['user-agent'] ??
       this.options.userAgent ??
       'Mozila/5.0 (compatible; Fuwa)';
-    if (this.#auth) headers.authorization = headers.authorization ?? this.#auth;
+    if (this.#auth && auth) headers.authorization = headers.authorization ?? this.#auth;
 
     return headers;
   }
-  public execute<T = any>(request: APIRequest): Promise<AxiosResponse<T>> {
-    return axios
-      .request<T>({
-        url: this.formatRoute(request.route),
-        method: request.method,
-        headers: Object.assign(this.createHeaders(), request.headers),
-        data: request.data,
-      })
-      .catch((r) => r.response);
+
+  public formatRoute(route: RouteLike, versioned = true): string {
+    return this.baseUrl + ((this.version && versioned) ? `/v${this.version}` : '') + route;
   }
 
-  public formatRoute(route: RouteLike): string {
-    return this.baseUrl + (this.version ? `/v${this.version}` : '') + route;
+  public resolveBody(req: APIRequest): APIRequest {
+    if (req.files?.length) {
+      const data = new FormData();
+      let i = 0;
+
+      for (const file of req.files) {
+        data.append(file.key ? typeof file.key === "number" ? `files[${file.key}]` : file.key : `files[${i++}]`, file.data, {
+          contentType: file.contentType,
+        });
+      }
+
+      if (req.body) {
+        data.append("payload_json", req.body, { contentType: "application/json" });
+      }
+
+      req.headers = data.getHeaders(req.headers);
+
+      req.body = data.getBuffer(); 
+    } 
+    else if (typeof req.body === "string") {
+      req.body = Buffer.from(req.body);
+    }
+    else if (req.body instanceof Buffer) {}
+    else if (typeof req.body === "object" && req.body !== null) {
+      req.body = Buffer.from(JSON.stringify(req.body));
+    }
+
+    if (req.body) req.headers!["content-length"] = Buffer.byteLength(req.body).toString();
+
+    return req;
   }
+
+  public createURL(request: APIRequest) {
+    let query = "";
+    if (request.query) {
+      query = `?${request.query.toString()}`;
+    }
+
+    return `${this.formatRoute(request.route, request.versioned)}${query}`
+  }
+
+  public execute(request: APIRequest): Promise<ResponseData> {
+    request = this.resolveBody(request);
+
+    let options: any = {
+      method: request.method,
+      headers: this.createHeaders(request.headers, request.auth),
+    };
+
+    if (request.body) options.body = request.body;
+
+    return undici.request(this.createURL(request), options);
+  }
+
 }
 
 export interface RESTClientOptions {
@@ -79,5 +126,5 @@ export interface RESTClientOptions {
   auth?: string;
   userAgent?: string;
   /** Additional headers to send */
-  headers?: AxiosRequestHeaders;
+  headers?: Record<string, string>;
 }

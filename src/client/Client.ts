@@ -1,4 +1,3 @@
-import { APIRequest } from '../index.js';
 import { RequestManager } from '../rest/RequestManager.js';
 import { RESTClient } from '../rest/RESTClient';
 import {
@@ -7,7 +6,7 @@ import {
   resolveIntents,
   Snowflake,
 } from './ClientOptions';
-import { APIGatewayBotInfo } from '@splatterxl/discord-api-types';
+import { APIGatewayBotInfo, Routes } from '@splatterxl/discord-api-types';
 import EventEmitter from 'events';
 import { GatewayShard } from '../ws/GatewayShard.js';
 import { GuildManager } from '../structures/managers/GuildManager.js';
@@ -65,8 +64,10 @@ export class Client extends EventEmitter {
 
     if (!process.env.__FUWA_SHARD_ID) {
       gatewayInfo = await this.http
-        .queue<APIGatewayBotInfo>(new APIRequest('/gateway/bot'))
-        .then((res) => res.data);
+        .queue({
+          route: Routes.gatewayBot(),
+        })
+        .then((res) => res.body.json());
     } else {
       gatewayInfo = {
         shards: +process.env.__FUWA_SHARD_COUNT!,

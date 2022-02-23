@@ -1,7 +1,7 @@
-import { AxiosResponse } from 'axios';
+import { ResponseData } from 'undici/types/dispatcher';
 import { Client } from '../client/Client.js';
+import { APIRequest } from './APIRequest.js';
 import { BucketQueueManager } from './BucketQueueManager.js';
-import { APIRequest } from './Request';
 import { RESTClient } from './RESTClient';
 export declare class RequestManager {
     client: RESTClient;
@@ -15,13 +15,8 @@ export declare class RequestManager {
     get durUntilReset(): number;
     getBucket(route: RouteLike): string[];
     get globalLimited(): boolean;
-    makeRequest(bucket: BucketQueueManager, req: APIRequest): Promise<AxiosResponse>;
-    queue<T>(req: APIRequest): Promise<AxiosResponse<T>>;
+    makeRequest(bucket: BucketQueueManager, requestData: APIRequest): Promise<ResponseData>;
+    queue(req: APIRequest): Promise<ResponseData>;
     private updateOffset;
 }
 export declare type RouteLike = `/${string}`;
-export interface RateLimit {
-    global: boolean;
-    limit: number;
-    reset: number;
-}

@@ -20,8 +20,6 @@ export class DisabledLogger implements ILogger {
   }
 
   public kleur() {
-    return DefaultKleurFactory({
-      colors: false,
-    });
+    return DefaultKleurFactory();
   }
 }
