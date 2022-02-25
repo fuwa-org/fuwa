@@ -1,8 +1,9 @@
-import { Intents } from '../ws/intents';
+import { Intents } from '../util/bitfields/Intents';
 import fs from 'fs';
 import os from 'os';
 import { ILogger } from '../logging/ILogger.js';
 import { LoggerOptions } from '../logging/LoggerOptions.js';
+import { Erlpack } from '../ws/GatewayShard.js';
 
 export const pkg = JSON.parse(
   fs.readFileSync(__dirname + '/../../package.json', 'utf-8')
@@ -45,7 +46,7 @@ export interface ClientOptions {
    * Whether to use `erlpack` while processing gateway packets. Requires [the NPM package](https://npm.im/erlpack).
    * @default false
    */
-  etf?: boolean;
+  etf?: boolean | Erlpack;
 }
 
 export type ClientOptionsIntents = number | Intents | (number | Intents)[];

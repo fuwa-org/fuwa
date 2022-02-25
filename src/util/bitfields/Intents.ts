@@ -1,5 +1,5 @@
 import { GatewayIntentBits } from '@splatterxl/discord-api-types';
-import { Bitfield } from '../util/Bitfield';
+import { Bitfield } from './Bitfield';
 
 export class Intents extends Bitfield {
   /** https://discord.com/developers/docs/topics/gateway#list-of-intents */

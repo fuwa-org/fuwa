@@ -18,9 +18,13 @@ import WebSocket from 'ws';
 import { Client } from '../client/Client';
 import { Snowflake } from '../client/ClientOptions';
 import { Guild } from '../structures/Guild';
-import { Intents } from './intents';
+import { ClientUser } from '../structures/ClientUser';
+import { Intents } from '../util/bitfields/Intents';
 
-interface Erlpack {
+/**
+ * Typeguard for Erlpack interfaces
+ */
+export interface Erlpack {
   pack(data: any): Buffer;
   unpack<T>(data: Buffer): T;
 }
@@ -64,7 +68,13 @@ export class GatewayShard {
   ) {
     this.id = shard[0]!;
     this.compress = client.options.compress;
-    this.erlpack = client.options.etf;
+
+    if (typeof this.client.options.etf === 'boolean') {
+      this.erlpack = this.client.options.etf;
+    } else {
+      this.erlpack = true;
+      erlpack = this.client.options.etf;
+    }
 
     this.#token = token;
   }
@@ -245,13 +255,28 @@ export class GatewayShard {
               shard: '[' + event.shard?.join(', ') + ']',
               guilds: event.guilds?.length,
             });
+
+            this.client.users.add(
+              new ClientUser(this.client)._deserialise(event.user)
+            );
+
+            this.client.user = this.client.users.get(
+              event.user.id as Snowflake
+            ) as ClientUser;
+
+            if (
+              !(<Intents>this.client.options.intents).has(Intents.Bits.Guilds)
+            ) {
+              this.client.logger.warn(
+                "Client intents don't include guilds, this may cause issues."
+              );
+              this.client.emit('ready');
+            }
+
             break;
           }
           case GatewayDispatchEvents.Resumed: {
-            event = event as GatewayResumedDispatch['d'];
-
             this.debug('resumed session', this.session);
-
             break;
           }
           case GatewayDispatchEvents.GuildCreate: {
