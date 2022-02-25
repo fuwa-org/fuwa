@@ -1,5 +1,6 @@
+import { KleurFactory } from './ILogger.js';
 export interface LoggerOptions {
-    colors?: boolean;
+    colors?: boolean | KleurFactory;
     level?: LogLevel | LogLevel[];
 }
 export declare type LogLevel = 'debug' | 'info' | 'warn' | 'error';

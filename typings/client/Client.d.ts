@@ -6,6 +6,8 @@ import { GatewayShard } from '../ws/GatewayShard.js';
 import { GuildManager } from '../structures/managers/GuildManager.js';
 import { Guild } from '../structures/Guild.js';
 import { ILogger } from '../logging/ILogger.js';
+import { UserManager } from '../structures/managers/UserManager.js';
+import { ClientUser } from '../structures/ClientUser.js';
 export declare class Client extends EventEmitter {
     #private;
     http: RequestManager;
@@ -13,6 +15,8 @@ export declare class Client extends EventEmitter {
     logger: ILogger;
     ws?: GatewayShard;
     guilds: GuildManager;
+    users: UserManager;
+    user: ClientUser | null;
     constructor(token: string, options?: ClientOptions);
     connect(): Promise<void>;
     private constructGatewayURL;

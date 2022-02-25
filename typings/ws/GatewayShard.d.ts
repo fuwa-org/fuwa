@@ -1,5 +1,10 @@
+/// <reference types="node" />
 import { GatewaySendPayload } from '@splatterxl/discord-api-types';
 import { Client } from '../client/Client';
+export interface Erlpack {
+    pack(data: any): Buffer;
+    unpack<T>(data: Buffer): T;
+}
 export declare class GatewayShard {
     #private;
     client: Client;
