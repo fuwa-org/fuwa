@@ -18,6 +18,8 @@ import {
   DefaultLoggerOptions,
   LoggerOptions,
 } from '../logging/LoggerOptions.js';
+import { UserManager } from '../structures/managers/UserManager.js';
+import { ClientUser } from '../structures/ClientUser.js';
 
 export class Client extends EventEmitter {
   #token: string;
@@ -29,6 +31,9 @@ export class Client extends EventEmitter {
   public ws?: GatewayShard;
 
   public guilds: GuildManager;
+  public users: UserManager;
+
+  public user: ClientUser | null = null;
 
   public constructor(token: string, options?: ClientOptions) {
     super();
@@ -57,6 +62,7 @@ export class Client extends EventEmitter {
     }
 
     this.guilds = new GuildManager(this);
+    this.users = new UserManager(this);
   }
 
   public async connect(): Promise<void> {
