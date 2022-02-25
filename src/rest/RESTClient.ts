@@ -48,7 +48,7 @@ export class RESTClient {
   }
 
   public createHeaders(originalHeaders = {}, auth = false): Record<string, string> {
-    let headers: Record<string, string> = originalHeaders ?? {};
+    const headers: Record<string, string> = originalHeaders ?? {};
 
     if (this.options.headers) Object.assign(headers, this.options.headers);
     headers['user-agent'] =
@@ -86,7 +86,9 @@ export class RESTClient {
     else if (typeof req.body === "string") {
       req.body = Buffer.from(req.body);
     }
-    else if (req.body instanceof Buffer) {}
+    else if (req.body instanceof Buffer) {
+      // do nothing
+    }
     else if (typeof req.body === "object" && req.body !== null) {
       req.body = Buffer.from(JSON.stringify(req.body));
     }
@@ -108,7 +110,7 @@ export class RESTClient {
   public execute(request: APIRequest): Promise<ResponseData> {
     request = this.resolveBody(request);
 
-    let options: any = {
+    const options: any = {
       method: request.method,
       headers: this.createHeaders(request.headers, request.auth),
     };
