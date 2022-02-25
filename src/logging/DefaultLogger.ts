@@ -27,12 +27,13 @@ export class DefaultLogger implements ILogger {
 
   constructor(options: LoggerOptions = {}) {
     if (typeof options.level === 'string') options.level = [options.level];
+    if (typeof options.colors === 'function') this.kleur = options.colors;
     this.options = Object.assign(this.options, options) as TLoggerOptions;
   }
 
   /** Utility function to supply a color formatter if it's installed, and to fallback to a proxy if not */
   public kleur() {
-    return DefaultKleurFactory()
+    return DefaultKleurFactory();
   }
 
   public info(...data: any[]): void {
@@ -43,7 +44,7 @@ export class DefaultLogger implements ILogger {
 
   public warn(...data: any[]): void {
     if (this.options.level.includes('warn')) {
-      this.log(`${this.kleur().yellowBright('yellow')}`, ...data);
+      this.log(`${this.kleur().yellow('warn')}:`, ...data);
     }
   }
 
@@ -67,7 +68,7 @@ export class DefaultLogger implements ILogger {
             ? d
             : util.inspect(d, {
                 depth: 1,
-                colors: this.options.colors,
+                colors: !!this.options.colors,
               })
         )
         .join(' ') + '\n'

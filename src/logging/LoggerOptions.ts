@@ -1,3 +1,5 @@
+import { KleurFactory } from './ILogger.js';
+
 let kleur: any;
 try {
   kleur = require('kleur');
@@ -6,7 +8,7 @@ try {
 }
 
 export interface LoggerOptions {
-  colors?: boolean;
+  colors?: boolean | KleurFactory;
   level?: LogLevel | LogLevel[];
 }
 
@@ -25,22 +27,22 @@ export function DefaultKleurFactory() {
 }
 
 export function DisabledKleurFactory() {
-    const handler = () => {
-      return (v: any) => {
-        if (v) return v;
-        else
-          return new Proxy(
-            {},
-            {
-              get: handler,
-            }
-          );
-      };
+  const handler = () => {
+    return (v: any) => {
+      if (v) return v;
+      else
+        return new Proxy(
+          {},
+          {
+            get: handler,
+          }
+        );
     };
-    return new Proxy(
-      {},
-      {
-        get: handler,
-      }
-    );
+  };
+  return new Proxy(
+    {},
+    {
+      get: handler,
+    }
+  );
 }
