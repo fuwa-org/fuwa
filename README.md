@@ -23,7 +23,9 @@ yarn add github:nearlysplat/fuwa
 ## Optional dependencies
 
 - **Erlpack**: For _very_ fast encoding/decoding of gateway messages. To use this feature, install [`erlpack`](https://npm.im/erlpack) as an npm dependency and pass `etf: true` to your `Client`'s options.
+  - If you have your own custom ETF decoder, you can pass that instead to `etf`, but make sure it implements our `Erlpack` interface.
 - **Kleur**: For coloured log output. To use this feature, install [`kleur`](https://npm.im/kleur) as an npm dependency and pass `logger: { colors: true }` to your `Client`'s options.
+  - If you use another library such as [`chalk`](https://npm.im/chalk) (unrecommended) or [`colorette`](https://npm.im/colorette), no problem! Just import that and pass it to your logger's options, e.g. `logger: { colors: require('chalk') }`. However, some libraries don't support the methods we use.
 
 ## Documentation
 
