@@ -3,6 +3,7 @@
   "version": "3.0.0",
   "description": "不和 (fuwa) is a Discord API wrapper.",
   "main": "./dist/index.js",
+  "type": "commonjs",
   "scripts": {
     "lint": "eslint . --ext .ts",
     "lint:fix": "yarn lint --fix",
@@ -27,7 +28,6 @@
     "@types/ws": "8.2.3",
     "form-data": "^4.0.0",
     "lodash.snakecase": "^4.1.1",
-    "tslib": "2.3.1",
     "undici": "^4.14.1",
     "ws": "8.5.0"
   },

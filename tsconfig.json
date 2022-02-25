@@ -7,9 +7,11 @@
     "sourceMap": true,
     "extendedDiagnostics": false,
     "diagnostics": false,
-    "module": "commonjs"
+    "module": "commonjs",
+    "noEmitHelpers": false,
+    "importHelpers": false
   },
-  "extends": "@splatterxl/tsconfig/tsconfig.json",
+  "extends": "@splatterxl/tsconfig",
   "include": ["./src/**/*"],
   "compileOnSave": false,
   "exclude": ["./dist/**"]
