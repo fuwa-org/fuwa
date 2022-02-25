@@ -1,7 +1,7 @@
 // @ts-nocheck Let's just hope this works.
 import { Client } from '../../client/Client';
 
-export abstract class Base<T> {
+export abstract class BaseStructure<T> {
   client: Client;
   constructor(client: Client) {
     Object.defineProperty(this, 'client', {
@@ -16,20 +16,14 @@ export abstract class Base<T> {
    *
    * **Note**: if the specified key isn't available in the source, it falls back to the target's equivalent, which makes it especially useful for patching objects with new data.
    * @internal
-   * @param target Target object to copy to.
    * @param source Object to copy from.
    * @param props Properties to copy.
    */
-  from<S>(
+  inheritFrom<S>(
     source: S,
     props: (
       | (keyof S & keyof this)
       | [sourceKey: keyof this, targetKey: keyof this]
-      | {
-          [key: keyof S]:
-            | keyof this
-            | ((data: any) => [key: string, value: any]);
-        }
     )[]
   ) {
     for (const key of props) {

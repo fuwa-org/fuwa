@@ -1,5 +1,5 @@
 import { Snowflake } from '../client/ClientOptions';
-import { Base } from './templates/BaseStructure';
+import { BaseStructure } from './templates/BaseStructure';
 import {
   APIGuild,
   APIUnavailableGuild,
@@ -10,11 +10,17 @@ import {
   GuildNSFWLevel,
   GuildPremiumTier,
   GuildVerificationLevel,
+  Routes,
 } from '@splatterxl/discord-api-types';
-import { GuildSystemChannelFlags } from '../util/GuildSystemChannelFlags';
+import { GuildSystemChannelFlags } from '../util/bitfields/GuildSystemChannelFlags';
 import { DiscordSnowflake } from '@sapphire/snowflake';
+import {
+  FileResolvable,
+  resolveFile,
+} from '../util/resolvables/FileResolvable.js';
+import { DataTransformer } from '../rest/DataTransformer.js';
 
-export class Guild extends Base<APIGuild | APIUnavailableGuild> {
+export class Guild extends BaseStructure<APIGuild | APIUnavailableGuild> {
   public id!: Snowflake;
   public available = false;
 
@@ -164,10 +170,141 @@ export class Guild extends Base<APIGuild | APIUnavailableGuild> {
   }
 
   public fetch(force = true) {
-    return this.client.guilds.fetch(this.id);
+    return this.client.guilds.fetch(this.id, force);
   }
 
-  public edit(data: Partial<Guild>) {
+  public async edit(data: Partial<APIGuild | Guild>, reason?: string) {
+    return this._deserialise(
+      await this.client.http
+        .queue({
+          route: Routes.guild(this.id),
+          method: 'PATCH',
+          body: DataTransformer.guild(data),
+          headers: {
+            'X-Audit-Log-Reason': reason ?? '',
+          },
+        })
+        .then((v) => v.body.json())
+    );
+  }
 
+  public async setIcon(icon: FileResolvable, reason?: string) {
+    return this.edit(
+      { icon: await resolveFile(icon).then((b) => b.toString('base64url')) },
+      reason
+    );
+  }
+
+  public async setBanner(banner: FileResolvable, reason?: string) {
+    return this.edit(
+      {
+        banner: await resolveFile(banner).then((b) => b.toString('base64url')),
+      },
+      reason
+    );
+  }
+
+  public async setSplash(splash: FileResolvable, reason?: string) {
+    return this.edit(
+      {
+        splash: await resolveFile(splash).then((b) => b.toString('base64url')),
+      },
+      reason
+    );
+  }
+
+  public async setDiscoverySplash(splash: FileResolvable, reason?: string) {
+    return this.edit(
+      {
+        discovery_splash: await resolveFile(splash).then((b) =>
+          b.toString('base64url')
+        ),
+      },
+      reason
+    );
+  }
+
+  public setName(name: string, reason?: string) {
+    return this.edit({ name }, reason);
+  }
+
+  /**
+   * @deprecated use {@link VoiceChannel.setRTCRegion} instead
+   */
+  public setRegion(region: string, reason?: string) {
+    return this.edit({ region }, reason);
+  }
+
+  public setAFKTimeout(timeout: number, reason?: string) {
+    return this.edit({ afk_timeout: timeout }, reason);
+  }
+
+  public setAFKChannel(channel: Snowflake, reason?: string) {
+    return this.edit({ afk_channel_id: channel }, reason);
+  }
+
+  public setSystemChannel(channel: Snowflake, reason?: string) {
+    return this.edit({ system_channel_id: channel }, reason);
+  }
+
+  public setSystemChannelFlags(
+    flags: GuildSystemChannelFlags,
+    reason?: string
+  ) {
+    return this.edit({ system_channel_flags: flags.bits }, reason);
+  }
+
+  public setVerificationLevel(level: GuildVerificationLevel, reason?: string) {
+    return this.edit({ verification_level: level }, reason);
+  }
+
+  public setExplicitContentFilter(
+    filter: GuildExplicitContentFilter,
+    reason?: string
+  ) {
+    return this.edit({ explicit_content_filter: filter }, reason);
+  }
+
+  public setDefaultMessageNotifications(
+    notifications: GuildDefaultMessageNotifications,
+    reason?: string
+  ) {
+    return this.edit({ default_message_notifications: notifications }, reason);
+  }
+
+  public setWidgetEnabled(enabled: boolean, reason?: string) {
+    return this.edit({ widget_enabled: enabled }, reason);
+  }
+
+  public setWidgetChannel(channel: Snowflake, reason?: string) {
+    return this.edit({ widget_channel_id: channel }, reason);
+  }
+
+  public setPublicUpdatesChannel(channel: Snowflake, reason?: string) {
+    return this.edit({ public_updates_channel_id: channel }, reason);
+  }
+
+  public setMaxMembers(max: number, reason?: string) {
+    return this.edit({ max_members: max }, reason);
+  }
+
+  public setMaxPresences(max: number, reason?: string) {
+    return this.edit({ max_presences: max }, reason);
+  }
+
+  public setMaxVideoChannelUsers(max: number, reason?: string) {
+    return this.edit({ max_video_channel_users: max }, reason);
+  }
+
+  public setVanityURLCode(code: string, reason?: string) {
+    return this.edit({ vanity_url_code: code }, reason);
+  }
+
+  public setDescription(description: string, reason?: string) {
+    return this.edit({ description }, reason);
+  }
+
+  public async delete() {
+    await this.client.guilds.delete(this.id);
   }
 }
