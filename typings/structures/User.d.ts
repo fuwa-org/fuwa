@@ -13,4 +13,6 @@ export declare class User extends BaseStructure<APIUser> {
     avatar: string | null;
     banner: string | null;
     _deserialise(data: APIUser): this;
+    toString(): string;
+    fetch(): Promise<this>;
 }

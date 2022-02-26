@@ -31,4 +31,12 @@ export class User extends BaseStructure<APIUser> {
 
     return this;
   }
+
+  public toString(): string {
+    return `<@${this.id}>`;
+  }
+
+  public fetch(): Promise<this> {
+    return this.client.users.fetch(this.id) as Promise<this>;
+  }
 }
