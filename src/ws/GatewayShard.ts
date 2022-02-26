@@ -11,7 +11,6 @@ import {
   GatewayReadyDispatchData,
   GatewayReceivePayload,
   GatewayResume,
-  GatewayResumedDispatch,
   GatewaySendPayload,
 } from '@splatterxl/discord-api-types';
 import WebSocket from 'ws';
@@ -150,10 +149,13 @@ export class GatewayShard {
     });
   }
 
-  private reset() {
-    this.debug('Shard undergoing reset, closing socket');
-    this.close(false);
-    this._socket = undefined;
+  private reset(full = false) {
+    if (full) {
+      this.debug('Shard undergoing reset, closing socket');
+      this.close(false);
+      this._socket = undefined;
+    }
+
     this.#messageQueue = new AsyncQueue();
     this.messageQueueCount = 0;
     this.#timers.forEach((t) => clearInterval(t));

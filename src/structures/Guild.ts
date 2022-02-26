@@ -2,6 +2,7 @@ import { Snowflake } from '../client/ClientOptions';
 import { BaseStructure } from './templates/BaseStructure';
 import {
   APIGuild,
+  APIGuildMember,
   APIUnavailableGuild,
   GuildDefaultMessageNotifications,
   GuildExplicitContentFilter,
@@ -17,8 +18,10 @@ import { DiscordSnowflake } from '@sapphire/snowflake';
 import {
   FileResolvable,
   resolveFile,
+  toDataURI,
 } from '../util/resolvables/FileResolvable.js';
 import { DataTransformer } from '../rest/DataTransformer.js';
+import { GuildMember } from './GuildMember.js';
 
 export class Guild extends BaseStructure<APIGuild | APIUnavailableGuild> {
   public id!: Snowflake;
@@ -50,6 +53,8 @@ export class Guild extends BaseStructure<APIGuild | APIUnavailableGuild> {
   public maxMembers = Infinity;
   public maxPresences = Infinity;
   public maxVideoChannelUsers = Infinity;
+
+  public members: GuildMember[] = [];
 
   /** Whether the guild is considered large by Discord. */
   public large = false;
@@ -166,7 +171,15 @@ export class Guild extends BaseStructure<APIGuild | APIUnavailableGuild> {
 
     if ('joined_at' in data) this.joined = new Date(data.joined_at!);
 
+    if ('members' in data) this._handleMembers(data.members!);
+
     return this;
+  }
+
+  private _handleMembers(data: APIGuildMember[]) {
+    this.members = data.map((member) =>
+      new GuildMember(this)._deserialise(member)
+    );
   }
 
   public fetch(force = true) {
@@ -188,37 +201,38 @@ export class Guild extends BaseStructure<APIGuild | APIUnavailableGuild> {
     );
   }
 
-  public async setIcon(icon: FileResolvable, reason?: string) {
+  public async setIcon(icon: FileResolvable | null, reason?: string) {
     return this.edit(
-      { icon: await resolveFile(icon).then((b) => b.toString('base64url')) },
+      { icon: icon ? toDataURI(await resolveFile(icon)) : null },
       reason
     );
   }
 
-  public async setBanner(banner: FileResolvable, reason?: string) {
+  public async setBanner(banner: FileResolvable | null, reason?: string) {
     return this.edit(
       {
-        banner: await resolveFile(banner).then((b) => b.toString('base64url')),
+        banner: banner ? toDataURI(await resolveFile(banner)) : null,
       },
       reason
     );
   }
 
-  public async setSplash(splash: FileResolvable, reason?: string) {
+  public async setSplash(splash: FileResolvable | null, reason?: string) {
     return this.edit(
       {
-        splash: await resolveFile(splash).then((b) => b.toString('base64url')),
+        splash: splash ? toDataURI(await resolveFile(splash)) : null,
       },
       reason
     );
   }
 
-  public async setDiscoverySplash(splash: FileResolvable, reason?: string) {
+  public async setDiscoverySplash(
+    splash: FileResolvable | null,
+    reason?: string
+  ) {
     return this.edit(
       {
-        discovery_splash: await resolveFile(splash).then((b) =>
-          b.toString('base64url')
-        ),
+        discovery_splash: splash ? toDataURI(await resolveFile(splash)) : null,
       },
       reason
     );
