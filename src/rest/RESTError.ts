@@ -7,7 +7,9 @@ export class RESTError extends Error {
 
   constructor(req: APIRequest, res: ResponseData, public error?: any) {
     super();
-    this.message = `${res.statusCode} ${STATUS_CODES[res.statusCode]} [${req.method} ${req.route}]`;
+    this.message = `${res.statusCode} ${STATUS_CODES[res.statusCode]} [${
+      req.method
+    } ${req.route}]`;
     this.name = 'RESTError';
     this.body = req.body?.toString();
   }

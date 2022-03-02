@@ -57,11 +57,11 @@ export class BucketQueueManager {
     if (this.limited) {
       if (this.localLimited) {
         const dur = this.durUntilReset;
-        this.debug(`Rate limited, sleeping for ${dur}ms`)
+        this.debug(`Rate limited, sleeping for ${dur}ms`);
         await sleep(dur);
       } else if (this.manager.globalLimited) {
         const dur = this.manager.durUntilReset;
-        this.debug(`Rate limited, sleeping for ${dur}ms`)
+        this.debug(`Rate limited, sleeping for ${dur}ms`);
         await sleep(this.manager.durUntilReset);
       }
     }
@@ -78,6 +78,13 @@ export class BucketQueueManager {
   }
 
   private debug(...data: any[]) {
-        this.manager._client.debug(`[${this.manager._client.logger.kleur().blueBright("REST")} => ${this.manager._client.logger.kleur().green("Queue")}]`, ...data);
+    this.manager._client.debug(
+      `[${this.manager._client.logger
+        .kleur()
+        .blueBright('REST')} => ${this.manager._client.logger
+        .kleur()
+        .green('Queue')}]`,
+      ...data
+    );
   }
 }

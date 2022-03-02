@@ -1,9 +1,9 @@
-import { HttpMethod } from "undici/types/dispatcher";
-import { URLSearchParams } from "url";
-import { RouteLike } from "./RequestManager";
+import { HttpMethod } from 'undici/types/dispatcher';
+import { URLSearchParams } from 'url';
+import { RouteLike } from './RequestManager';
 
 export interface APIRequest {
-  route: RouteLike,
+  route: RouteLike;
   auth?: boolean;
   versioned?: boolean;
   query?: URLSearchParams | string | null;
@@ -11,6 +11,7 @@ export interface APIRequest {
   files?: File[] | null;
   method?: HttpMethod;
   headers?: Record<string, string>;
+  reason?: string | null;
 
   allowedRetries?: number;
   retries?: number;
@@ -29,10 +30,11 @@ export function resolveRequest(req: APIRequest): Required<APIRequest> {
     query: null,
     body: null,
     files: null,
-    method: "GET",
+    method: 'GET',
     allowedRetries: 5,
     retries: 0,
     headers: {},
+    reason: null,
     ...req,
-  }
+  };
 }

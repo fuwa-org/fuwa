@@ -1,7 +1,7 @@
 import { ClientOptions } from '../client/ClientOptions';
 import { APIRequest } from './APIRequest';
 import { RouteLike } from './RequestManager.js';
-import FormData from "form-data";
+import FormData from 'form-data';
 import undici from 'undici';
 import { ResponseData } from 'undici/types/dispatcher';
 
@@ -47,21 +47,28 @@ export class RESTClient {
     };
   }
 
-  public createHeaders(originalHeaders = {}, auth = false): Record<string, string> {
-    const headers: Record<string, string> = originalHeaders ?? {};
+  public createHeaders(request: APIRequest): Record<string, string> {
+    const headers: Record<string, string> = request.headers ?? {};
 
     if (this.options.headers) Object.assign(headers, this.options.headers);
     headers['user-agent'] =
       headers['user-agent'] ??
       this.options.userAgent ??
       'Mozila/5.0 (compatible; Fuwa)';
-    if (this.#auth && auth) headers.authorization = headers.authorization ?? this.#auth;
+    if (this.#auth && request.auth)
+      headers.authorization = headers.authorization ?? this.#auth;
+    if (request.reason && request.reason.length)
+      headers['x-audit-log-reason'] = request.reason;
 
     return headers;
   }
 
   public formatRoute(route: RouteLike, versioned = true): string {
-    return this.baseUrl + ((this.version && versioned) ? `/v${this.version}` : '') + route;
+    return (
+      this.baseUrl +
+      (this.version && versioned ? `/v${this.version}` : '') +
+      route
+    );
   }
 
   public resolveBody(req: APIRequest): APIRequest {
@@ -70,41 +77,49 @@ export class RESTClient {
       let i = 0;
 
       for (const file of req.files) {
-        data.append(file.key ? typeof file.key === "number" ? `files[${file.key}]` : file.key : `files[${i++}]`, file.data, {
-          contentType: file.contentType,
-        });
+        data.append(
+          file.key
+            ? typeof file.key === 'number'
+              ? `files[${file.key}]`
+              : file.key
+            : `files[${i++}]`,
+          file.data,
+          {
+            contentType: file.contentType,
+          }
+        );
       }
 
       if (req.body) {
-        data.append("payload_json", req.body, { contentType: "application/json" });
+        data.append('payload_json', req.body, {
+          contentType: 'application/json',
+        });
       }
 
       req.headers = data.getHeaders(req.headers);
 
-      req.body = data.getBuffer(); 
-    } 
-    else if (typeof req.body === "string") {
+      req.body = data.getBuffer();
+    } else if (typeof req.body === 'string') {
       req.body = Buffer.from(req.body);
-    }
-    else if (req.body instanceof Buffer) {
+    } else if (req.body instanceof Buffer) {
       // do nothing
-    }
-    else if (typeof req.body === "object" && req.body !== null) {
+    } else if (typeof req.body === 'object' && req.body !== null) {
       req.body = Buffer.from(JSON.stringify(req.body));
     }
 
-    if (req.body) req.headers!["content-length"] = Buffer.byteLength(req.body).toString();
+    if (req.body)
+      req.headers!['content-length'] = Buffer.byteLength(req.body).toString();
 
     return req;
   }
 
   public createURL(request: APIRequest) {
-    let query = "";
+    let query = '';
     if (request.query) {
       query = `?${request.query.toString()}`;
     }
 
-    return `${this.formatRoute(request.route, request.versioned)}${query}`
+    return `${this.formatRoute(request.route, request.versioned)}${query}`;
   }
 
   public execute(request: APIRequest): Promise<ResponseData> {
@@ -112,14 +127,13 @@ export class RESTClient {
 
     const options: any = {
       method: request.method,
-      headers: this.createHeaders(request.headers, request.auth),
+      headers: this.createHeaders(request),
     };
 
     if (request.body) options.body = request.body;
 
     return undici.request(this.createURL(request), options);
   }
-
 }
 
 export interface RESTClientOptions {

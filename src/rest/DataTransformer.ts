@@ -1,12 +1,12 @@
-import { APIGuild } from '@splatterxl/discord-api-types';
 import snakeCase from 'lodash.snakecase';
-import { Guild } from '../structures/Guild.js';
+import { BaseStructure } from '../structures/templates/BaseStructure.js';
 
 /**
  * Utility class to transform values into objects ready to be uploaded to the API.
  */
 export class DataTransformer {
   static snakeCase(data: any): any {
+    if (typeof data === 'string') return snakeCase(data);
     if (typeof data !== 'object') return data;
 
     return Object.fromEntries(
@@ -17,7 +17,7 @@ export class DataTransformer {
     );
   }
 
-  static guild(data: Partial<Guild | APIGuild>): Partial<APIGuild> {
-    return DataTransformer.snakeCase(data);
+  static asJSON(data: any): any {
+    return BaseStructure.toJSON(data);
   }
 }

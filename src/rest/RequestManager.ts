@@ -63,9 +63,9 @@ export class RequestManager {
       this._client.debug(
         `[${this._client.logger.kleur().green('REST')} => ${this._client.logger
           .kleur()
-          .green('Manager')}] ${req.method.toUpperCase()} ${
-          req.route
-        } -> ${res.statusCode} ${STATUS_CODES[res.statusCode]}`
+          .green('Manager')}] ${req.method.toUpperCase()} ${req.route} -> ${
+          res.statusCode
+        } ${STATUS_CODES[res.statusCode]}`
       );
       return res;
     } else if (res.statusCode < 500) {
@@ -94,10 +94,12 @@ export class RequestManager {
           throw new RESTError(req, res, await res.body.text());
       }
     } else {
-          throw new RESTError(req, res);
+      throw new RESTError(req, res);
     }
   }
-  public queue(req: APIRequest): Promise<ResponseData> {
+  public queue<T>(
+    req: APIRequest
+  ): Promise<ResponseData & { body: { json(): Promise<T> } }> {
     const [endpoint, majorId] = this.getBucket(req.route);
 
     if (!this.queues.has(endpoint)) {
