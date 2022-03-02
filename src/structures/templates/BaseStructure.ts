@@ -1,5 +1,6 @@
 // @ts-nocheck Let's just hope this works.
 import { Client } from '../../client/Client';
+import { DataTransformer } from '../../rest/DataTransformer';
 
 export abstract class BaseStructure<T> {
   client: Client;
@@ -44,4 +45,32 @@ export abstract class BaseStructure<T> {
     }
     return this;
   }
+
+  /**
+   * Returns an API-ready object.
+   * @internal
+   */
+  toJSON(): T {
+    let o: T = {} as any;
+    for (const k in this) {
+      const n = DataTransformer.snakeCase(key);
+      if (this[k].isManager)
+        o[n] =
+          this[k].apiReadyCache() ??
+          [...this[k].cache].map(([, V]) => BaseStructure.toJSON(V));
+      else if (this[k].isStructure) o[n] = this[k].toJSON();
+      else if (this[k] instanceof Array)
+        o[n] = this[k].map((v) => BaseStructure.toJSON(v));
+      else if (this[k] instanceof Date) o[k] = this[k].toISOString();
+      else if (this[k] instanceof Function) continue;
+      else o[n] = DataTransformer.snakeCase(this[k]);
+    }
+  }
+
+  public static toJSON(data: any): any {
+    if (data.toJSON && typeof data.toJSON === 'function') return data.toJSON();
+    else return DataTransformer.snakeCase(data);
+  }
+
+  public isStructure = true;
 }

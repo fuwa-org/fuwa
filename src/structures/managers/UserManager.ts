@@ -1,10 +1,15 @@
 import { APIUser, Routes } from '@splatterxl/discord-api-types';
+import { Client } from '../../client/Client.js';
 import { Snowflake } from '../../client/ClientOptions.js';
 import { ClientUser } from '../ClientUser.js';
 import { User } from '../User.js';
 import { BaseManager } from './BaseManager.js';
 
 export class UserManager extends BaseManager<ClientUser | User> {
+  constructor(client: Client) {
+    super(client, User);
+  }
+
   public async fetch(id: Snowflake, force = false): Promise<ClientUser | User> {
     if (!force && this.cache.has(id)) {
       return this.get(id)!;
@@ -32,23 +37,5 @@ export class UserManager extends BaseManager<ClientUser | User> {
 
   public async fetchCurrent(): Promise<ClientUser> {
     return this.fetch('@me' as Snowflake) as unknown as ClientUser;
-  }
-
-  public resolve(data: APIUser): ClientUser | User {
-    if (this.cache.has(data.id as Snowflake)) {
-      const user = this.cache.get(data.id as Snowflake)!._deserialise(data);
-
-      this.update(user);
-
-      return user;
-    } else {
-      const user = new (data.id === this.client.user!.id ? ClientUser : User)(
-        this.client
-      )._deserialise(data);
-
-      this.add(user);
-
-      return user;
-    }
   }
 }

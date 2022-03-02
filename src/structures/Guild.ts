@@ -22,6 +22,7 @@ import {
 } from '../util/resolvables/FileResolvable.js';
 import { DataTransformer } from '../rest/DataTransformer.js';
 import { GuildMember } from './GuildMember.js';
+import { GuildMemberManager } from './managers/GuildMemberManager';
 
 export class Guild extends BaseStructure<APIGuild | APIUnavailableGuild> {
   public id!: Snowflake;
@@ -54,7 +55,7 @@ export class Guild extends BaseStructure<APIGuild | APIUnavailableGuild> {
   public maxPresences = Infinity;
   public maxVideoChannelUsers = Infinity;
 
-  public members: GuildMember[] = [];
+  public members = new GuildMemberManager(this.client, this.id);
 
   /** Whether the guild is considered large by Discord. */
   public large = false;
@@ -171,15 +172,12 @@ export class Guild extends BaseStructure<APIGuild | APIUnavailableGuild> {
 
     if ('joined_at' in data) this.joined = new Date(data.joined_at!);
 
-    if ('members' in data) this._handleMembers(data.members!);
+    if ('members' in data)
+      this.members.addMany(
+        data.members!.map((v) => new GuildMember(this)._deserialise(v))
+      );
 
     return this;
-  }
-
-  private _handleMembers(data: APIGuildMember[]) {
-    this.members = data.map((member) =>
-      new GuildMember(this)._deserialise(member)
-    );
   }
 
   public fetch(force = true) {
@@ -192,10 +190,8 @@ export class Guild extends BaseStructure<APIGuild | APIUnavailableGuild> {
         .queue({
           route: Routes.guild(this.id),
           method: 'PATCH',
-          body: DataTransformer.guild(data),
-          headers: {
-            'X-Audit-Log-Reason': reason ?? '',
-          },
+          body: DataTransformer.asJSON(data),
+          reason,
         })
         .then((v) => v.body.json())
     );

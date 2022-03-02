@@ -1,9 +1,14 @@
 import { APIGuild, Routes } from '@splatterxl/discord-api-types';
+import { Client } from '../../client/Client';
 import { Snowflake } from '../../client/ClientOptions';
 import { Guild } from '../Guild';
 import { BaseManager } from './BaseManager';
 
 export class GuildManager extends BaseManager<Guild> {
+  constructor(client: Client) {
+    super(client, Guild);
+  }
+
   public async fetch(id: Snowflake, force = false): Promise<Guild> {
     if (!force && this.cache.has(id)) {
       return this.get(id)!;
