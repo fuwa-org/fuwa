@@ -53,7 +53,7 @@ export class GuildMemberManager extends BaseManager<GuildMember> {
     member: Snowflake | GuildMember,
     deleteMessageDays?: number,
     reason?: string
-  ): Promise<GuildMember> {
+  ): Promise<void> {
     return this.get(member instanceof GuildMember ? member.id : member)!.ban(
       deleteMessageDays,
       reason
