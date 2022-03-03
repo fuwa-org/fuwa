@@ -1,16 +1,22 @@
-import { APIGuildChannel, ChannelType, GuildChannelType } from "@splatterxl/discord-api-types";
-import { Snowflake } from "../client/ClientOptions";
-import { Channel } from "./Channel";
-import { Guild } from "./Guild";
+import {
+  APIGuildChannel,
+  ChannelType,
+  GuildChannelType,
+} from '@splatterxl/discord-api-types';
+import { Snowflake } from '../client/ClientOptions';
+import { Channel } from './Channel';
+import { Guild } from './Guild';
 
-export class GuildChannel<T extends APIGuildChannel<GuildChannelType> = APIGuildChannel<GuildChannelType>> extends Channel<T> {
+export class GuildChannel<
+  T extends APIGuildChannel<GuildChannelType> = APIGuildChannel<GuildChannelType>
+> extends Channel<T> {
   public declare guild: Guild;
   public declare type: GuildChannelType;
 
-  public name = "";
+  public name = '';
   public position = 0;
   public nsfw = false;
-  
+
   public parentId: Snowflake | null = null;
   public get parent() {
     return this.guild.channels.get(this.parentId!);
@@ -23,19 +29,24 @@ export class GuildChannel<T extends APIGuildChannel<GuildChannelType> = APIGuild
 
   _deserialise(data: T): this {
     super._deserialise(data as T & { guild_id: Snowflake });
-     
-    if ("name" in data) this.name = data.name!;
-    if ("position" in data) this.position = data.position!;
-    if ("nsfw" in data) this.nsfw = data.nsfw!;
-    if ("parent_id" in data) this.parentId = data.parent_id! as Snowflake;
+
+    if ('name' in data) this.name = data.name!;
+    if ('position' in data) this.position = data.position!;
+    if ('nsfw' in data) this.nsfw = data.nsfw!;
+    if ('parent_id' in data) this.parentId = data.parent_id! as Snowflake;
 
     return this;
   }
 
-  public static create(guild: Guild, data: { type: ChannelType; [k: string]: any; }): GuildChannels {
+  public static create(
+    guild: Guild,
+    data: { type: ChannelType; [k: string]: any }
+  ): GuildChannels {
     switch (data.type as GuildChannelType) {
-      default: { 
-        guild.client.logger.warn(`unknown guild channel type ${data.type} (${ChannelType[data.type]})`);
+      default: {
+        guild.client.logger.warn(
+          `unknown guild channel type ${data.type} (${ChannelType[data.type]})`
+        );
         return new GuildChannel(guild)._deserialise(data as unknown as any);
       }
     }
@@ -54,7 +65,11 @@ export class GuildChannel<T extends APIGuildChannel<GuildChannelType> = APIGuild
   }
 
   public setParent(parent: GuildChannels | Snowflake) {
-    this.edit({ parent_id: (parent as unknown as any).id ? (parent as unknown as any).id : parent });
+    this.edit({
+      parent_id: (parent as unknown as any).id
+        ? (parent as unknown as any).id
+        : parent,
+    });
   }
 }
 

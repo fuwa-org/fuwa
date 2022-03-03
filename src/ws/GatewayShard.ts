@@ -1,6 +1,6 @@
 import { AsyncQueue } from '@sapphire/async-queue';
 import {
-    APIGuildMember,
+  APIGuildMember,
   GatewayCloseCodes,
   GatewayDispatchEvents,
   GatewayDispatchPayload,
@@ -326,7 +326,7 @@ export class GatewayShard {
             this.client.emit('guildDelete', data.id);
           }
           case GatewayDispatchEvents.GuildMemberAdd: {
-            const data = event as GatewayGuildMemberAddDispatchData
+            const data = event as GatewayGuildMemberAddDispatchData;
             const guild = this.client.guilds.cache.get(
               data.guild_id as Snowflake
             );
@@ -338,7 +338,7 @@ export class GatewayShard {
               this.client.emit('guildMemberAdd', member);
             }
             break;
-          } 
+          }
           case GatewayDispatchEvents.GuildMemberRemove: {
             const data = event as GatewayGuildMemberRemoveDispatchData;
             const guild = this.client.guilds.cache.get(
@@ -353,7 +353,7 @@ export class GatewayShard {
               guild.members.remove(member.id);
 
               this.client.emit('guildMemberRemove', member.user!, guild);
-            this.client.guilds.update(guild!);
+              this.client.guilds.update(guild!);
             }
 
             break;
@@ -374,7 +374,7 @@ export class GatewayShard {
               guild.members.update(newMember);
 
               this.client.emit('guildMemberUpdate', member, newMember);
-            this.client.guilds.update(guild!);
+              this.client.guilds.update(guild!);
             }
             break;
           }
@@ -392,7 +392,7 @@ export class GatewayShard {
               guild.members.addMany(members);
 
               this.client.emit('guildMembersChunk', members);
-            this.client.guilds.update(guild!);
+              this.client.guilds.update(guild!);
             }
             break;
           }

@@ -181,7 +181,7 @@ export class Guild extends BaseStructure<APIGuild | APIUnavailableGuild> {
         data.members!.map((v) => new GuildMember(this)._deserialise(v))
       );
 
-    if ('channels' in data) { 
+    if ('channels' in data) {
       this.channels.addMany(
         data.channels!.map((v) => GuildChannel.create(this, v))
       );
