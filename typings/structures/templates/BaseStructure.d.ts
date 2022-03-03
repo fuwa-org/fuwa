@@ -4,4 +4,7 @@ export declare abstract class BaseStructure<T> {
     constructor(client: Client);
     abstract _deserialise(_data: T): void;
     inheritFrom<S>(source: S, props: ((keyof S & keyof this) | [sourceKey: keyof this, targetKey: keyof this])[]): this;
+    toJSON(): T;
+    static toJSON(data: any): any;
+    isStructure: boolean;
 }

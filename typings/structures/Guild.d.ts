@@ -3,7 +3,7 @@ import { BaseStructure } from './templates/BaseStructure';
 import { APIGuild, APIUnavailableGuild, GuildDefaultMessageNotifications, GuildExplicitContentFilter, GuildFeature, GuildMFALevel, GuildNSFWLevel, GuildPremiumTier, GuildVerificationLevel } from '@splatterxl/discord-api-types';
 import { GuildSystemChannelFlags } from '../util/bitfields/GuildSystemChannelFlags';
 import { FileResolvable } from '../util/resolvables/FileResolvable.js';
-import { GuildMember } from './GuildMember.js';
+import { GuildMemberManager } from './managers/GuildMemberManager';
 export declare class Guild extends BaseStructure<APIGuild | APIUnavailableGuild> {
     id: Snowflake;
     available: boolean;
@@ -23,7 +23,7 @@ export declare class Guild extends BaseStructure<APIGuild | APIUnavailableGuild>
     maxMembers: number;
     maxPresences: number;
     maxVideoChannelUsers: number;
-    members: GuildMember[];
+    members: GuildMemberManager;
     large: boolean;
     icon: string | null;
     banner: string | null;
@@ -47,7 +47,6 @@ export declare class Guild extends BaseStructure<APIGuild | APIUnavailableGuild>
     systemChannelFlags: GuildSystemChannelFlags | null;
     publicUpdatesChannelId: Snowflake | null;
     _deserialise(data: APIGuild | APIUnavailableGuild): this;
-    private _handleMembers;
     fetch(force?: boolean): Promise<Guild>;
     edit(data: Partial<APIGuild | Guild>, reason?: string): Promise<this>;
     setIcon(icon: FileResolvable | null, reason?: string): Promise<this>;

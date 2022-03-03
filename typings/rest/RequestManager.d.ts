@@ -16,7 +16,11 @@ export declare class RequestManager {
     getBucket(route: RouteLike): string[];
     get globalLimited(): boolean;
     makeRequest(bucket: BucketQueueManager, requestData: APIRequest): Promise<ResponseData>;
-    queue(req: APIRequest): Promise<ResponseData>;
+    queue<T>(req: APIRequest): Promise<ResponseData & {
+        body: {
+            json(): Promise<T>;
+        };
+    }>;
     private updateOffset;
 }
 export declare type RouteLike = `/${string}`;
