@@ -1,10 +1,15 @@
 import { AsyncQueue } from '@sapphire/async-queue';
 import {
+    APIGuildMember,
   GatewayCloseCodes,
   GatewayDispatchEvents,
   GatewayDispatchPayload,
   GatewayGuildCreateDispatchData,
   GatewayGuildDeleteDispatchData,
+  GatewayGuildMemberAddDispatchData,
+  GatewayGuildMemberRemoveDispatchData,
+  GatewayGuildMembersChunkDispatchData,
+  GatewayGuildMemberUpdateDispatchData,
   GatewayGuildUpdateDispatchData,
   GatewayIdentify,
   GatewayOpcodes,
@@ -19,6 +24,7 @@ import { Snowflake } from '../client/ClientOptions';
 import { Guild } from '../structures/Guild';
 import { ClientUser } from '../structures/ClientUser';
 import { Intents } from '../util/bitfields/Intents';
+import { GuildMember } from '../structures/GuildMember';
 
 /**
  * Typeguard for Erlpack interfaces
@@ -318,6 +324,77 @@ export class GatewayShard {
             this.client.guilds.remove(data.id as Snowflake);
 
             this.client.emit('guildDelete', data.id);
+          }
+          case GatewayDispatchEvents.GuildMemberAdd: {
+            const data = event as GatewayGuildMemberAddDispatchData
+            const guild = this.client.guilds.cache.get(
+              data.guild_id as Snowflake
+            );
+
+            if (guild) {
+              const member = new GuildMember(guild)._deserialise(data);
+              guild.members.add(member);
+
+              this.client.emit('guildMemberAdd', member);
+            }
+            break;
+          } 
+          case GatewayDispatchEvents.GuildMemberRemove: {
+            const data = event as GatewayGuildMemberRemoveDispatchData;
+            const guild = this.client.guilds.cache.get(
+              data.guild_id as Snowflake
+            );
+
+            if (guild) {
+              const member = guild.members.get(
+                data.user.id as Snowflake
+              ) as GuildMember;
+
+              guild.members.remove(member.id);
+
+              this.client.emit('guildMemberRemove', member.user!, guild);
+            this.client.guilds.update(guild!);
+            }
+
+            break;
+          }
+          case GatewayDispatchEvents.GuildMemberUpdate: {
+            const data = event as GatewayGuildMemberUpdateDispatchData;
+            const guild = this.client.guilds.cache.get(
+              data.guild_id as Snowflake
+            );
+
+            if (guild) {
+              const member = guild.members.get(
+                data.user.id as Snowflake
+              ) as GuildMember;
+
+              const newMember = member._deserialise(data as APIGuildMember);
+
+              guild.members.update(newMember);
+
+              this.client.emit('guildMemberUpdate', member, newMember);
+            this.client.guilds.update(guild!);
+            }
+            break;
+          }
+          case GatewayDispatchEvents.GuildMembersChunk: {
+            const data = event as GatewayGuildMembersChunkDispatchData;
+            const guild = this.client.guilds.cache.get(
+              data.guild_id as Snowflake
+            );
+
+            if (guild) {
+              const members = data.members.map((v) =>
+                new GuildMember(guild)._deserialise(v)
+              );
+
+              guild.members.addMany(members);
+
+              this.client.emit('guildMembersChunk', members);
+            this.client.guilds.update(guild!);
+            }
+            break;
           }
         }
 

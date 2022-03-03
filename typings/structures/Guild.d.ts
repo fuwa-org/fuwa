@@ -4,6 +4,7 @@ import { APIGuild, APIUnavailableGuild, GuildDefaultMessageNotifications, GuildE
 import { GuildSystemChannelFlags } from '../util/bitfields/GuildSystemChannelFlags';
 import { FileResolvable } from '../util/resolvables/FileResolvable.js';
 import { GuildMemberManager } from './managers/GuildMemberManager';
+import { GuildChannelManager } from './managers/GuildChannelManager';
 export declare class Guild extends BaseStructure<APIGuild | APIUnavailableGuild> {
     id: Snowflake;
     available: boolean;
@@ -46,6 +47,7 @@ export declare class Guild extends BaseStructure<APIGuild | APIUnavailableGuild>
     systemChannelId: Snowflake | null;
     systemChannelFlags: GuildSystemChannelFlags | null;
     publicUpdatesChannelId: Snowflake | null;
+    channels: GuildChannelManager;
     _deserialise(data: APIGuild | APIUnavailableGuild): this;
     fetch(force?: boolean): Promise<Guild>;
     edit(data: Partial<APIGuild | Guild>, reason?: string): Promise<this>;

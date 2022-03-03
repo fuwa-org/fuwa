@@ -23,6 +23,8 @@ import {
 import { DataTransformer } from '../rest/DataTransformer.js';
 import { GuildMember } from './GuildMember.js';
 import { GuildMemberManager } from './managers/GuildMemberManager';
+import { GuildChannel } from './GuildChannel';
+import { GuildChannelManager } from './managers/GuildChannelManager';
 
 export class Guild extends BaseStructure<APIGuild | APIUnavailableGuild> {
   public id!: Snowflake;
@@ -92,6 +94,8 @@ export class Guild extends BaseStructure<APIGuild | APIUnavailableGuild> {
   public systemChannelId: Snowflake | null = null;
   public systemChannelFlags: GuildSystemChannelFlags | null = null;
   public publicUpdatesChannelId: Snowflake | null = null;
+
+  public channels = new GuildChannelManager(this);
 
   /**
    * @internal
@@ -176,6 +180,12 @@ export class Guild extends BaseStructure<APIGuild | APIUnavailableGuild> {
       this.members.addMany(
         data.members!.map((v) => new GuildMember(this)._deserialise(v))
       );
+
+    if ('channels' in data) { 
+      this.channels.addMany(
+        data.channels!.map((v) => GuildChannel.create(this, v))
+      );
+    }
 
     return this;
   }
