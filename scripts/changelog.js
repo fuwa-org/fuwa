@@ -19,4 +19,4 @@ if (prevHash === commit) {
 
 const data = execFileSync("git", ["cliff", `${tag}..${branch}`]).toString();
 
-writeFileSync(`${__dirname}/../CHANGELOG.md`, `${existing}\n\n${data}\n\n${prev.replace(/<!-- .* -->$/, '')}<!-- ${commit} -->`);
+writeFileSync(`${__dirname}/../CHANGELOG.md`, `${existing}\n\n${data}\n\n${prev.replace(/<!-- .* -->$/, '')}<!-- ${commit} -->`.replace(new RegExp(`<!-- ${prevHash} -->\\s*`, "gi"), "").replace(/.*update dependency.*/ig, "").replace(/\n{3,}/g, "\n\n"));
