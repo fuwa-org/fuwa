@@ -7,12 +7,14 @@ export declare class BaseManager<T extends {
     client: Client;
     __class: any;
     cache: Map<Snowflake, T>;
+    get size(): number;
     constructor(client: Client, __class: any);
     get(id: T['id']): T | undefined;
-    add(data: T): void;
-    addMany(data: T[]): void;
+    add(data: T): T;
+    addMany(data: T[]): T[];
     update(data: T): T;
     remove(id: Snowflake): void;
-    resolve(data: Snowflake | any): void | T;
+    map(fn: (data: T, key: Snowflake, cache: Map<Snowflake, T>) => any): any[];
+    resolve(data: Snowflake | any): T | undefined;
     isManager: boolean;
 }

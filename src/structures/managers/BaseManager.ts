@@ -6,6 +6,10 @@ export class BaseManager<
 > {
   public cache: Map<Snowflake, T> = new Map();
 
+  public get size(): number {
+    return this.cache.size;
+  }
+
   constructor(public client: Client, public __class: any) {}
 
   public get(id: T['id']): T | undefined {
@@ -14,21 +18,29 @@ export class BaseManager<
 
   public add(data: T) {
     this.cache.set(data.id, data);
+    return data;
   }
 
-  public addMany(data: T[]) {
+  public addMany(data: T[]): T[] {
     for (const d of data) {
       this.add(d);
     }
+    return data;
   }
 
   public update(data: T): T {
-    this.cache.set(data.id, data);
-    return this.cache.get(data.id)!;
+    this.add(data);
+    return data;
   }
 
   public remove(id: Snowflake) {
     this.cache.delete(id);
+  }
+
+  public map(fn: (data: T, key: Snowflake, cache: Map<Snowflake, T>) => any) {
+    return Array.from(this.cache.entries()).map(
+      (([key, data]: [Snowflake, T]) => fn(data, key, this.cache)).bind(this)
+    );
   }
 
   public resolve(data: Snowflake | any) {
