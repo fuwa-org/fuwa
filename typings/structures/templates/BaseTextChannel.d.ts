@@ -1,9 +1,9 @@
-import { APITextBasedChannel, GuildTextChannelType } from "@splatterxl/discord-api-types";
-import { Snowflake } from "../../client/ClientOptions";
-import { GuildChannel } from "../GuildChannel";
-import { ChannelMessageManager } from "../managers/ChannelMessageManager";
-export declare class BaseTextChannel extends GuildChannel<APITextBasedChannel<GuildTextChannelType>> {
+import { APITextBasedChannel, TextChannelType } from '@splatterxl/discord-api-types';
+import { Snowflake } from '../../client/ClientOptions';
+import { Channel } from '../Channel.js';
+import { ChannelMessageManager } from '../managers/ChannelMessageManager';
+export declare class BaseTextChannel extends Channel<APITextBasedChannel<TextChannelType>> {
     lastMessageId: Snowflake | null;
     messages: ChannelMessageManager;
-    _deserialise(data: APITextBasedChannel<GuildTextChannelType>): this;
+    _deserialise(data: APITextBasedChannel<TextChannelType>): this;
 }

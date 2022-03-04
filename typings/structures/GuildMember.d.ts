@@ -1,18 +1,21 @@
 import { APIGuildMember } from '@splatterxl/discord-api-types';
+import { Snowflake } from '../client/ClientOptions.js';
 import { Guild } from './Guild.js';
 import { BaseStructure } from './templates/BaseStructure.js';
 import { User } from './User.js';
 export declare class GuildMember extends BaseStructure<APIGuildMember> {
+    id: Snowflake;
+    get createdAt(): Date;
+    get createdTimestamp(): number;
     guild: Guild;
     user: User | null;
-    get id(): `${bigint}`;
     nickname: string | null;
     avatar: string | null;
     pending: boolean;
     communicationDisabledUntil: Date | null;
     get communicationDisabledUntilTimestamp(): number | null;
-    createdAt: Date;
-    get createdAtTimestamp(): number;
+    joinedAt: Date;
+    get joinedTimestamp(): number;
     premiumSince: Date | null;
     get premiumSinceTimestamp(): number | null;
     get isPremiumSupporter(): boolean;

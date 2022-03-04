@@ -3,6 +3,7 @@ import {
   ChannelType,
   GuildChannelType,
 } from '@splatterxl/discord-api-types';
+import { Client } from '../client/Client.js';
 import { Snowflake } from '../client/ClientOptions';
 import { Channel } from './Channel';
 import { Guild } from './Guild';
@@ -38,9 +39,10 @@ export class GuildChannel<
     return this;
   }
 
-  public static create(
-    guild: Guild,
-    data: { type: ChannelType; [k: string]: any }
+  public static resolve(
+    client: Client,
+    data: APIGuildChannel<GuildChannelType>,
+    guild: Guild
   ): GuildChannels {
     switch (data.type as GuildChannelType) {
       default: {

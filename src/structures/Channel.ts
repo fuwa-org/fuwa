@@ -1,17 +1,25 @@
-import { APIChannel, ChannelType, Routes } from '@splatterxl/discord-api-types';
+import {
+  APIChannel,
+  APIChannelBase,
+  APIGuildChannel,
+  ChannelType,
+  GuildChannelType,
+  Routes,
+} from '@splatterxl/discord-api-types';
+import { Client } from '../client/Client.js';
 import { Snowflake } from '../client/ClientOptions';
 import { DataTransformer } from '../rest/DataTransformer';
 import { Guild } from './Guild';
+import { GuildChannel } from './GuildChannel.js';
 import { BaseStructure } from './templates/BaseStructure';
 
 export class Channel<
   T extends APIChannel = APIChannel
 > extends BaseStructure<T> {
-  public id!: Snowflake;
   public type: ChannelType = ChannelType.GuildCategory;
   public guild: Guild | null = null;
 
-  _deserialise(data: T & { guild_id: Snowflake }): this {
+  _deserialise(data: T & { guild_id?: Snowflake }): this {
     this.id = data.id as Snowflake;
     if ('type' in data) this.type = data.type as ChannelType;
     if ('guild_id' in data) {
@@ -28,6 +36,26 @@ export class Channel<
     }
 
     return this;
+  }
+
+  static create(
+    client: Client,
+    data: APIChannelBase<ChannelType> & { guild_id?: Snowflake }
+  ): Channels {
+    if (data.guild_id)
+      return GuildChannel.resolve(
+        client,
+        data as APIGuildChannel<GuildChannelType>,
+        client.guilds.get(data.guild_id)!
+      );
+    else
+      switch (data.type) {
+        default:
+          client.logger.warn(
+            `Unknown channel type: ${data.type} (${ChannelType[data.type]})`
+          );
+          return new Channel(client)._deserialise(data);
+      }
   }
 
   /**
@@ -48,3 +76,8 @@ export class Channel<
     });
   }
 }
+
+export type Channels<T = Channel | GuildChannel, D = APIChannel> = T & {
+  id: Snowflake;
+  _deserialise(data: D): T;
+};

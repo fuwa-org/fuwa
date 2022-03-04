@@ -1,9 +1,9 @@
-import { Snowflake } from '../client/ClientOptions';
-import { BaseStructure } from './templates/BaseStructure';
+import { DiscordSnowflake } from '@sapphire/snowflake';
 import {
   APIGuild,
-  APIGuildMember,
+  APIGuildChannel,
   APIUnavailableGuild,
+  GuildChannelType,
   GuildDefaultMessageNotifications,
   GuildExplicitContentFilter,
   GuildFeature,
@@ -13,21 +13,21 @@ import {
   GuildVerificationLevel,
   Routes,
 } from '@splatterxl/discord-api-types';
+import { Snowflake } from '../client/ClientOptions';
+import { DataTransformer } from '../rest/DataTransformer.js';
 import { GuildSystemChannelFlags } from '../util/bitfields/GuildSystemChannelFlags';
-import { DiscordSnowflake } from '@sapphire/snowflake';
 import {
   FileResolvable,
   resolveFile,
   toDataURI,
 } from '../util/resolvables/FileResolvable.js';
-import { DataTransformer } from '../rest/DataTransformer.js';
-import { GuildMember } from './GuildMember.js';
-import { GuildMemberManager } from './managers/GuildMemberManager';
 import { GuildChannel } from './GuildChannel';
+import { GuildMember } from './GuildMember.js';
 import { GuildChannelManager } from './managers/GuildChannelManager';
+import { GuildMemberManager } from './managers/GuildMemberManager';
+import { BaseStructure } from './templates/BaseStructure';
 
 export class Guild extends BaseStructure<APIGuild | APIUnavailableGuild> {
-  public id!: Snowflake;
   public available = false;
 
   public name: string | null = null;
@@ -67,9 +67,9 @@ export class Guild extends BaseStructure<APIGuild | APIUnavailableGuild> {
   public splash: string | null = null;
   public discoverySplash: string | null = null;
 
-  public joined?: Date;
+  public joinedAt?: Date;
   public get joinedTimestamp() {
-    return this.joined!.getTime();
+    return this.joinedAt!.getTime();
   }
 
   public created!: Date;
@@ -174,7 +174,7 @@ export class Guild extends BaseStructure<APIGuild | APIUnavailableGuild> {
       this.maxVideoChannelUsers = data.max_video_channel_users!;
     if ('vanity_url_code' in data) this.vanityURLCode = data.vanity_url_code;
 
-    if ('joined_at' in data) this.joined = new Date(data.joined_at!);
+    if ('joined_at' in data) this.joinedAt = new Date(data.joined_at!);
 
     if ('members' in data)
       this.members.addMany(
@@ -183,7 +183,13 @@ export class Guild extends BaseStructure<APIGuild | APIUnavailableGuild> {
 
     if ('channels' in data) {
       this.channels.addMany(
-        data.channels!.map((v) => GuildChannel.create(this, v))
+        data.channels!.map((v) =>
+          GuildChannel.resolve(
+            this.client,
+            v as APIGuildChannel<GuildChannelType>,
+            this
+          )
+        )
       );
     }
 
