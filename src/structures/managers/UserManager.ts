@@ -1,16 +1,19 @@
 import { APIUser, Routes } from '@splatterxl/discord-api-types';
 import { Client } from '../../client/Client.js';
 import { Snowflake } from '../../client/ClientOptions.js';
-import { ClientUser } from '../ClientUser.js';
+import { ExtendedUser } from '../ExtendedUser.js';
 import { User } from '../User.js';
 import { BaseManager } from './BaseManager.js';
 
-export class UserManager extends BaseManager<ClientUser | User> {
+export class UserManager extends BaseManager<ExtendedUser | User> {
   constructor(client: Client) {
     super(client, User);
   }
 
-  public async fetch(id: Snowflake, force = false): Promise<ClientUser | User> {
+  public async fetch(
+    id: Snowflake,
+    force = false
+  ): Promise<ExtendedUser | User> {
     if (!force && this.cache.has(id)) {
       return this.get(id)!;
     } else {
@@ -24,7 +27,7 @@ export class UserManager extends BaseManager<ClientUser | User> {
             );
           } else {
             this.add(
-              new (id === ('@me' as Snowflake) ? ClientUser : User)(
+              new (id === ('@me' as Snowflake) ? ExtendedUser : User)(
                 this.client
               )._deserialise(await res.body.json())
             );
@@ -35,7 +38,7 @@ export class UserManager extends BaseManager<ClientUser | User> {
     }
   }
 
-  public async fetchCurrent(): Promise<ClientUser> {
-    return this.fetch('@me' as Snowflake) as unknown as ClientUser;
+  public async fetchCurrent(): Promise<ExtendedUser> {
+    return this.fetch('@me' as Snowflake) as unknown as ExtendedUser;
   }
 }

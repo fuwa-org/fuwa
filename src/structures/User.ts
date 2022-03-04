@@ -4,7 +4,6 @@ import { UserFlags } from '../util/bitfields/UserFlags.js';
 import { BaseStructure } from './templates/BaseStructure.js';
 
 export class User extends BaseStructure<APIUser> {
-  public id!: Snowflake;
   public bot = false;
   public system = false;
   public flags: UserFlags = new UserFlags(0);

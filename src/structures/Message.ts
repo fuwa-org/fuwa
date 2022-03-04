@@ -2,7 +2,7 @@ import { BaseStructure } from './templates/BaseStructure';
 import { APIMessage, MessageType, Routes } from '@splatterxl/discord-api-types';
 import { Snowflake } from '../client/ClientOptions';
 import { User } from './User';
-import { ClientUser } from './ClientUser';
+import { ExtendedUser } from './ExtendedUser';
 import { MessageFlags } from '../util/bitfields/MessageFlags';
 import { GuildMember } from './GuildMember';
 import { Guild } from './Guild';
@@ -14,7 +14,6 @@ import { DataTransformer } from '../rest/DataTransformer';
 export class Message<
   ChannelType extends BaseTextChannel
 > extends BaseStructure<APIMessage> {
-  public id!: Snowflake;
   public nonce: string | number | null = null;
 
   public guild: Guild | null = null;
@@ -25,7 +24,7 @@ export class Message<
   public flags: MessageFlags = new MessageFlags(0);
   public pinned = false;
 
-  public author!: User | ClientUser;
+  public author!: User | ExtendedUser;
   public member: GuildMember | null = null;
   public content: string | null = null;
 
@@ -43,7 +42,7 @@ export class Message<
       this.guild = this.client.guilds.resolve(data.guild_id) ?? null;
     if ('channel_id' in data)
       this.channel =
-        (this.guild?.channels.resolve(
+        (this.client.channels.resolve(
           data.channel_id
         )! as unknown as ChannelType) ?? null;
 

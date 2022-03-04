@@ -19,7 +19,8 @@ import {
   LoggerOptions,
 } from '../logging/LoggerOptions.js';
 import { UserManager } from '../structures/managers/UserManager.js';
-import { ClientUser } from '../structures/ClientUser.js';
+import { ExtendedUser } from '../structures/ExtendedUser.js';
+import { ChannelManager } from '../structures/managers/ChannelManager.js';
 
 export class Client extends EventEmitter {
   #token: string;
@@ -32,8 +33,9 @@ export class Client extends EventEmitter {
 
   public guilds: GuildManager;
   public users: UserManager;
+  public channels: ChannelManager;
 
-  public user: ClientUser | null = null;
+  public user: ExtendedUser | null = null;
 
   public constructor(token: string, options?: ClientOptions) {
     super();
@@ -63,6 +65,7 @@ export class Client extends EventEmitter {
 
     this.guilds = new GuildManager(this);
     this.users = new UserManager(this);
+    this.channels = new ChannelManager(this);
   }
 
   public async connect(): Promise<void> {

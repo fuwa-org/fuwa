@@ -7,7 +7,7 @@ import {
 } from '../util/resolvables/FileResolvable.js';
 import { User } from './User.js';
 
-export class ClientUser extends User {
+export class ExtendedUser extends User {
   public email: string | null = null;
   public emailVerified: boolean | null = null;
   public mfaEnabled: boolean | null = null;

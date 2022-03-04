@@ -22,7 +22,7 @@ import WebSocket from 'ws';
 import { Client } from '../client/Client';
 import { Snowflake } from '../client/ClientOptions';
 import { Guild } from '../structures/Guild';
-import { ClientUser } from '../structures/ClientUser';
+import { ExtendedUser } from '../structures/ExtendedUser';
 import { Intents } from '../util/bitfields/Intents';
 import { GuildMember } from '../structures/GuildMember';
 
@@ -265,12 +265,12 @@ export class GatewayShard {
             });
 
             this.client.users.add(
-              new ClientUser(this.client)._deserialise(event.user)
+              new ExtendedUser(this.client)._deserialise(event.user)
             );
 
             this.client.user = this.client.users.get(
               event.user.id as Snowflake
-            ) as ClientUser;
+            ) as ExtendedUser;
 
             if (
               !(<Intents>this.client.options.intents).has(Intents.Bits.Guilds)
@@ -324,6 +324,7 @@ export class GatewayShard {
             this.client.guilds.remove(data.id as Snowflake);
 
             this.client.emit('guildDelete', data.id);
+            break;
           }
           case GatewayDispatchEvents.GuildMemberAdd: {
             const data = event as GatewayGuildMemberAddDispatchData;

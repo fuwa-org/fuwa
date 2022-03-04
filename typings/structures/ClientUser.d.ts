@@ -1,7 +1,7 @@
 import { APIUser, Locale } from '@splatterxl/discord-api-types';
 import { FileResolvable } from '../util/resolvables/FileResolvable.js';
 import { User } from './User.js';
-export declare class ClientUser extends User {
+export declare class ExtendedUser extends User {
     email: string | null;
     emailVerified: boolean | null;
     mfaEnabled: boolean | null;
