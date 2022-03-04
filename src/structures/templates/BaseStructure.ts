@@ -1,13 +1,27 @@
 // @ts-nocheck Let's just hope this works.
+import { DiscordSnowflake } from '@sapphire/snowflake';
 import { Client } from '../../client/Client';
+import { Snowflake } from '../../client/ClientOptions.js';
 import { DataTransformer } from '../../rest/DataTransformer';
 
 export abstract class BaseStructure<T> {
-  client: Client;
-  constructor(client: Client) {
+  public id!: Snowflake;
+
+  public get createdAt(): Date {
+    return DiscordSnowflake.timestampFrom(this.id);
+  }
+  public get createdTimestamp(): number {
+    return this.createdAt.getTime();
+  }
+
+  public client: Client;
+  constructor(client: Client, data?: T) {
     Object.defineProperty(this, 'client', {
       value: client,
     });
+
+    if ('id' in data && typeof data.id === 'string') this.id = data.id;
+    if (data) this._deserialise(data);
   }
 
   abstract _deserialise(_data: T): void;
@@ -51,7 +65,7 @@ export abstract class BaseStructure<T> {
    * @internal
    */
   toJSON(): T {
-    let o: T = {} as any;
+    const o: T = {} as any;
     for (const k in this) {
       const n = DataTransformer.snakeCase(key);
       if (this[k].isManager)

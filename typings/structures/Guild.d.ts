@@ -1,12 +1,11 @@
-import { Snowflake } from '../client/ClientOptions';
-import { BaseStructure } from './templates/BaseStructure';
 import { APIGuild, APIUnavailableGuild, GuildDefaultMessageNotifications, GuildExplicitContentFilter, GuildFeature, GuildMFALevel, GuildNSFWLevel, GuildPremiumTier, GuildVerificationLevel } from '@splatterxl/discord-api-types';
+import { Snowflake } from '../client/ClientOptions';
 import { GuildSystemChannelFlags } from '../util/bitfields/GuildSystemChannelFlags';
 import { FileResolvable } from '../util/resolvables/FileResolvable.js';
-import { GuildMemberManager } from './managers/GuildMemberManager';
 import { GuildChannelManager } from './managers/GuildChannelManager';
+import { GuildMemberManager } from './managers/GuildMemberManager';
+import { BaseStructure } from './templates/BaseStructure';
 export declare class Guild extends BaseStructure<APIGuild | APIUnavailableGuild> {
-    id: Snowflake;
     available: boolean;
     name: string | null;
     description: string | null;
@@ -30,7 +29,7 @@ export declare class Guild extends BaseStructure<APIGuild | APIUnavailableGuild>
     banner: string | null;
     splash: string | null;
     discoverySplash: string | null;
-    joined?: Date;
+    joinedAt?: Date;
     get joinedTimestamp(): number;
     created: Date;
     get createdTimestamp(): number;

@@ -1,15 +1,30 @@
 import { APIGuildMember, Routes } from '@splatterxl/discord-api-types';
+import { Snowflake } from '../client/ClientOptions.js';
 import { DataTransformer } from '../rest/DataTransformer.js';
 import { Guild } from './Guild.js';
 import { BaseStructure } from './templates/BaseStructure.js';
 import { User } from './User.js';
 
 export class GuildMember extends BaseStructure<APIGuildMember> {
+  /**
+   * @deprecated use {@link GuildMember.user|`<member>.user.id`} instead
+   */
+  public declare id: Snowflake;
+  /**
+   * @deprecated use {@link GuildMember.joinedAt} instead
+   */
+  public get createdAt(): Date {
+    return this.joinedAt;
+  }
+  /**
+   * @deprecated use {@link GuildMember.joinedTimestamp} instead
+   */
+  public get createdTimestamp(): number {
+    return this.joinedTimestamp;
+  }
+
   public guild!: Guild;
   public user: User | null = null;
-  public get id() {
-    return this.user!.id;
-  }
   public nickname: string | null = null;
   public avatar: string | null = null;
 
@@ -19,9 +34,9 @@ export class GuildMember extends BaseStructure<APIGuildMember> {
     return this.communicationDisabledUntil?.getTime() ?? null;
   }
 
-  public createdAt!: Date;
-  public get createdAtTimestamp() {
-    return this.createdAt.getTime();
+  public joinedAt!: Date;
+  public get joinedTimestamp() {
+    return this.joinedAt.getTime();
   }
 
   public premiumSince: Date | null = null;
@@ -50,7 +65,7 @@ export class GuildMember extends BaseStructure<APIGuildMember> {
       this.communicationDisabledUntil = data.communication_disabled_until
         ? new Date(data.communication_disabled_until)
         : null;
-    if ('joined_at' in data) this.createdAt = new Date(data.joined_at);
+    if ('joined_at' in data) this.joinedAt = new Date(data.joined_at);
     if ('premium_since' in data)
       this.premiumSince = data.premium_since
         ? new Date(data.premium_since)
@@ -77,7 +92,7 @@ export class GuildMember extends BaseStructure<APIGuildMember> {
     data: Partial<APIGuildMember | GuildMember>,
     reason?: string
   ): Promise<GuildMember> {
-    let res = await this.client.http
+    const res = await this.client.http
       .queue({
         route: Routes.guildMember(this.guild.id, this.user!.id),
         method: 'PATCH',
