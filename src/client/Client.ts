@@ -4,13 +4,11 @@ import {
   ClientOptions,
   DefaultClientOptions,
   resolveIntents,
-  Snowflake,
 } from './ClientOptions';
 import { APIGatewayBotInfo, Routes } from '@splatterxl/discord-api-types';
 import EventEmitter from 'events';
 import { GatewayShard } from '../ws/GatewayShard.js';
 import { GuildManager } from '../structures/managers/GuildManager.js';
-import { Guild } from '../structures/Guild.js';
 import { ILogger } from '../logging/ILogger.js';
 import { DisabledLogger } from '../logging/DisabledLogger.js';
 import { DefaultLogger } from '../logging/DefaultLogger.js';
@@ -21,6 +19,7 @@ import {
 import { UserManager } from '../structures/managers/UserManager.js';
 import { ExtendedUser } from '../structures/ExtendedUser.js';
 import { ChannelManager } from '../structures/managers/ChannelManager.js';
+import { SubscriptionBuilder } from '@fuwa/events';
 
 export class Client extends EventEmitter {
   #token: string;
@@ -125,41 +124,39 @@ export class Client extends EventEmitter {
   public debug(...data: any[]) {
     this.logger.debug(...data);
   }
-}
 
-export interface Client extends EventEmitter {
-  on<T extends keyof ClientEvents>(
-    event: T,
-    listener: (...data: ClientEvents[T]) => Awaitable<void>
-  ): this;
-  on<T extends Exclude<string, keyof ClientEvents>>(
-    event: T,
-    listener: (...data: any[]) => Awaitable<void>
-  ): this;
-  once<T extends keyof ClientEvents>(
-    event: T,
-    listener: (...data: ClientEvents[T]) => Awaitable<void>
-  ): this;
-  once<T extends Exclude<string, keyof ClientEvents>>(
-    event: T,
-    listener: (...data: any[]) => Awaitable<void>
-  ): this;
-  addEventListener<T extends keyof ClientEvents>(
-    event: T,
-    listener: (...data: ClientEvents[T]) => Awaitable<void>
-  ): this;
-  addEventListener<T extends Exclude<string, keyof ClientEvents>>(
-    event: T,
-    listener: (...data: any[]) => Awaitable<void>
-  ): this;
-}
+  public delegate(event: `${string}.${string}`, ...data: any[]) {
+    const [scope, name] = event.split('.');
 
-export interface ClientEvents {
-  debug: any[];
-  ready: [];
-  guildCreate: [Guild];
-  guildUpdate: [old: Guild, new: Guild];
-  guildDelete: [id: Snowflake];
+    switch(scope) {
+      case 'meta':
+        this.emit(name, ...data);
+        break;
+      case 'guilds': {
+        if (name.startsWith("members.")) {
+          const [, eventName] = name.split('.');
+          this.guilds.get(data[0].guild.id)!.members.emit(eventName, ...data);
+        } else {
+          this.guilds.emit(name, ...data);
+          break;
+        }
+      }
+      case 'channels':
+        this.channels.emit(name, ...data);
+        break;
+      case 'users':
+        this.users.emit(name, ...data);
+        break;
+      default:
+        this.logger.warn(`Unknown event scope: ${scope}`);
+        this.emit(name, ...data);
+        break;
+    }
+  }
+
+  public event(name: string) {
+    return new SubscriptionBuilder(name, this);
+  }
 }
 
 export type Awaitable<T> = Promise<T> | T;

@@ -1,6 +1,7 @@
 import { APIGuild, Routes } from '@splatterxl/discord-api-types';
 import { Client } from '../../client/Client';
 import { Snowflake } from '../../client/ClientOptions';
+import { Intents } from '../../util/bitfields/Intents';
 import { Guild } from '../Guild';
 import { BaseManager } from './BaseManager';
 
@@ -55,5 +56,12 @@ export class GuildManager extends BaseManager<Guild> {
       method: 'DELETE',
     });
     this.delete(id);
+  }
+
+  public event(name: string) {
+    if (!(this.client.options.intents as Intents).has(Intents.Bits.Guilds)) 
+      this.client.logger.warn('Cannot listen to guild events without the guilds intent');
+
+    return super.event(name);
   }
 }

@@ -1,16 +1,20 @@
+import { SubscriptionBuilder } from '@fuwa/events';
+import { EventEmitter } from 'stream';
 import { Client } from '../../client/Client';
 import { Snowflake } from '../../client/ClientOptions';
 
 export class BaseManager<
   T extends { id: Snowflake; _deserialise(data: any): T }
-> {
+> extends EventEmitter {
   public cache: Map<Snowflake, T> = new Map();
 
   public get size(): number {
     return this.cache.size;
   }
 
-  constructor(public client: Client, public __class: any) {}
+  constructor(public client: Client, public __class: any) {
+    super();
+  }
 
   public get(id: T['id']): T | undefined {
     return this.cache.get(id);
@@ -53,6 +57,10 @@ export class BaseManager<
         return this.add(new this.__class(this.client)._deserialise(data));
       }
     }
+  }
+
+  public event(name: string) {
+    return new SubscriptionBuilder(name, this);
   }
 
   public isManager = true;

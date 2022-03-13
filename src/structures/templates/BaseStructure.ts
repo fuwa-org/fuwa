@@ -68,15 +68,16 @@ export abstract class BaseStructure<T> {
     const o: T = {} as any;
     for (const k in this) {
       const n = DataTransformer.snakeCase(key);
-      if (this[k].isManager)
+      if (k.startsWith('_') || typeof this[k] === "function") continue;
+      else if (this[k].isManager)
         o[n] =
           this[k].apiReadyCache() ??
           [...this[k].cache].map(([, V]) => BaseStructure.toJSON(V));
       else if (this[k].isStructure) o[n] = this[k].toJSON();
       else if (this[k] instanceof Array)
         o[n] = this[k].map((v) => BaseStructure.toJSON(v));
-      else if (this[k] instanceof Date) o[k] = this[k].toISOString();
-      else if (this[k] instanceof Function) continue;
+      else if (this[k] instanceof Date && !(k.replace(/At$/,"Timestamp") in this)) o[k] = this[k].getTime() / 1000;
+      else if (this[k] instanceof Date && k.replace(/At$/,"Timestamp") in this) o[k] = this[k].getTime();
       else o[n] = DataTransformer.snakeCase(this[k]);
     }
   }

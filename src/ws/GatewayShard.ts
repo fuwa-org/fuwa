@@ -278,7 +278,7 @@ export class GatewayShard {
               this.client.logger.warn(
                 "Client intents don't include guilds, this may cause issues."
               );
-              this.client.emit('ready');
+              this.client.delegate('meta.ready');
             }
 
             break;
@@ -297,11 +297,11 @@ export class GatewayShard {
               );
 
               if (this._awaitedGuilds.length === 0) {
-                this.client.emit('ready');
+                this.client.delegate('meta.ready');
               }
             } else {
-              this.client.emit(
-                'guildCreate',
+              this.client.delegate(
+                'guilds.create',
                 this.client.guilds.cache.get(data.id as Snowflake)
               );
             }
@@ -316,14 +316,14 @@ export class GatewayShard {
 
             this.client.guilds.update(newGuild);
 
-            this.client.emit('guildUpdate', guild, newGuild);
+            this.client.delegate('guilds.update', guild, newGuild);
             break;
           }
           case GatewayDispatchEvents.GuildDelete: {
             const data = event as GatewayGuildDeleteDispatchData;
             this.client.guilds.remove(data.id as Snowflake);
 
-            this.client.emit('guildDelete', data.id);
+            this.client.delegate('guilds.delete', data.id);
             break;
           }
           case GatewayDispatchEvents.GuildMemberAdd: {
@@ -336,7 +336,7 @@ export class GatewayShard {
               const member = new GuildMember(guild)._deserialise(data);
               guild.members.add(member);
 
-              this.client.emit('guildMemberAdd', member);
+              this.client.delegate('guilds.members.add', member);
             }
             break;
           }
@@ -353,7 +353,7 @@ export class GatewayShard {
 
               guild.members.remove(member.id);
 
-              this.client.emit('guildMemberRemove', member.user!, guild);
+              this.client.delegate('guilds.members.remove', member.user!, guild);
               this.client.guilds.update(guild!);
             }
 
@@ -374,7 +374,7 @@ export class GatewayShard {
 
               guild.members.update(newMember);
 
-              this.client.emit('guildMemberUpdate', member, newMember);
+              this.client.delegate('guilds.members.update', member, newMember);
               this.client.guilds.update(guild!);
             }
             break;
@@ -392,7 +392,7 @@ export class GatewayShard {
 
               guild.members.addMany(members);
 
-              this.client.emit('guildMembersChunk', members);
+              this.client.delegate('guilds.members.chunk', members);
               this.client.guilds.update(guild!);
             }
             break;
@@ -407,7 +407,7 @@ export class GatewayShard {
   /**
    * Send a packet to the {@link GatewayShard._socket|socket}. Use at your own risk.
    * @internal
-   */
+   *
   public async send(packet: GatewaySendPayload) {
     if (!this._socket)
       throw new Error("GatewayShard#send called when shard wasn't connected");
