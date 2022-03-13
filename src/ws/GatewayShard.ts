@@ -407,7 +407,7 @@ export class GatewayShard {
   /**
    * Send a packet to the {@link GatewayShard._socket|socket}. Use at your own risk.
    * @internal
-   *
+   */
   public async send(packet: GatewaySendPayload) {
     if (!this._socket)
       throw new Error("GatewayShard#send called when shard wasn't connected");
