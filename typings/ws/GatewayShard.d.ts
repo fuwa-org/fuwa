@@ -1,4 +1,5 @@
 /// <reference types="node" />
+import { GatewaySendPayload } from '@splatterxl/discord-api-types';
 import { Client } from '../client/Client';
 export interface Erlpack {
     pack(data: any): Buffer;
@@ -28,6 +29,7 @@ export declare class GatewayShard {
     debug(...data: any[]): void;
     private debugPretty;
     private onMessage;
+    send(packet: GatewaySendPayload): Promise<void>;
     heartbeat(): void;
     close(resume?: boolean): void;
     reconnect(): void;

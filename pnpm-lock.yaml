@@ -1,7 +1,7 @@
 lockfileVersion: 5.3
 
 specifiers:
-  '@fuwa/events': ^1.0.1
+  '@fuwa/events': 1.1.1
   '@sapphire/async-queue': 1.2.0
   '@sapphire/snowflake': 3.1.0
   '@splatterxl/discord-api-types': 0.27.4
@@ -21,7 +21,7 @@ specifiers:
   ws: 8.5.0
 
 dependencies:
-  '@fuwa/events': 1.0.1
+  '@fuwa/events': 1.1.1
   '@sapphire/async-queue': 1.2.0
   '@sapphire/snowflake': 3.1.0
   '@splatterxl/discord-api-types': 0.27.4
@@ -82,8 +82,8 @@ packages:
       - supports-color
     dev: true
 
-  /@fuwa/events/1.0.1:
-    resolution: {integrity: sha512-k6InjHdOrehv2nYIdE6RsND6AbJ5WQpcZkHdg7SKVedNPJaBmhFt0Ppx+VrQRl9fWLFc2BuPHETidEsDaEn9fg==}
+  /@fuwa/events/1.1.1:
+    resolution: {integrity: sha512-1K82kcH8PLCy/4QruNn5bR6Qqf5tDSWPHT5azjzSwmLdu2nsvddWL1XA4BioLqpGBEpLkoEYBFBVqXVS/gy2rA==}
     dev: false
 
   /@humanwhocodes/config-array/0.9.3:

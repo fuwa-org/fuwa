@@ -22,7 +22,7 @@
   "types": "./typings/index.d.ts",
   "homepage": "https://nearlysplat.github.io/fuwa/",
   "dependencies": {
-    "@fuwa/events": "^1.0.1",
+    "@fuwa/events": "1.1.1",
     "@sapphire/async-queue": "1.2.0",
     "@sapphire/snowflake": "3.1.0",
     "@splatterxl/discord-api-types": "0.27.4",

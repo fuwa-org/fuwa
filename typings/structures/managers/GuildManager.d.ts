@@ -10,5 +10,5 @@ export declare class GuildManager extends BaseManager<Guild> {
         name: string;
     } & Partial<APIGuild>): Promise<Guild>;
     delete(id: Snowflake): Promise<void>;
-    event(name: string): import("@fuwa/events").SubscriptionBuilder;
+    event(name: string): import("@fuwa/events/types/SubscriptionBuilder");
 }

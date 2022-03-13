@@ -8,7 +8,7 @@ import { ILogger } from '../logging/ILogger.js';
 import { UserManager } from '../structures/managers/UserManager.js';
 import { ExtendedUser } from '../structures/ExtendedUser.js';
 import { ChannelManager } from '../structures/managers/ChannelManager.js';
-import { SubscriptionBuilder } from '@fuwa/events';
+import Events from '@fuwa/events';
 export declare class Client extends EventEmitter {
     #private;
     http: RequestManager;
@@ -24,6 +24,6 @@ export declare class Client extends EventEmitter {
     private constructGatewayURL;
     debug(...data: any[]): void;
     delegate(event: `${string}.${string}`, ...data: any[]): void;
-    event(name: string): SubscriptionBuilder;
+    event(name: string): Events.SubscriptionBuilder;
 }
 export declare type Awaitable<T> = Promise<T> | T;

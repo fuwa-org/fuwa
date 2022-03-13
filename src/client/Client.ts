@@ -19,7 +19,7 @@ import {
 import { UserManager } from '../structures/managers/UserManager.js';
 import { ExtendedUser } from '../structures/ExtendedUser.js';
 import { ChannelManager } from '../structures/managers/ChannelManager.js';
-import { SubscriptionBuilder } from '@fuwa/events';
+import Events from '@fuwa/events';
 
 export class Client extends EventEmitter {
   #token: string;
@@ -128,18 +128,18 @@ export class Client extends EventEmitter {
   public delegate(event: `${string}.${string}`, ...data: any[]) {
     const [scope, name] = event.split('.');
 
-    switch(scope) {
+    switch (scope) {
       case 'meta':
         this.emit(name, ...data);
         break;
       case 'guilds': {
-        if (name.startsWith("members.")) {
+        if (name.startsWith('members.')) {
           const [, eventName] = name.split('.');
           this.guilds.get(data[0].guild.id)!.members.emit(eventName, ...data);
         } else {
           this.guilds.emit(name, ...data);
-          break;
         }
+        break;
       }
       case 'channels':
         this.channels.emit(name, ...data);
@@ -155,7 +155,7 @@ export class Client extends EventEmitter {
   }
 
   public event(name: string) {
-    return new SubscriptionBuilder(name, this);
+    return new Events.SubscriptionBuilder(name, this);
   }
 }
 
