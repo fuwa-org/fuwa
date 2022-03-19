@@ -20,8 +20,8 @@ export abstract class BaseStructure<T> {
       value: client,
     });
 
-    if ('id' in data && typeof data.id === 'string') this.id = data.id;
     if (data) this._deserialise(data);
+    if (data && 'id' in data && typeof data.id === 'string') this.id = data.id;
   }
 
   abstract _deserialise(_data: T): void;
@@ -68,7 +68,7 @@ export abstract class BaseStructure<T> {
     const o: T = {} as any;
     for (const k in this) {
       const n = DataTransformer.snakeCase(key);
-      if (k.startsWith('_') || typeof this[k] === "function") continue;
+      if (k.startsWith('_') || typeof this[k] === 'function') continue;
       else if (this[k].isManager)
         o[n] =
           this[k].apiReadyCache() ??
@@ -76,8 +76,13 @@ export abstract class BaseStructure<T> {
       else if (this[k].isStructure) o[n] = this[k].toJSON();
       else if (this[k] instanceof Array)
         o[n] = this[k].map((v) => BaseStructure.toJSON(v));
-      else if (this[k] instanceof Date && !(k.replace(/At$/,"Timestamp") in this)) o[k] = this[k].getTime() / 1000;
-      else if (this[k] instanceof Date && k.replace(/At$/,"Timestamp") in this) o[k] = this[k].getTime();
+      else if (
+        this[k] instanceof Date &&
+        !(k.replace(/At$/, 'Timestamp') in this)
+      )
+        o[k] = this[k].getTime() / 1000;
+      else if (this[k] instanceof Date && k.replace(/At$/, 'Timestamp') in this)
+        o[k] = this[k].getTime();
       else o[n] = DataTransformer.snakeCase(this[k]);
     }
   }
