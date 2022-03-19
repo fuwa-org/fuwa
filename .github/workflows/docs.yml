@@ -23,6 +23,6 @@ jobs:
         run: npm ci
 
       - name: Build and deploy documentation
-        uses: nearlysplat/action-docs@development
+        uses: splatterxl/action-docs@development
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

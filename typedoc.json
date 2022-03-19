@@ -4,5 +4,7 @@
   "name": "不和 (Fuwa)",
   "entryPoints": ["src/index.ts"],
   "excludeExternals": false,
-  "tsconfig": "./tsconfig.json"
+  "tsconfig": "./tsconfig.json",
+  "excludePrivate": true,
+  "excludeInternal": true
 }
