@@ -29,6 +29,7 @@ export * from './structures/Channel';
 export * from './structures/GuildChannel';
 export * from './structures/GuildTextChannel';
 export * from './structures/Message';
+export * from './structures/DMChannel';
 
 export * from './structures/managers/BaseManager';
 export * from './structures/managers/GuildManager';
@@ -37,6 +38,10 @@ export * from './structures/managers/ChannelManager.js';
 export * from './structures/managers/GuildChannelManager.js';
 export * from './structures/managers/ChannelMessageManager.js';
 export * from './structures/managers/GuildMemberManager.js';
+
+export * from './structures/templates/BaseStructure';
+export * from './structures/templates/BaseTextChannel';
+export * from './structures/templates/BaseGuildTextChannel';
 
 export * from './logging/ILogger';
 export * from './logging/LoggerOptions';
