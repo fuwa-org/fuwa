@@ -32,6 +32,7 @@ export declare class GatewayShard {
     send(packet: GatewaySendPayload): Promise<void>;
     heartbeat(): void;
     close(resume?: boolean): void;
+    private _terminate;
     reconnect(): void;
     private startHeartbeat;
 }

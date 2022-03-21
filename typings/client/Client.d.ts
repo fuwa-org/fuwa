@@ -24,6 +24,6 @@ export declare class Client extends EventEmitter {
     private constructGatewayURL;
     debug(...data: any[]): void;
     delegate(event: `${string}.${string}`, ...data: any[]): void;
-    event(name: string): Events.SubscriptionBuilder;
+    event(name: string): Events.SubscriptionBuilder<string, any[]>;
 }
 export declare type Awaitable<T> = Promise<T> | T;

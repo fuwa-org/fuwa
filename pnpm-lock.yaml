@@ -12,6 +12,7 @@ specifiers:
   '@typescript-eslint/parser': 5.12.1
   eslint: 8.9.0
   form-data: ^4.0.0
+  kleur: ^4.1.4
   lodash.snakecase: ^4.1.1
   prettier: 2.5.1
   standard-version: 9.3.2
@@ -27,6 +28,7 @@ dependencies:
   '@splatterxl/discord-api-types': 0.27.4
   '@types/ws': 8.5.1
   form-data: 4.0.0
+  kleur: 4.1.4
   lodash.snakecase: 4.1.1
   undici: 4.14.1
   ws: 8.5.0
@@ -1296,6 +1298,11 @@ packages:
     resolution: {integrity: sha512-dcS1ul+9tmeD95T+x28/ehLgd9mENa3LsvDTtzm3vyBEO7RPptvAD+t44WVXaUjTBRcrpFeFlC8WCruUR456hw==}
     engines: {node: '>=0.10.0'}
     dev: true
+
+  /kleur/4.1.4:
+    resolution: {integrity: sha512-8QADVssbrFjivHWQU7KkMgptGTl6WAcSdlbBPY4uNF+mWr6DGcKrvY2w4FQJoXch7+fKMjj0dRrL75vk3k23OA==}
+    engines: {node: '>=6'}
+    dev: false
 
   /levn/0.4.1:
     resolution: {integrity: sha512-+bT2uH4E5LGE7h/n3evcS/sQlJXCpIp6ym8OWJ5eV6+67Dsql/LaaT7qJBAt2rzfoa/5QBGBhxDix1dMt2kQKQ==}

@@ -9,8 +9,9 @@ import {
 import { Client } from '../client/Client.js';
 import { Snowflake } from '../client/ClientOptions';
 import { DataTransformer } from '../rest/DataTransformer';
+import { DMChannel } from './DMChannel.js';
 import { Guild } from './Guild';
-import { GuildChannel } from './GuildChannel.js';
+import { GuildChannel, GuildChannels } from './GuildChannel.js';
 import { BaseStructure } from './templates/BaseStructure';
 
 export class Channel<
@@ -77,7 +78,7 @@ export class Channel<
   }
 }
 
-export type Channels<T = Channel | GuildChannel, D = APIChannel> = T & {
+export type Channels<T = DMChannel | GuildChannels | Channel, D = APIChannel> = T & {
   id: Snowflake;
   _deserialise(data: D): T;
 };

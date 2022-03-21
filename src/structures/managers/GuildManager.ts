@@ -57,11 +57,4 @@ export class GuildManager extends BaseManager<Guild> {
     });
     this.delete(id);
   }
-
-  public event(name: string) {
-    if (!(this.client.options.intents as Intents).has(Intents.Bits.Guilds)) 
-      this.client.logger.warn('Cannot listen to guild events without the guilds intent');
-
-    return super.event(name);
-  }
 }

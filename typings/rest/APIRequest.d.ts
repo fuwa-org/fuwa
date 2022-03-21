@@ -17,6 +17,7 @@ export interface APIRequest {
 }
 export interface File {
     key?: string;
+    filename?: string;
     data: Buffer;
     contentType?: string;
 }

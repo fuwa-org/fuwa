@@ -5,6 +5,10 @@ export * from './util/bitfields/Bitfield';
 export * from './util/bitfields/GuildSystemChannelFlags';
 export * from './util/bitfields/UserFlags';
 export * from './util/bitfields/Intents';
+export * from './util/bitfields/MessageFlags';
+
+export * from './util/resolvables/FileResolvable';
+export * from './util/resolvables/MessagePayload';
 
 export * from './ws/GatewayShard';
 
@@ -22,6 +26,9 @@ export * from './structures/Message';
 export * from './structures/GuildChannel';
 export * from './structures/GuildMember';
 export * from './structures/Channel';
+export * from './structures/GuildChannel';
+export * from './structures/GuildTextChannel';
+export * from './structures/Message';
 
 export * from './structures/managers/BaseManager';
 export * from './structures/managers/GuildManager';

@@ -126,32 +126,7 @@ export class Client extends EventEmitter {
   }
 
   public delegate(event: `${string}.${string}`, ...data: any[]) {
-    const [scope, name] = event.split('.');
-
-    switch (scope) {
-      case 'meta':
-        this.emit(name, ...data);
-        break;
-      case 'guilds': {
-        if (name.startsWith('members.')) {
-          const [, eventName] = name.split('.');
-          this.guilds.get(data[0].guild.id)!.members.emit(eventName, ...data);
-        } else {
-          this.guilds.emit(name, ...data);
-        }
-        break;
-      }
-      case 'channels':
-        this.channels.emit(name, ...data);
-        break;
-      case 'users':
-        this.users.emit(name, ...data);
-        break;
-      default:
-        this.logger.warn(`Unknown event scope: ${scope}`);
-        this.emit(name, ...data);
-        break;
-    }
+    this.emit(event.replace(/^meta\./, ""), ...data);
   }
 
   public event(name: string) {

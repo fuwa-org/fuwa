@@ -3,6 +3,7 @@ import { Client } from '../client/Client.js';
 import { Snowflake } from '../client/ClientOptions';
 import { Channel } from './Channel';
 import { Guild } from './Guild';
+import { GuildTextChannel } from './GuildTextChannel.js';
 export declare class GuildChannel<T extends APIGuildChannel<GuildChannelType> = APIGuildChannel<GuildChannelType>> extends Channel<T> {
     guild: Guild;
     type: GuildChannelType;
@@ -10,7 +11,7 @@ export declare class GuildChannel<T extends APIGuildChannel<GuildChannelType> = 
     position: number;
     nsfw: boolean;
     parentId: Snowflake | null;
-    get parent(): GuildChannel<APIGuildChannel<GuildChannelType>> | undefined;
+    get parent(): GuildChannels | undefined;
     constructor(guild: Guild);
     _deserialise(data: T): this;
     static resolve(client: Client, data: APIGuildChannel<GuildChannelType>, guild: Guild): GuildChannels;
@@ -19,5 +20,4 @@ export declare class GuildChannel<T extends APIGuildChannel<GuildChannelType> = 
     setNsfw(nsfw: boolean): void;
     setParent(parent: GuildChannels | Snowflake): void;
 }
-declare type GuildChannels = GuildChannel;
-export {};
+export declare type GuildChannels = GuildChannel | GuildTextChannel;

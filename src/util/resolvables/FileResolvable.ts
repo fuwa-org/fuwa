@@ -1,5 +1,7 @@
 import undici from 'undici';
 import fs from 'fs/promises';
+import { File } from '../../rest/APIRequest';
+import { basename } from 'path';
 
 export type FileResolvable = string | Buffer;
 
@@ -17,7 +19,7 @@ export async function resolveFile(file: FileResolvable): Promise<ResolvedFile> {
       mimeType = res.headers['content-type'].split(';')[0];
     }
 
-    return { data, mimeType };
+    return { data, mimeType, filename: basename(file) };
   } else {
     const stat = await fs.stat(file);
     if (!stat.isFile()) throw new TypeError('Expected a file');
@@ -28,17 +30,25 @@ export async function resolveFile(file: FileResolvable): Promise<ResolvedFile> {
       .then((b) => Buffer.from(b));
     const mimeType = mimeTypeFromExtension(file.split('.').pop()!);
 
-    return { data, mimeType };
+    return { data, mimeType, filename: basename(file) };
   }
 }
 
 export interface ResolvedFile {
   mimeType: string;
   data: Buffer;
+  filename?: string;
 }
 
 export function toDataURI(file: ResolvedFile): string {
   return `data:${file.mimeType};base64,${file.data.toString('base64')}`;
+}
+
+export function toFile(file: ResolvedFile): File {
+  return {
+    data: file.data,
+    contentType: file.mimeType,
+  };
 }
 
 export const MIME_TYPES = {
@@ -53,7 +63,7 @@ export const MIME_TYPES = {
   '.ogg': 'audio/ogg',
   '.wav': 'audio/wav',
   '.flac': 'audio/flac',
-};
+} as const;
 
 export function mimeTypeFromExtension(ext: string): string {
   return (

@@ -56,7 +56,7 @@ export class GuildMember extends BaseStructure<APIGuildMember> {
     this.guild = guild;
   }
 
-  public _deserialise(data: APIGuildMember): this {
+  public _deserialise(data: APIGuildMember & { joined_at: string | null }): this {
     if ('user' in data) this.user = this.client.users.resolve(data.user!)!;
     if ('nick' in data) this.nickname = data.nick!;
     if ('avatar' in data) this.avatar = data.avatar!;
@@ -70,8 +70,8 @@ export class GuildMember extends BaseStructure<APIGuildMember> {
       this.premiumSince = data.premium_since
         ? new Date(data.premium_since)
         : null;
-
-    this.inheritFrom(data, ['deaf', 'mute']);
+    if ('deaf' in data) this.deaf = data.deaf!;
+    if ('mute' in data) this.mute = data.mute!;
 
     return this;
   }
@@ -89,7 +89,7 @@ export class GuildMember extends BaseStructure<APIGuildMember> {
   }
 
   public async edit(
-    data: Partial<APIGuildMember | GuildMember>,
+    data: Partial<APIGuildMember | GuildMember>,    
     reason?: string
   ): Promise<GuildMember> {
     const res = await this.client.http

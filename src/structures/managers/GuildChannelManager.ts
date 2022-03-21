@@ -1,15 +1,15 @@
 import { Routes } from '@splatterxl/discord-api-types';
 import { Snowflake } from '../../client/ClientOptions';
 import { Guild } from '../Guild';
-import { GuildChannel } from '../GuildChannel';
+import { GuildChannel, GuildChannels } from '../GuildChannel';
 import { ChannelManager } from './ChannelManager.js';
 
-export class GuildChannelManager extends ChannelManager<GuildChannel> {
+export class GuildChannelManager extends ChannelManager<GuildChannels> {
   constructor(public guild: Guild) {
     super(guild.client, GuildChannel);
   }
 
-  public fetch(id: Snowflake): Promise<GuildChannel> {
+  public fetch(id: Snowflake): Promise<GuildChannels> {
     return this.client.http
       .queue({
         route: Routes.channel(id),
@@ -17,7 +17,7 @@ export class GuildChannelManager extends ChannelManager<GuildChannel> {
       .then((data) => this.resolve(data)!);
   }
 
-  public resolve(data: any): GuildChannel | undefined {
+  public resolve(data: any): GuildChannels | undefined {
     if (typeof data === 'string') {
       return this.get(data as Snowflake);
     } else {
@@ -29,7 +29,7 @@ export class GuildChannelManager extends ChannelManager<GuildChannel> {
     }
   }
 
-  public add(data: GuildChannel): GuildChannel {
+  public add(data: GuildChannels): GuildChannels {
     super.add(data);
     this.client.channels.add(data);
     return data;

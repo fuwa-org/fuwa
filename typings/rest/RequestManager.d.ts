@@ -16,7 +16,7 @@ export declare class RequestManager {
     getBucket(route: RouteLike): string[];
     get globalLimited(): boolean;
     makeRequest(bucket: BucketQueueManager, requestData: APIRequest): Promise<ResponseData>;
-    queue<T>(req: APIRequest): Promise<ResponseData & {
+    queue<T>(req: APIRequest | RouteLike): Promise<ResponseData & {
         body: {
             json(): Promise<T>;
         };

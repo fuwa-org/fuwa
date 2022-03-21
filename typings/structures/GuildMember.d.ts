@@ -22,7 +22,9 @@ export declare class GuildMember extends BaseStructure<APIGuildMember> {
     deaf: boolean;
     mute: boolean;
     constructor(guild: Guild);
-    _deserialise(data: APIGuildMember): this;
+    _deserialise(data: APIGuildMember & {
+        joined_at: string | null;
+    }): this;
     _patch(data: APIGuildMember, guild?: Guild, user?: User): this;
     edit(data: Partial<APIGuildMember | GuildMember>, reason?: string): Promise<GuildMember>;
     disableCommunication(until: Date | number, reason?: string): Promise<GuildMember>;

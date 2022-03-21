@@ -1,6 +1,7 @@
 import { AsyncQueue } from '@sapphire/async-queue';
 import {
   APIGuildMember,
+  APIMessage,
   GatewayCloseCodes,
   GatewayDispatchEvents,
   GatewayDispatchPayload,
@@ -12,6 +13,10 @@ import {
   GatewayGuildMemberUpdateDispatchData,
   GatewayGuildUpdateDispatchData,
   GatewayIdentify,
+  GatewayMessageCreateDispatchData,
+  GatewayMessageDeleteBulkDispatchData,
+  GatewayMessageDeleteDispatchData,
+  GatewayMessageUpdateDispatchData,
   GatewayOpcodes,
   GatewayReadyDispatchData,
   GatewayReceivePayload,
@@ -25,6 +30,8 @@ import { Guild } from '../structures/Guild';
 import { ExtendedUser } from '../structures/ExtendedUser';
 import { Intents } from '../util/bitfields/Intents';
 import { GuildMember } from '../structures/GuildMember';
+import { Message } from '../structures/Message';
+import { TextChannel } from '../structures/templates/BaseTextChannel';
 
 /**
  * Typeguard for Erlpack interfaces
@@ -158,7 +165,7 @@ export class GatewayShard {
   private reset(full = false) {
     if (full) {
       this.debug('Shard undergoing reset, closing socket');
-      this.close(false);
+      this._terminate();
       this._socket = undefined;
     }
 
@@ -249,7 +256,7 @@ export class GatewayShard {
       case GatewayOpcodes.Dispatch: {
         let event = payload as GatewayDispatchPayload['d'];
 
-        this.debug('dispatch', data.t, 'received');
+        this.debug("received dispatch", data.t);
 
         switch (data.t) {
           case GatewayDispatchEvents.Ready: {
@@ -397,6 +404,85 @@ export class GatewayShard {
             }
             break;
           }
+          case GatewayDispatchEvents.MessageCreate: {
+            const data = event as GatewayMessageCreateDispatchData;
+            const channel = this.client.channels.cache.get(
+              data.channel_id as Snowflake
+            ) as TextChannel;
+
+            if (channel) {
+              const message = new Message<typeof channel>(this.client)._deserialise(
+                data
+              );
+              channel.messages.add(message);
+
+              this.client.delegate('meta.messages.create', message);
+            }
+            break;
+          }
+          case GatewayDispatchEvents.MessageUpdate: {
+            const data = event as GatewayMessageUpdateDispatchData;
+            const channel = this.client.channels.cache.get(
+              data.channel_id as Snowflake
+            ) as TextChannel;
+
+            if (channel) {
+              const message = channel.messages.cache.get(
+                data.id as Snowflake
+              ) as Message<typeof channel>;
+
+              if (message) {
+                const newMessage = message._deserialise(data as APIMessage);
+                channel.messages.update(newMessage);
+
+                this.client.delegate('meta.messages.update', message, newMessage);
+              }
+            }
+            break;
+          }
+          case GatewayDispatchEvents.MessageDelete: {
+            const data = event as GatewayMessageDeleteDispatchData;
+            const channel = this.client.channels.cache.get(
+              data.channel_id as Snowflake
+            ) as TextChannel;
+
+            if (channel) {
+              channel.messages.cache.delete(
+                data.id as Snowflake
+              );
+
+              this.client.delegate('meta.messages.delete', { 
+                channel,
+                guild: channel.guild,
+                id: data.id,
+              });
+            }
+            break;
+          }
+          case GatewayDispatchEvents.MessageDeleteBulk: {
+            const data = event as GatewayMessageDeleteBulkDispatchData;
+            const channel = this.client.channels.cache.get(
+              data.channel_id as Snowflake
+            ) as TextChannel;
+
+            if (channel) {
+              channel.messages.removeMany(data.ids as Snowflake[]);
+
+              this.client.delegate('meta.messages.delete', { 
+                channel,
+                guild: channel.guild,
+                ids: data.ids,
+              });
+            }
+            break;
+          }
+          default: {
+            this.client.logger.warn(
+              'Unhandled dispatch event',
+              data.t,
+            );
+            this.debug("Event:", data.d);
+          }
         }
 
         break;
@@ -406,7 +492,6 @@ export class GatewayShard {
 
   /**
    * Send a packet to the {@link GatewayShard._socket|socket}. Use at your own risk.
-   * @internal
    */
   public async send(packet: GatewaySendPayload) {
     if (!this._socket)
@@ -477,6 +562,13 @@ export class GatewayShard {
       this.session = undefined;
       this.s = -1;
     }
+
+    this.#timers.forEach((t) => clearInterval(t));
+    this.#timeouts.forEach((t) => clearInterval(t));
+  }
+
+  private _terminate() {
+    this._socket?.terminate();
 
     this.#timers.forEach((t) => clearInterval(t));
     this.#timeouts.forEach((t) => clearInterval(t));

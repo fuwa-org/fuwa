@@ -5,8 +5,8 @@ import { ExtendedUser } from './ExtendedUser';
 import { MessageFlags } from '../util/bitfields/MessageFlags';
 import { GuildMember } from './GuildMember';
 import { Guild } from './Guild';
-import { BaseTextChannel } from './templates/BaseTextChannel';
-export declare class Message<ChannelType extends BaseTextChannel> extends BaseStructure<APIMessage> {
+import { TextChannel } from './templates/BaseTextChannel';
+export declare class Message<ChannelType extends TextChannel = TextChannel> extends BaseStructure<APIMessage> {
     nonce: string | number | null;
     guild: Guild | null;
     channel: ChannelType | null;
@@ -20,6 +20,7 @@ export declare class Message<ChannelType extends BaseTextChannel> extends BaseSt
     get createdTimestamp(): number;
     get createdAt(): Date;
     _deserialise(data: APIMessage): this;
-    _modify(data: Partial<APIMessage>): Promise<Message<ChannelType>>;
-    edit(content: string): Promise<Message<ChannelType>>;
+    _modify(data: Partial<APIMessage>): Promise<NonNullable<this>>;
+    edit(content: string): Promise<NonNullable<this>>;
+    delete(): Promise<void>;
 }

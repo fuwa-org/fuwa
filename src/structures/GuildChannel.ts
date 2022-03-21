@@ -7,6 +7,7 @@ import { Client } from '../client/Client.js';
 import { Snowflake } from '../client/ClientOptions';
 import { Channel } from './Channel';
 import { Guild } from './Guild';
+import { GuildTextChannel } from './GuildTextChannel.js';
 
 export class GuildChannel<
   T extends APIGuildChannel<GuildChannelType> = APIGuildChannel<GuildChannelType>
@@ -45,6 +46,9 @@ export class GuildChannel<
     guild: Guild
   ): GuildChannels {
     switch (data.type as GuildChannelType) {
+      case ChannelType.GuildText:
+      case ChannelType.GuildNews:
+        return new GuildTextChannel(client, guild)._deserialise(data as unknown as any);
       default: {
         guild.client.logger.warn(
           `unknown guild channel type ${data.type} (${ChannelType[data.type]})`
@@ -75,4 +79,4 @@ export class GuildChannel<
   }
 }
 
-type GuildChannels = GuildChannel;
+export type GuildChannels = GuildChannel | GuildTextChannel;

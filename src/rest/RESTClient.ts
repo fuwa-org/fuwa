@@ -86,12 +86,13 @@ export class RESTClient {
           file.data,
           {
             contentType: file.contentType,
+            filename: file.filename,
           }
         );
       }
 
       if (req.body) {
-        data.append('payload_json', req.body, {
+        data.append('payload_json', JSON.stringify(req.body), {
           contentType: 'application/json',
         });
       }
@@ -101,10 +102,21 @@ export class RESTClient {
       req.body = data.getBuffer();
     } else if (typeof req.body === 'string') {
       req.body = Buffer.from(req.body);
+      req.headers = {
+        ...req.headers,
+        'content-type': 'text/plain',
+      };
     } else if (req.body instanceof Buffer) {
-      // do nothing
+      req.headers = {
+        ...req.headers,
+        'content-type': 'application/octet-stream',
+      };
     } else if (typeof req.body === 'object' && req.body !== null) {
       req.body = Buffer.from(JSON.stringify(req.body));
+      req.headers = {
+        ...req.headers,
+        'content-type': 'application/json',
+      };
     }
 
     if (req.body)

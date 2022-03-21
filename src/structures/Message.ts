@@ -6,13 +6,13 @@ import { ExtendedUser } from './ExtendedUser';
 import { MessageFlags } from '../util/bitfields/MessageFlags';
 import { GuildMember } from './GuildMember';
 import { Guild } from './Guild';
-import { BaseTextChannel } from './templates/BaseTextChannel';
+import { TextChannel } from './templates/BaseTextChannel';
 import { DiscordSnowflake } from '@sapphire/snowflake';
 import { DataTransformer } from '../rest/DataTransformer';
 
 // TODO: Add support for DM messages
 export class Message<
-  ChannelType extends BaseTextChannel
+  ChannelType extends TextChannel = TextChannel,
 > extends BaseStructure<APIMessage> {
   public nonce: string | number | null = null;
 
@@ -67,24 +67,28 @@ export class Message<
     return this;
   }
 
-  _modify(data: Partial<APIMessage>): Promise<Message<ChannelType>> {
+  _modify(data: Partial<APIMessage>) {
     return this.client.http
       .queue<APIMessage>({
         route: Routes.channelMessage(this.channel!.id, this.id),
         method: 'PATCH',
         body: DataTransformer.asJSON(data),
       })
-      .then(
-        async (data) =>
-          <this>(
-            this.channel!.messages.update(
-              this._deserialise(await data.body.json())
-            )!
-          )
-      );
+      .then(async (data) => this._deserialise(await data.body.json())!);
   }
 
   public async edit(content: string) {
     return this._modify({ content });
+  }
+
+  public async delete() {
+    await this.client.http
+      .queue<APIMessage>({
+        route: Routes.channelMessage(this.channel!.id, this.id),
+        method: 'DELETE',
+      })
+      .then(
+        () => this.channel!.messages.remove(this.id)
+      );
   }
 }

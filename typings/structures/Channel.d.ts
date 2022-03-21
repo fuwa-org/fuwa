@@ -1,8 +1,9 @@
 import { APIChannel, APIChannelBase, ChannelType } from '@splatterxl/discord-api-types';
 import { Client } from '../client/Client.js';
 import { Snowflake } from '../client/ClientOptions';
+import { DMChannel } from './DMChannel.js';
 import { Guild } from './Guild';
-import { GuildChannel } from './GuildChannel.js';
+import { GuildChannels } from './GuildChannel.js';
 import { BaseStructure } from './templates/BaseStructure';
 export declare class Channel<T extends APIChannel = APIChannel> extends BaseStructure<T> {
     type: ChannelType;
@@ -24,7 +25,7 @@ export declare class Channel<T extends APIChannel = APIChannel> extends BaseStru
         };
     }>;
 }
-export declare type Channels<T = Channel | GuildChannel, D = APIChannel> = T & {
+export declare type Channels<T = DMChannel | GuildChannels | Channel, D = APIChannel> = T & {
     id: Snowflake;
     _deserialise(data: D): T;
 };

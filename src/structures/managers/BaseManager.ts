@@ -1,11 +1,9 @@
-import { SubscriptionBuilder } from '@fuwa/events';
-import { EventEmitter } from 'stream';
 import { Client } from '../../client/Client';
 import { Snowflake } from '../../client/ClientOptions';
 
 export class BaseManager<
   T extends { id: Snowflake; _deserialise(data: any): T }
-> extends EventEmitter {
+> {
   public cache: Map<Snowflake, T> = new Map();
 
   public get size(): number {
@@ -13,7 +11,13 @@ export class BaseManager<
   }
 
   constructor(public client: Client, public __class: any) {
-    super();
+    Object.defineProperty(this, 'client', {
+      enumerable: false,
+    });
+    Object.defineProperty(this, '__class', {
+      enumerable: false,
+    });
+
   }
 
   public get(id: T['id']): T | undefined {
@@ -30,6 +34,12 @@ export class BaseManager<
       this.add(d);
     }
     return data;
+  }
+
+  public removeMany(ids: Snowflake[]) {
+    for (const id of ids) {
+      this.remove(id);
+    }
   }
 
   public update(data: T): T {
@@ -58,10 +68,4 @@ export class BaseManager<
       }
     }
   }
-
-  public event(name: string) {
-    return new SubscriptionBuilder(name, this);
-  }
-
-  public isManager = true;
 }

@@ -91,15 +91,19 @@ export class RequestManager {
         case 401:
           throw new Error('Token has been invalidated or was never valid');
         default:
-          throw new RESTError(req, res, await res.body.text());
+          throw new RESTError(req, res, await res.body.json());
       }
     } else {
       throw new RESTError(req, res);
     }
   }
   public queue<T>(
-    req: APIRequest
+    req: APIRequest | RouteLike
   ): Promise<ResponseData & { body: { json(): Promise<T> } }> {
+    if (typeof req === 'string') {
+      req = resolveRequest({ route: req });
+    }
+
     const [endpoint, majorId] = this.getBucket(req.route);
 
     if (!this.queues.has(endpoint)) {
