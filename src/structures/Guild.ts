@@ -103,6 +103,7 @@ export class Guild extends BaseStructure<APIGuild | APIUnavailableGuild> {
    */
   _deserialise(data: APIGuild | APIUnavailableGuild) {
     this.id = data.id as Snowflake;
+    this.members.guildId = this.id;
     this.available = !data.unavailable;
     this.created = new Date(DiscordSnowflake.timestampFrom(this.id));
 
@@ -176,10 +177,12 @@ export class Guild extends BaseStructure<APIGuild | APIUnavailableGuild> {
 
     if ('joined_at' in data) this.joinedAt = new Date(data.joined_at!);
 
-    if ('members' in data)
-      this.members.addMany(
-        data.members!.map((v) => new GuildMember(this)._deserialise(v))
-      );
+    if ('members' in data) {
+      for (const member of data.members!) {
+        const m = new GuildMember(this.client, this.id)._deserialise(member);
+        this.members.cache.set(m.user!.id, m);
+      }
+    }
 
     if ('channels' in data) {
       this.channels.addMany(

@@ -21,6 +21,7 @@ export declare class Message<ChannelType extends TextChannel = TextChannel> exte
     get createdAt(): Date;
     _deserialise(data: APIMessage): this;
     _modify(data: Partial<APIMessage>): Promise<NonNullable<this>>;
+    fetchMember(): Promise<GuildMember>;
     edit(content: string): Promise<NonNullable<this>>;
     delete(): Promise<void>;
 }

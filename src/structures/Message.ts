@@ -61,7 +61,7 @@ export class Message<
     if ('pinned' in data) this.pinned = data.pinned;
     if ('content' in data) this.content = data.content;
     if ('member' in data)
-      this.member = this.guild!.members.resolve(data.member!) ?? null;
+      this.member = this.guild!.members.get(this.author.id as Snowflake) ?? null;
     // TODO: attachments, mentions, applications, webhooks, reactions, references, etc.
     //
     return this;
@@ -75,6 +75,11 @@ export class Message<
         body: DataTransformer.asJSON(data),
       })
       .then(async (data) => this._deserialise(await data.body.json())!);
+  }
+
+  public async fetchMember() {
+    if (!this.guild) throw new Error('Cannot fetch member of a DM message');
+    return this.member = await this.guild.members.fetch(this.author.id as Snowflake);
   }
 
   public async edit(content: string) {

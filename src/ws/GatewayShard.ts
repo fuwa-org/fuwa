@@ -199,7 +199,7 @@ export class GatewayShard {
     );
   }
 
-  private onMessage(message: Buffer) {
+  private async onMessage(message: Buffer) {
     let buffer = message;
 
     if (this.erlpack) {
@@ -414,6 +414,9 @@ export class GatewayShard {
               const message = new Message<typeof channel>(this.client)._deserialise(
                 data
               );
+
+              if (!message.member) await message.fetchMember();
+
               channel.messages.add(message);
 
               this.client.delegate('meta.messages.create', message);

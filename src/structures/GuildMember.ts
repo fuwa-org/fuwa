@@ -1,4 +1,5 @@
 import { APIGuildMember, Routes } from '@splatterxl/discord-api-types';
+import { Client } from '../client/Client.js';
 import { Snowflake } from '../client/ClientOptions.js';
 import { DataTransformer } from '../rest/DataTransformer.js';
 import { Guild } from './Guild.js';
@@ -23,8 +24,13 @@ export class GuildMember extends BaseStructure<APIGuildMember> {
     return this.joinedTimestamp;
   }
 
-  public guild!: Guild;
-  public user: User | null = null;
+  public get guild() {
+    return this.client.guilds.get(this.guildId)!;
+  }
+  public userId: Snowflake | null = null;
+  public get user(): User | null {
+    return this.client.users.resolve(this.userId) ?? null;
+  }
   public nickname: string | null = null;
   public avatar: string | null = null;
 
@@ -50,14 +56,13 @@ export class GuildMember extends BaseStructure<APIGuildMember> {
   public deaf = false;
   public mute = false;
 
-  constructor(guild: Guild) {
-    super(guild.client);
-
-    this.guild = guild;
+  constructor(client: Client, public guildId: Snowflake) {
+    super(client);
   }
 
   public _deserialise(data: APIGuildMember & { joined_at: string | null }): this {
-    if ('user' in data) this.user = this.client.users.resolve(data.user!)!;
+    if ('user' in data) this.userId = data.user!.id as Snowflake;
+    this.id = this.user?.id;
     if ('nick' in data) this.nickname = data.nick!;
     if ('avatar' in data) this.avatar = data.avatar!;
     if ('pending' in data) this.pending = data.pending!;
@@ -79,13 +84,26 @@ export class GuildMember extends BaseStructure<APIGuildMember> {
   public _patch(data: APIGuildMember, guild?: Guild, user?: User): this {
     this._deserialise(data);
 
-    this.user =
-      user ??
-      (data.user ? this.client.users.resolve(data.user!) : null) ??
-      this.user;
-    this.guild = guild ?? this.guild;
+    this.userId =
+      (user?.id ??
+      (data.user ? data.user.id : null) ??
+      this.userId) as Snowflake;
+    this.guildId = guild?.id ?? this.guildId;
 
     return this;
+  }
+
+  public async fetch() {
+    const res = await this.client.http
+      .queue({
+        route: Routes.guildMember(this.guild.id, this.user!.id),
+        method: 'GET',
+      })
+      .then(async (data) => await data.body.json());
+
+    this._deserialise(res as APIGuildMember);
+
+    return this.guild.members.update(this);
   }
 
   public async edit(

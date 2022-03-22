@@ -9,12 +9,14 @@ export class GuildMemberManager extends BaseManager<GuildMember> {
     super(client, GuildMember);
   }
 
-  public fetch(id?: Snowflake | '@me'): Promise<GuildMember> {
-    return this.client.http
+  public async fetch(id?: Snowflake | '@me'): Promise<GuildMember> {
+    const member = await this.client.http
       .queue({
         route: Routes.guildMember(this.guildId, id ?? '@me'),
       })
       .then(async (data) => this.resolve(await data.body.json())!);
+
+    return member;
   }
 
   public requestMembers(ids: Snowflake[], limit = 50): void {
@@ -45,7 +47,7 @@ export class GuildMemberManager extends BaseManager<GuildMember> {
     reason?: string
   ): Promise<GuildMember> {
     return this.get(
-      member instanceof GuildMember ? member.id : member
+      member instanceof GuildMember ? member.user!.id : member
     )!.disableCommunication(until, reason);
   }
 
