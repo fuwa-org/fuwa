@@ -63,7 +63,8 @@ export class RESTClient {
     return headers;
   }
 
-  public formatRoute(route: RouteLike, versioned = true): string {
+  public formatRoute(route: RouteLike, versioned = true, useBase = true): string {
+    if (!useBase) return route;
     return (
       this.baseUrl +
       (this.version && versioned ? `/v${this.version}` : '') +
@@ -131,7 +132,7 @@ export class RESTClient {
       query = `?${request.query.toString()}`;
     }
 
-    return `${this.formatRoute(request.route, request.versioned)}${query}`;
+    return `${this.formatRoute(request.route as RouteLike, request.versioned, request.useBaseUrl)}${query}`;
   }
 
   public execute(request: APIRequest): Promise<ResponseData> {
@@ -143,6 +144,8 @@ export class RESTClient {
     };
 
     if (request.body) options.body = request.body;
+
+    console.log(options, options.body?.toString());
 
     return undici.request(this.createURL(request), options);
   }

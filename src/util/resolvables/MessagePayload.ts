@@ -66,7 +66,7 @@ export async function payload2data(payload: MessagePayload, channel: Snowflake) 
 
   let body: (typeof data)["body"] = DEFAULT;
 
-  if (payload.content) body.content = payload.content;
+  if (payload.content) body.content = payload.content ?? null;
   if (payload.flags) body.flags = payload.flags instanceof MessageFlags ? payload.flags.bits : payload.flags; 
   if (payload.tts) body.tts = payload.tts;
   if (payload.nonce) body.nonce = payload.nonce;
@@ -87,7 +87,6 @@ export async function payload2data(payload: MessagePayload, channel: Snowflake) 
   }
 
   data.body = body;
-
   data.body.attachments = null;
 
   return data;
@@ -99,4 +98,5 @@ const DEFAULT = {
   tts: false,
   nonce: null,
   embeds: null,
+  attachments: null,
 };
