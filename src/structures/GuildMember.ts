@@ -8,10 +8,6 @@ import { User } from './User.js';
 
 export class GuildMember extends BaseStructure<APIGuildMember> {
   /**
-   * @deprecated use {@link GuildMember.user|`<member>.user.id`} instead
-   */
-  public declare id: Snowflake;
-  /**
    * @deprecated use {@link GuildMember.joinedAt} instead
    */
   public get createdAt(): Date {
@@ -61,8 +57,10 @@ export class GuildMember extends BaseStructure<APIGuildMember> {
   }
 
   public _deserialise(data: APIGuildMember & { joined_at: string | null }): this {
-    if ('user' in data) this.userId = data.user!.id as Snowflake;
-    this.id = this.user?.id;
+    if ('user' in data) {
+      this.userId = data.user!.id as Snowflake;
+      this.id = this.userId;
+    }
     if ('nick' in data) this.nickname = data.nick!;
     if ('avatar' in data) this.avatar = data.avatar!;
     if ('pending' in data) this.pending = data.pending!;
@@ -177,4 +175,10 @@ export class GuildMember extends BaseStructure<APIGuildMember> {
   public async setMute(mute: boolean, reason?: string) {
     await this.edit({ mute }, reason);
   }
+}
+
+// @ts-ignore
+export interface GuildMember {
+  // @ts-ignore
+  id: Snowflake;
 }

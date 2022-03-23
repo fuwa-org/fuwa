@@ -19,6 +19,10 @@ export abstract class BaseStructure<T> {
       value: true,
       enumerable: false,
     });
+    Object.defineProperty(this, "client", {
+      value: this.client,
+      enumerable: false,
+    });
 
     if (data) this._deserialise(data);
     if (data && 'id' in data && typeof data.id === 'string') this.id = data.id;

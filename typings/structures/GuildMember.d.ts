@@ -6,7 +6,6 @@ import { BaseStructure } from './templates/BaseStructure.js';
 import { User } from './User.js';
 export declare class GuildMember extends BaseStructure<APIGuildMember> {
     guildId: Snowflake;
-    id: Snowflake;
     get createdAt(): Date;
     get createdTimestamp(): number;
     get guild(): Guild;
@@ -38,4 +37,7 @@ export declare class GuildMember extends BaseStructure<APIGuildMember> {
     setNickname(nickname: string, reason?: string): Promise<void>;
     setDeaf(deaf: boolean, reason?: string): Promise<void>;
     setMute(mute: boolean, reason?: string): Promise<void>;
+}
+export interface GuildMember {
+    id: Snowflake;
 }

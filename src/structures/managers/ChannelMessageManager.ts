@@ -14,7 +14,7 @@ export class ChannelMessageManager extends BaseManager<
   public async create(data: MessagePayload | string): Promise<Message<TextChannel>> {
     data = MessagePayload.from(data);
 
-    const message = await this.client.http.queue(await payload2data(data, this.channel.id)).then(async d => this.resolve(await d.body.json())!);
+    const message = new Message(this.client)._deserialise(await this.client.http.queue(await payload2data(data, this.channel.id)).then(async d => d.body.json()));
  
     return message;
   }

@@ -4,8 +4,6 @@ import { Snowflake } from '../client/ClientOptions';
 import { User } from './User';
 import { ExtendedUser } from './ExtendedUser';
 import { MessageFlags } from '../util/bitfields/MessageFlags';
-import { GuildMember } from './GuildMember';
-import { Guild } from './Guild';
 import { TextChannel } from './templates/BaseTextChannel';
 import { DiscordSnowflake } from '@sapphire/snowflake';
 import { DataTransformer } from '../rest/DataTransformer';
@@ -16,8 +14,14 @@ export class Message<
 > extends BaseStructure<APIMessage> {
   public nonce: string | number | null = null;
 
-  public guild: Guild | null = null;
-  public channel: ChannelType | null = null;
+  public guildId: Snowflake | null = null;
+  public get guild() {
+    return this.client.guilds.get(this.guildId!) ?? null;
+  }
+  public channelId: Snowflake | null = null;
+  public get channel(): ChannelType | null {
+    return this.client.channels.get(this.channelId) as ChannelType ?? null;
+  }
 
   public tts = false;
   public type: MessageType = MessageType.Default;
@@ -25,7 +29,9 @@ export class Message<
   public pinned = false;
 
   public author!: User | ExtendedUser;
-  public member: GuildMember | null = null;
+  public get member() {
+    return this.guild?.members.get(this.author.id as Snowflake) ?? null;
+  }
   public content: string | null = null;
 
   public get createdTimestamp() {
@@ -38,19 +44,13 @@ export class Message<
   _deserialise(data: APIMessage): this {
     this.id = data.id as Snowflake;
 
-    if ('guild_id' in data)
-      this.guild = this.client.guilds.resolve(data.guild_id) ?? null;
-    if ('channel_id' in data)
-      this.channel =
-        (this.client.channels.resolve(
-          data.channel_id
-        )! as unknown as ChannelType) ?? null;
-
+    if ('guild_id' in data) this.guildId = data.guild_id as Snowflake;
+    if ('channel_id' in data) this.channelId = data.channel_id as Snowflake;
     if ('tts' in data) this.tts = data.tts;
     if ('type' in data) this.type = data.type;
     if ('author' in data) {
       if (data.webhook_id) {
-        // TODO: this.author = new Webhook(data.author);
+        this.author = new User(this.client, data.author);
       } else {
         this.author = this.client.users.resolve(data.author)!;
       }
@@ -60,10 +60,8 @@ export class Message<
     // TODO: embeds
     if ('pinned' in data) this.pinned = data.pinned;
     if ('content' in data) this.content = data.content;
-    if ('member' in data)
-      this.member = this.guild!.members.get(this.author.id as Snowflake) ?? null;
     // TODO: attachments, mentions, applications, webhooks, reactions, references, etc.
-    //
+    
     return this;
   }
 
@@ -78,8 +76,7 @@ export class Message<
   }
 
   public async fetchMember() {
-    if (!this.guild) throw new Error('Cannot fetch member of a DM message');
-    return this.member = await this.guild.members.fetch(this.author.id as Snowflake);
+    return this.guild?.members.add(await this.guild?.members.fetch(this.author.id)) ?? null;
   }
 
   public async edit(content: string) {

@@ -340,7 +340,7 @@ export class GatewayShard {
             );
 
             if (guild) {
-              const member = new GuildMember(guild)._deserialise(data);
+              const member = new GuildMember(this.client, guild.id)._deserialise(data);
               guild.members.add(member);
 
               this.client.delegate('guilds.members.add', member);
@@ -394,7 +394,7 @@ export class GatewayShard {
 
             if (guild) {
               const members = data.members.map((v) =>
-                new GuildMember(guild)._deserialise(v)
+                new GuildMember(this.client, guild.id)._deserialise(v)
               );
 
               guild.members.addMany(members);
@@ -414,8 +414,6 @@ export class GatewayShard {
               const message = new Message<typeof channel>(this.client)._deserialise(
                 data
               );
-
-              if (!message.member) await message.fetchMember();
 
               channel.messages.add(message);
 

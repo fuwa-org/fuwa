@@ -1,9 +1,8 @@
 /// <reference types="node" />
 import { HttpMethod } from 'undici/types/dispatcher';
 import { URLSearchParams } from 'url';
-import { RouteLike } from './RequestManager';
 export interface APIRequest {
-    route: RouteLike;
+    route: string;
     auth?: boolean;
     versioned?: boolean;
     query?: URLSearchParams | string | null;
@@ -12,6 +11,8 @@ export interface APIRequest {
     method?: HttpMethod;
     headers?: Record<string, string>;
     reason?: string | null;
+    useRateLimits?: boolean;
+    useBaseUrl?: boolean;
     allowedRetries?: number;
     retries?: number;
 }

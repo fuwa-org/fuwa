@@ -1,7 +1,8 @@
 /// <reference types="node" />
 import { File } from '../../rest/APIRequest';
+import { RequestManager } from '../../rest/RequestManager';
 export declare type FileResolvable = string | Buffer;
-export declare function resolveFile(file: FileResolvable): Promise<ResolvedFile>;
+export declare function resolveFile(file: FileResolvable, reqMan?: RequestManager): Promise<ResolvedFile>;
 export interface ResolvedFile {
     mimeType: string;
     data: Buffer;
