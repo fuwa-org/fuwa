@@ -153,8 +153,6 @@ export class RESTClient {
 
     if (request.body) options.body = request.body;
 
-    console.log(options, options.body?.toString());
-
     return undici.request(this.createURL(request), options);
   }
 }

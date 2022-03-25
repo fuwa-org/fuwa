@@ -79,6 +79,8 @@ export async function payload2data(
   payload: MessagePayload,
   channel: Snowflake
 ) {
+  // FIXME: #55 this is where the data gets squashed
+
   const data: APIRequest & {
     body?: Partial<Omit<RESTPostAPIChannelMessageJSONBody, 'attachments'>>;
   } = {
