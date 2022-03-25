@@ -20,7 +20,7 @@ export class Message<
   }
   public channelId: Snowflake | null = null;
   public get channel(): ChannelType | null {
-    return this.client.channels.get(this.channelId) as ChannelType ?? null;
+    return this.client.channels.get(this.channelId!) as ChannelType ?? null;
   }
 
   public tts = false;

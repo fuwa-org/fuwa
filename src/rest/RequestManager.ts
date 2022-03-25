@@ -4,7 +4,7 @@ import { Client } from '../client/Client.js';
 import { APIRequest, resolveRequest } from './APIRequest.js';
 import { BucketQueueManager } from './BucketQueueManager.js';
 import { RESTClient } from './RESTClient';
-import { RateLimitedError, RESTError } from './RESTError.js';
+import { APIError, parseErr, RateLimitedError, RESTError } from './RESTError.js';
 
 // Yeah, copied from Discord.js because I can't even think for myself.
 export class RequestManager {
@@ -17,7 +17,7 @@ export class RequestManager {
   public offset = 0;
 
   /** Queue managers for different buckets */
-  private queues: Map<string, BucketQueueManager> = new Map();
+  public queues: Map<string, BucketQueueManager> = new Map();
 
   /** The remaining requests we can make until we're globally rate-limited. */
   public remaining = 50;
@@ -57,9 +57,6 @@ export class RequestManager {
 
     if (req.useBaseUrl) this.updateOffset(res);
 
-    if (res.statusCode < 200) {
-      throw new RESTError(req, res);
-    } else if (res.statusCode < 300) {
       this._client.debug(
         `[${this._client.logger.kleur().green('REST')} => ${this._client.logger
           .kleur()
@@ -67,6 +64,11 @@ export class RequestManager {
           res.statusCode
         } ${STATUS_CODES[res.statusCode]}`
       );
+
+
+    if (res.statusCode < 200) {
+      throw new RESTError(req, res);
+    } else if (res.statusCode < 300) {
       return res;
     } else if (res.statusCode < 500) {
       switch (res.statusCode) {
@@ -92,7 +94,15 @@ export class RequestManager {
         case 401:
           throw new Error('Token has been invalidated or was never valid');
         default:
-          throw new RESTError(req, res, await res.body.json());
+          const text = await res.body.text();
+
+          try {
+            throw parseErr(req, res, JSON.parse(text), new Error().stack);
+          } catch (err) {
+            if (err instanceof APIError || err instanceof RateLimitedError) throw err;
+
+            throw new RESTError(req, res, text);
+          }
       }
     } else {
       throw new RESTError(req, res);

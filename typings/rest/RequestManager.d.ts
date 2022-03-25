@@ -8,7 +8,7 @@ export declare class RequestManager {
     _client: Client;
     limit: number;
     offset: number;
-    private queues;
+    queues: Map<string, BucketQueueManager>;
     remaining: number;
     reset: number;
     constructor(client: RESTClient, _client: Client);

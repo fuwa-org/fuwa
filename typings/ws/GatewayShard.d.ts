@@ -25,7 +25,7 @@ export declare class GatewayShard {
     constructor(client: Client, shard: [number, number], token: string);
     private authenticate;
     connect(url?: string): Promise<void>;
-    private reset;
+    reset(full?: boolean): void;
     debug(...data: any[]): void;
     private debugPretty;
     private onMessage;

@@ -4,6 +4,7 @@ import {
   ClientOptions,
   DefaultClientOptions,
   resolveIntents,
+  Snowflake,
 } from './ClientOptions';
 import { APIGatewayBotInfo, Routes } from '@splatterxl/discord-api-types';
 import EventEmitter from 'events';
@@ -20,6 +21,9 @@ import { UserManager } from '../structures/managers/UserManager.js';
 import { ExtendedUser } from '../structures/ExtendedUser.js';
 import { ChannelManager } from '../structures/managers/ChannelManager.js';
 import Events from '@fuwa/events';
+import { Message } from '../structures/Message.js';
+import { Guild } from '../structures/Guild.js';
+import { TextChannel } from '../structures/templates/BaseTextChannel.js';
 
 export class Client extends EventEmitter {
   #token: string;
@@ -35,6 +39,9 @@ export class Client extends EventEmitter {
   public channels: ChannelManager;
 
   public user: ExtendedUser | null = null;
+
+  private timeouts: Array<NodeJS.Timeout> = [];
+  private timers: Array<NodeJS.Timeout> = [];
 
   public constructor(token: string, options?: ClientOptions) {
     super();
@@ -132,6 +139,34 @@ export class Client extends EventEmitter {
   public event(name: string) {
     return new Events.SubscriptionBuilder(name, this);
   }
+
+  public reset() {
+    this.ws?.close(false);
+    this.ws?.reset(true);
+    this.http.queues.clear();
+    this.timeouts.forEach((t) => clearTimeout(t));
+    this.timers.forEach((t) => clearInterval(t));
+    this.logger.info('reset client: done');
+  }
+}
+
+export interface Client {
+  on<K extends keyof ClientEvents>(
+    event: K,
+    listener: (...args: ClientEvents[K]) => void
+  ): this;
+  on<K extends Exclude<string, keyof ClientEvents>>(event: K, listener: (...args: any[]) => void): this;
+}
+
+export interface ClientEvents {
+  ready: [],
+  resumed: [session_id: string],
+  "guilds.create": [Guild],
+  "guilds.delete": [id: Snowflake],
+  "guilds.update": [old: Guild, new: Guild],
+  "messages.create": [Message],
+  "messages.delete": [{ guild: Guild | null, channel: TextChannel, id: Snowflake }],
+  "messages.update": [old: Message, new: Message],
 }
 
 export type Awaitable<T> = Promise<T> | T;

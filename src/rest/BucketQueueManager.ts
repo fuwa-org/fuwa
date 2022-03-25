@@ -26,7 +26,7 @@ export class BucketQueueManager {
       this.remaining = +res.headers['x-ratelimit-remaining']!;
       this.reset = +res.headers['x-ratelimit-reset']! * 1000;
     } else {
-      throw new Error("Couldn't find rate limit headers.");
+      // the route uses omly the global rate limit
     }
   }
   public get durUntilReset() {

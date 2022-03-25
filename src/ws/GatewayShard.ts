@@ -89,6 +89,12 @@ export class GatewayShard {
     }
 
     this.#token = token;
+
+    Object.defineProperty(this, "client", {
+      enumerable: false,
+      writable: false,
+      value: this.client,
+    });
   }
 
   private authenticate() {
@@ -124,6 +130,11 @@ export class GatewayShard {
     this.url = url;
 
     this._socket = new WebSocket(url);
+
+    Object.defineProperty(this, '_socket', {
+      enumerable: false,
+      value: this._socket,
+    });
 
     this._socket.on('open', () => {
       this.authenticate();
@@ -162,7 +173,7 @@ export class GatewayShard {
     });
   }
 
-  private reset(full = false) {
+  public reset(full = false) {
     if (full) {
       this.debug('Shard undergoing reset, closing socket');
       this._terminate();
@@ -292,6 +303,7 @@ export class GatewayShard {
           }
           case GatewayDispatchEvents.Resumed: {
             this.debug('resumed session', this.session);
+            this.client.delegate('meta.resumed', this.session);
             break;
           }
           case GatewayDispatchEvents.GuildCreate: {
