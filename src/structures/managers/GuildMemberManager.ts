@@ -14,7 +14,12 @@ export class GuildMemberManager extends BaseManager<GuildMember> {
       .queue({
         route: Routes.guildMember(this.guildId, id ?? '@me'),
       })
-      .then(async (data) => new GuildMember(this.client, this.guildId)._deserialise(await data.body.json())!);
+      .then(
+        async (data) =>
+          new GuildMember(this.client, this.guildId)._deserialise(
+            await data.body.json()
+          )!
+      );
 
     this.update(member);
 

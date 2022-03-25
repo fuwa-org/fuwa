@@ -63,7 +63,11 @@ export class RESTClient {
     return headers;
   }
 
-  public formatRoute(route: RouteLike, versioned = true, useBase = true): string {
+  public formatRoute(
+    route: RouteLike,
+    versioned = true,
+    useBase = true
+  ): string {
     if (!useBase) return route;
     return (
       this.baseUrl +
@@ -132,7 +136,11 @@ export class RESTClient {
       query = `?${request.query.toString()}`;
     }
 
-    return `${this.formatRoute(request.route as RouteLike, request.versioned, request.useBaseUrl)}${query}`;
+    return `${this.formatRoute(
+      request.route as RouteLike,
+      request.versioned,
+      request.useBaseUrl
+    )}${query}`;
   }
 
   public execute(request: APIRequest): Promise<ResponseData> {

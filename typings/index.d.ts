@@ -38,3 +38,5 @@ export * from './structures/templates/BaseGuildTextChannel';
 export * from './logging/ILogger';
 export * from './logging/LoggerOptions';
 export * from './logging/DefaultLogger';
+export * as Types from '@splatterxl/discord-api-types';
+export { Routes } from '@splatterxl/discord-api-types';

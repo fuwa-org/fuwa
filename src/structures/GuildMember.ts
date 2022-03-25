@@ -56,7 +56,9 @@ export class GuildMember extends BaseStructure<APIGuildMember> {
     super(client);
   }
 
-  public _deserialise(data: APIGuildMember & { joined_at: string | null }): this {
+  public _deserialise(
+    data: APIGuildMember & { joined_at: string | null }
+  ): this {
     if ('user' in data) {
       this.userId = data.user!.id as Snowflake;
       this.id = this.userId;
@@ -82,8 +84,7 @@ export class GuildMember extends BaseStructure<APIGuildMember> {
   public _patch(data: APIGuildMember, guild?: Guild, user?: User): this {
     this._deserialise(data);
 
-    this.userId =
-      (user?.id ??
+    this.userId = (user?.id ??
       (data.user ? data.user.id : null) ??
       this.userId) as Snowflake;
     this.guildId = guild?.id ?? this.guildId;
@@ -105,7 +106,7 @@ export class GuildMember extends BaseStructure<APIGuildMember> {
   }
 
   public async edit(
-    data: Partial<APIGuildMember | GuildMember>,    
+    data: Partial<APIGuildMember | GuildMember>,
     reason?: string
   ): Promise<GuildMember> {
     const res = await this.client.http

@@ -1,6 +1,4 @@
-import FormData from 'form-data';
-import { IncomingHttpHeaders, STATUS_CODES } from 'http';
-import { OutgoingHttpHeaders } from 'http2';
+import { STATUS_CODES } from 'http';
 import { ResponseData } from 'undici/types/dispatcher';
 import { APIRequest, File } from './APIRequest';
 
@@ -23,20 +21,31 @@ export class RateLimitedError extends RESTError {
   constructor(req: APIRequest, res: ResponseData, bucket?: string) {
     super(req, res);
 
-    this.message = `429 Too Many Requests [${req.method} ${req.route}; bucket ${bucket ?? res.headers["x-ratelimit-bucket"]}] (retried ${req.retries} times)`;
+    this.message = `429 Too Many Requests [${req.method} ${req.route}; bucket ${
+      bucket ?? res.headers['x-ratelimit-bucket']
+    }] (retried ${req.retries} times)`;
     this.name = 'RateLimitedError';
   }
 }
 
 /** Pretty-prints a Discord API error. */
-export function parseErr(req: APIRequest, res: ResponseData, error?: any, stack?: string) {
+export function parseErr(
+  req: APIRequest,
+  res: ResponseData,
+  error?: any,
+  stack?: string
+) {
   if (res.statusCode === 429) {
     const bucket = res.headers['x-ratelimit-bucket']! as string;
-    return new RateLimitedError(req, res, `${bucket} [${req.method} ${req.route}]`);
+    return new RateLimitedError(
+      req,
+      res,
+      `${bucket} [${req.method} ${req.route}]`
+    );
   }
 
   if (stack && /Error\s*:?\n/i.test(stack)) stack = stack!.slice(8);
-  
+
   return new APIError(req, res, error, stack);
 }
 
@@ -45,19 +54,23 @@ function parse400(error: any) {
     code: error.code,
     message: error.message,
     errors: error.errors ? traverse(error.errors) : undefined,
-  }
+  };
 }
 
 function traverse(obj: any, keyPrefix = '', prev: Record<string, any> = {}) {
   for (const key in obj) {
-    if (key === "_errors") {
+    if (key === '_errors') {
       for (let i = 0; i < obj[key].length; i++) {
         const err = obj[key][i];
 
         prev[keyPrefix.slice(1)] = `${err.code}: ${err.message}`;
       }
-    }
-    else prev = traverse(obj[key], keyPrefix + (!isNaN(parseInt(key)) ? `[${key}]` : `.${key}`), prev);
+    } else
+      prev = traverse(
+        obj[key],
+        keyPrefix + (!isNaN(parseInt(key)) ? `[${key}]` : `.${key}`),
+        prev
+      );
   }
 
   return prev;
@@ -68,14 +81,22 @@ export class APIError extends Error {
   public body: any;
   public files?: File[];
 
-  constructor(req: APIRequest, _res: ResponseData, error?: any, stack?: string) {
+  constructor(
+    req: APIRequest,
+    _res: ResponseData,
+    error?: any,
+    stack?: string
+  ) {
     super();
 
     const err = parse400(error);
 
     this.message = `[${err.code}] ${err.message}`;
-    if (err.errors) this.message += `\n${Object.entries(err.errors).map(([k, v]) => `${k}: ${v}`).join('\n')}`;
-    this.stack = this.name + ": " + this.message + "\n" + (stack ?? '');
+    if (err.errors)
+      this.message += `\n${Object.entries(err.errors)
+        .map(([k, v]) => `${k}: ${v}`)
+        .join('\n')}`;
+    this.stack = this.name + ': ' + this.message + '\n' + (stack ?? '');
     this.route = req.route;
 
     this.files = req.files!;

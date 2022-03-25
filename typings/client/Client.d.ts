@@ -39,15 +39,17 @@ export interface Client {
 export interface ClientEvents {
     ready: [];
     resumed: [session_id: string];
-    "guilds.create": [Guild];
-    "guilds.delete": [id: Snowflake];
-    "guilds.update": [old: Guild, new: Guild];
-    "messages.create": [Message];
-    "messages.delete": [{
-        guild: Guild | null;
-        channel: TextChannel;
-        id: Snowflake;
-    }];
-    "messages.update": [old: Message, new: Message];
+    'guilds.create': [Guild];
+    'guilds.delete': [id: Snowflake];
+    'guilds.update': [old: Guild, new: Guild];
+    'messages.create': [Message];
+    'messages.delete': [
+        {
+            guild: Guild | null;
+            channel: TextChannel;
+            id: Snowflake;
+        }
+    ];
+    'messages.update': [old: Message, new: Message];
 }
 export declare type Awaitable<T> = Promise<T> | T;

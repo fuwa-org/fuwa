@@ -15,11 +15,11 @@ export abstract class BaseStructure<T> {
   }
 
   constructor(public client: Client, data?: T) {
-    Object.defineProperty(this, "isStructure", {
+    Object.defineProperty(this, 'isStructure', {
       value: true,
       enumerable: false,
     });
-    Object.defineProperty(this, "client", {
+    Object.defineProperty(this, 'client', {
       value: this.client,
       enumerable: false,
     });

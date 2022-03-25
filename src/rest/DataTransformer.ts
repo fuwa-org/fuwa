@@ -7,7 +7,8 @@ import { BaseStructure } from '../structures/templates/BaseStructure.js';
 export class DataTransformer {
   static snakeCase(data: any): any {
     if (typeof data === 'string') return snakeCase(data);
-    else if (typeof data !== 'object' || Array.isArray(data)) return data.map(DataTransformer.snakeCase);
+    else if (typeof data !== 'object' || Array.isArray(data))
+      return data.map(DataTransformer.snakeCase);
 
     return Object.fromEntries(
       Object.entries(data).map(([K, V]) => [

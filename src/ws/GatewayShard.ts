@@ -90,7 +90,7 @@ export class GatewayShard {
 
     this.#token = token;
 
-    Object.defineProperty(this, "client", {
+    Object.defineProperty(this, 'client', {
       enumerable: false,
       writable: false,
       value: this.client,
@@ -267,7 +267,7 @@ export class GatewayShard {
       case GatewayOpcodes.Dispatch: {
         let event = payload as GatewayDispatchPayload['d'];
 
-        this.debug("received dispatch", data.t);
+        this.debug('received dispatch', data.t);
 
         switch (data.t) {
           case GatewayDispatchEvents.Ready: {
@@ -352,7 +352,10 @@ export class GatewayShard {
             );
 
             if (guild) {
-              const member = new GuildMember(this.client, guild.id)._deserialise(data);
+              const member = new GuildMember(
+                this.client,
+                guild.id
+              )._deserialise(data);
               guild.members.add(member);
 
               this.client.delegate('guilds.members.add', member);
@@ -372,7 +375,11 @@ export class GatewayShard {
 
               guild.members.remove(member.id);
 
-              this.client.delegate('guilds.members.remove', member.user!, guild);
+              this.client.delegate(
+                'guilds.members.remove',
+                member.user!,
+                guild
+              );
               this.client.guilds.update(guild!);
             }
 
@@ -423,9 +430,9 @@ export class GatewayShard {
             ) as TextChannel;
 
             if (channel) {
-              const message = new Message<typeof channel>(this.client)._deserialise(
-                data
-              );
+              const message = new Message<typeof channel>(
+                this.client
+              )._deserialise(data);
 
               channel.messages.add(message);
 
@@ -448,7 +455,11 @@ export class GatewayShard {
                 const newMessage = message._deserialise(data as APIMessage);
                 channel.messages.update(newMessage);
 
-                this.client.delegate('meta.messages.update', message, newMessage);
+                this.client.delegate(
+                  'meta.messages.update',
+                  message,
+                  newMessage
+                );
               }
             }
             break;
@@ -460,11 +471,9 @@ export class GatewayShard {
             ) as TextChannel;
 
             if (channel) {
-              channel.messages.cache.delete(
-                data.id as Snowflake
-              );
+              channel.messages.cache.delete(data.id as Snowflake);
 
-              this.client.delegate('meta.messages.delete', { 
+              this.client.delegate('meta.messages.delete', {
                 channel,
                 guild: channel.guild,
                 id: data.id,
@@ -481,7 +490,7 @@ export class GatewayShard {
             if (channel) {
               channel.messages.removeMany(data.ids as Snowflake[]);
 
-              this.client.delegate('meta.messages.delete', { 
+              this.client.delegate('meta.messages.delete', {
                 channel,
                 guild: channel.guild,
                 ids: data.ids,
@@ -490,11 +499,8 @@ export class GatewayShard {
             break;
           }
           default: {
-            this.client.logger.warn(
-              'Unhandled dispatch event',
-              data.t,
-            );
-            this.debug("Event:", data.d);
+            this.client.logger.warn('Unhandled dispatch event', data.t);
+            this.debug('Event:', data.d);
           }
         }
 

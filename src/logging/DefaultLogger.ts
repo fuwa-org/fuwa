@@ -10,15 +10,6 @@ type TLoggerOptions = Required<LoggerOptions> & {
   level: LogLevel[];
 };
 
-let kleur: any;
-
-try {
-  // eslint-disable-next-line @typescript-eslint/no-var-requires
-  kleur = require('kleur');
-} catch {
-  // it's not installed
-}
-
 export class DefaultLogger implements ILogger {
   public options: TLoggerOptions = {
     colors: false,
@@ -32,6 +23,7 @@ export class DefaultLogger implements ILogger {
   }
 
   /** Utility function to supply a color formatter if it's installed, and to fallback to a proxy if not */
+
   public kleur() {
     return DefaultKleurFactory();
   }

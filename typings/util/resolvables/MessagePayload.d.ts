@@ -1,9 +1,9 @@
 /// <reference types="node" />
-import { MessageFlags as APIMessageFlags } from "@splatterxl/discord-api-types";
-import { Snowflake } from "../../client/ClientOptions";
-import { APIRequest } from "../../rest/APIRequest";
-import { MessageFlags } from "../bitfields/MessageFlags";
-import { FileResolvable } from "./FileResolvable";
+import { MessageFlags as APIMessageFlags } from '@splatterxl/discord-api-types';
+import { Snowflake } from '../../client/ClientOptions';
+import { APIRequest } from '../../rest/APIRequest';
+import { MessageFlags } from '../bitfields/MessageFlags';
+import { FileResolvable } from './FileResolvable';
 export interface MessagePayload {
     content?: string;
     flags?: MessageFlags | APIMessageFlags;

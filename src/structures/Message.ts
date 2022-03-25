@@ -10,7 +10,7 @@ import { DataTransformer } from '../rest/DataTransformer';
 
 // TODO: Add support for DM messages
 export class Message<
-  ChannelType extends TextChannel = TextChannel,
+  ChannelType extends TextChannel = TextChannel
 > extends BaseStructure<APIMessage> {
   public nonce: string | number | null = null;
 
@@ -20,7 +20,7 @@ export class Message<
   }
   public channelId: Snowflake | null = null;
   public get channel(): ChannelType | null {
-    return this.client.channels.get(this.channelId!) as ChannelType ?? null;
+    return (this.client.channels.get(this.channelId!) as ChannelType) ?? null;
   }
 
   public tts = false;
@@ -61,7 +61,7 @@ export class Message<
     if ('pinned' in data) this.pinned = data.pinned;
     if ('content' in data) this.content = data.content;
     // TODO: attachments, mentions, applications, webhooks, reactions, references, etc.
-    
+
     return this;
   }
 
@@ -76,7 +76,11 @@ export class Message<
   }
 
   public async fetchMember() {
-    return this.guild?.members.add(await this.guild?.members.fetch(this.author.id)) ?? null;
+    return (
+      this.guild?.members.add(
+        await this.guild?.members.fetch(this.author.id)
+      ) ?? null
+    );
   }
 
   public async edit(content: string) {
@@ -89,8 +93,6 @@ export class Message<
         route: Routes.channelMessage(this.channel!.id, this.id),
         method: 'DELETE',
       })
-      .then(
-        () => this.channel!.messages.remove(this.id)
-      );
+      .then(() => this.channel!.messages.remove(this.id));
   }
 }

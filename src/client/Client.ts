@@ -133,7 +133,7 @@ export class Client extends EventEmitter {
   }
 
   public delegate(event: `${string}.${string}`, ...data: any[]) {
-    this.emit(event.replace(/^meta\./, ""), ...data);
+    this.emit(event.replace(/^meta\./, ''), ...data);
   }
 
   public event(name: string) {
@@ -155,18 +155,23 @@ export interface Client {
     event: K,
     listener: (...args: ClientEvents[K]) => void
   ): this;
-  on<K extends Exclude<string, keyof ClientEvents>>(event: K, listener: (...args: any[]) => void): this;
+  on<K extends Exclude<string, keyof ClientEvents>>(
+    event: K,
+    listener: (...args: any[]) => void
+  ): this;
 }
 
 export interface ClientEvents {
-  ready: [],
-  resumed: [session_id: string],
-  "guilds.create": [Guild],
-  "guilds.delete": [id: Snowflake],
-  "guilds.update": [old: Guild, new: Guild],
-  "messages.create": [Message],
-  "messages.delete": [{ guild: Guild | null, channel: TextChannel, id: Snowflake }],
-  "messages.update": [old: Message, new: Message],
+  ready: [];
+  resumed: [session_id: string];
+  'guilds.create': [Guild];
+  'guilds.delete': [id: Snowflake];
+  'guilds.update': [old: Guild, new: Guild];
+  'messages.create': [Message];
+  'messages.delete': [
+    { guild: Guild | null; channel: TextChannel; id: Snowflake }
+  ];
+  'messages.update': [old: Message, new: Message];
 }
 
 export type Awaitable<T> = Promise<T> | T;

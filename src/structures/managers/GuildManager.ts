@@ -1,7 +1,6 @@
 import { APIGuild, Routes } from '@splatterxl/discord-api-types';
 import { Client } from '../../client/Client';
 import { Snowflake } from '../../client/ClientOptions';
-import { Intents } from '../../util/bitfields/Intents';
 import { Guild } from '../Guild';
 import { BaseManager } from './BaseManager';
 

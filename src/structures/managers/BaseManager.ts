@@ -17,7 +17,6 @@ export class BaseManager<
     Object.defineProperty(this, '__class', {
       enumerable: false,
     });
-
   }
 
   public get(id: T['id']): T | undefined {

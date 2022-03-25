@@ -4,7 +4,12 @@ import { Client } from '../client/Client.js';
 import { APIRequest, resolveRequest } from './APIRequest.js';
 import { BucketQueueManager } from './BucketQueueManager.js';
 import { RESTClient } from './RESTClient';
-import { APIError, parseErr, RateLimitedError, RESTError } from './RESTError.js';
+import {
+  APIError,
+  parseErr,
+  RateLimitedError,
+  RESTError,
+} from './RESTError.js';
 
 // Yeah, copied from Discord.js because I can't even think for myself.
 export class RequestManager {
@@ -57,14 +62,13 @@ export class RequestManager {
 
     if (req.useBaseUrl) this.updateOffset(res);
 
-      this._client.debug(
-        `[${this._client.logger.kleur().green('REST')} => ${this._client.logger
-          .kleur()
-          .green('Manager')}] ${req.method.toUpperCase()} ${req.route} -> ${
-          res.statusCode
-        } ${STATUS_CODES[res.statusCode]}`
-      );
-
+    this._client.debug(
+      `[${this._client.logger.kleur().green('REST')} => ${this._client.logger
+        .kleur()
+        .green('Manager')}] ${req.method.toUpperCase()} ${req.route} -> ${
+        res.statusCode
+      } ${STATUS_CODES[res.statusCode]}`
+    );
 
     if (res.statusCode < 200) {
       throw new RESTError(req, res);
@@ -73,7 +77,10 @@ export class RequestManager {
     } else if (res.statusCode < 500) {
       switch (res.statusCode) {
         case 429: {
-          if (!req.useRateLimits) throw new Error(`Ratelimited on non-bucketed request: ${req.method} ${req.route}`);
+          if (!req.useRateLimits)
+            throw new Error(
+              `Ratelimited on non-bucketed request: ${req.method} ${req.route}`
+            );
           if (res.headers['x-ratelimit-global']) {
             this.limit = +res.headers['x-ratelimit-global-limit']!;
             this.remaining = +res.headers['x-ratelimit-global-remaining']!;
@@ -93,16 +100,18 @@ export class RequestManager {
         }
         case 401:
           throw new Error('Token has been invalidated or was never valid');
-        default:
+        default: {
           const text = await res.body.text();
 
           try {
             throw parseErr(req, res, JSON.parse(text), new Error().stack);
           } catch (err) {
-            if (err instanceof APIError || err instanceof RateLimitedError) throw err;
+            if (err instanceof APIError || err instanceof RateLimitedError)
+              throw err;
 
             throw new RESTError(req, res, text);
           }
+        }
       }
     } else {
       throw new RESTError(req, res);
@@ -115,7 +124,8 @@ export class RequestManager {
       req = resolveRequest({ route: req });
     }
 
-    if (!req.useRateLimits) return this.makeRequest(null as unknown as BucketQueueManager, req);
+    if (!req.useRateLimits)
+      return this.makeRequest(null as unknown as BucketQueueManager, req);
 
     const [endpoint, majorId] = this.getBucket(req.route as RouteLike);
 

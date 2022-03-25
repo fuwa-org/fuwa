@@ -78,7 +78,10 @@ export class Channel<
   }
 }
 
-export type Channels<T = DMChannel | GuildChannels | Channel, D = APIChannel> = T & {
+export type Channels<
+  T = DMChannel | GuildChannels | Channel,
+  D = APIChannel
+> = T & {
   id: Snowflake;
   _deserialise(data: D): T;
 };

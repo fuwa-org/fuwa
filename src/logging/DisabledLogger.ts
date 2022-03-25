@@ -3,19 +3,19 @@ import { DefaultKleurFactory } from './LoggerOptions.js';
 
 /** @internal */
 export class DisabledLogger implements ILogger {
-  public info(...data: any[]): void {
+  public info(..._data: any[]): void {
     // noop
   }
 
-  public warn(...data: any[]): void {
+  public warn(..._data: any[]): void {
     // noop
   }
 
-  public error(...data: any[]): void {
+  public error(..._data: any[]): void {
     // noop
   }
 
-  public debug(...data: any[]): void {
+  public debug(..._data: any[]): void {
     // noop
   }
 

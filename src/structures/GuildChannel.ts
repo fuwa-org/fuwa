@@ -48,7 +48,9 @@ export class GuildChannel<
     switch (data.type as GuildChannelType) {
       case ChannelType.GuildText:
       case ChannelType.GuildNews:
-        return new GuildTextChannel(client, guild)._deserialise(data as unknown as any);
+        return new GuildTextChannel(client, guild)._deserialise(
+          data as unknown as any
+        );
       default: {
         guild.client.logger.warn(
           `unknown guild channel type ${data.type} (${ChannelType[data.type]})`

@@ -6,17 +6,22 @@ import { RequestManager } from '../../rest/RequestManager';
 
 export type FileResolvable = string | Buffer;
 
-export async function resolveFile(file: FileResolvable, reqMan?: RequestManager): Promise<ResolvedFile> {
+export async function resolveFile(
+  file: FileResolvable,
+  reqMan?: RequestManager
+): Promise<ResolvedFile> {
   if (file instanceof Buffer) return { data: file, mimeType: 'image/png' };
   if (typeof file !== 'string')
     throw new TypeError('Expected a string or Buffer');
 
   if (/^http(s):/.test(file)) {
-    const res = reqMan ? await reqMan.queue({
-      route: file,
-      useRateLimits: false,
-      useBaseUrl: false,
-    }) : await undici.request(file);
+    const res = reqMan
+      ? await reqMan.queue({
+          route: file,
+          useRateLimits: false,
+          useBaseUrl: false,
+        })
+      : await undici.request(file);
     const data = Buffer.from(await res.body.arrayBuffer());
     let mimeType = mimeTypeFromExtension(file.split('.').pop()!);
 
