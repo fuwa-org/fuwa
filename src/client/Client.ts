@@ -143,7 +143,7 @@ export class Client extends EventEmitter {
   public reset() {
     this.ws?.close(false);
     this.ws?.reset(true);
-    this.http.queues.clear();
+    this.http.buckets.clear();
     this.timeouts.forEach((t) => clearTimeout(t));
     this.timers.forEach((t) => clearInterval(t));
     this.logger.info('reset client: done');

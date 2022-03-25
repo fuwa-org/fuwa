@@ -22,7 +22,7 @@ export class RequestManager {
   public offset = 0;
 
   /** Queue managers for different buckets */
-  public queues: Map<string, BucketQueueManager> = new Map();
+  public buckets: Map<string, BucketQueueManager> = new Map();
 
   /** The remaining requests we can make until we're globally rate-limited. */
   public remaining = 50;
@@ -122,21 +122,21 @@ export class RequestManager {
   ): Promise<ResponseData & { body: { json(): Promise<T> } }> {
     if (typeof req === 'string') {
       req = resolveRequest({ route: req });
-    }
+    } else req = resolveRequest(req);
 
     if (!req.useRateLimits)
       return this.makeRequest(null as unknown as BucketQueueManager, req);
 
     const [endpoint, majorId] = this.getBucket(req.route as RouteLike);
 
-    if (!this.queues.has(endpoint)) {
-      this.queues.set(
+    if (!this.buckets.has(endpoint)) {
+      this.buckets.set(
         endpoint,
         new BucketQueueManager(this, endpoint, majorId)
       );
     }
 
-    return this.queues.get(endpoint)!.queue(req);
+    return this.buckets.get(endpoint)!.queue(req);
   }
 
   private updateOffset(res: ResponseData) {
