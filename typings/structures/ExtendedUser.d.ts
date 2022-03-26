@@ -10,4 +10,5 @@ export declare class ExtendedUser extends User {
     edit(data: Partial<Pick<APIUser, 'username' | 'avatar'>>): Promise<this>;
     setUsername(username: string): Promise<this>;
     setAvatar(avatar: FileResolvable | null): Promise<this>;
+    toJSON(): APIUser;
 }

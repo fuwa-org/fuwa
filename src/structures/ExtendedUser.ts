@@ -43,4 +43,14 @@ export class ExtendedUser extends User {
       avatar: avatar ? toDataURI(await resolveFile(avatar)) : null,
     });
   }
+
+  toJSON(): APIUser {
+    return {
+      ...super.toJSON(),
+      email: this.email,
+      mfa_enabled: !!this.mfaEnabled,
+      verified: !!this.emailVerified,
+      locale: this.locale ?? undefined,
+    }
+  }
 }

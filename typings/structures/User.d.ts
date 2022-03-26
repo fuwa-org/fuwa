@@ -13,4 +13,5 @@ export declare class User extends BaseStructure<APIUser> {
     _deserialise(data: APIUser): this;
     toString(): string;
     fetch(): Promise<this>;
+    toJSON(): APIUser;
 }

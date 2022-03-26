@@ -3,7 +3,6 @@ import {
   GuildTextChannelType,
 } from '@splatterxl/discord-api-types';
 import { Client } from '../../client/Client.js';
-import { Guild } from '../Guild.js';
 import { BaseTextChannel } from './BaseTextChannel.js';
 
 export class BaseGuildTextChannel extends BaseTextChannel {
@@ -14,7 +13,7 @@ export class BaseGuildTextChannel extends BaseTextChannel {
 
   public nsfw = false;
 
-  constructor(client: Client, public guild: Guild) {
+  constructor(client: Client) {
     super(client);
   }
 

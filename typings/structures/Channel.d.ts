@@ -7,7 +7,8 @@ import { GuildChannels } from './GuildChannel.js';
 import { BaseStructure } from './templates/BaseStructure';
 export declare class Channel<T extends APIChannel = APIChannel> extends BaseStructure<T> {
     type: ChannelType;
-    guild: Guild | null;
+    guildId: Snowflake | null;
+    get guild(): Guild | null;
     _deserialise(data: T & {
         guild_id?: Snowflake;
     }): this;
@@ -24,6 +25,7 @@ export declare class Channel<T extends APIChannel = APIChannel> extends BaseStru
             json(): Promise<unknown>;
         };
     }>;
+    toJSON(): T;
 }
 export declare type Channels<T = DMChannel | GuildChannels | Channel, D = APIChannel> = T & {
     id: Snowflake;

@@ -37,6 +37,7 @@ export declare class GuildMember extends BaseStructure<APIGuildMember> {
     setNickname(nickname: string, reason?: string): Promise<void>;
     setDeaf(deaf: boolean, reason?: string): Promise<void>;
     setMute(mute: boolean, reason?: string): Promise<void>;
+    toJSON(): APIGuildMember;
 }
 export interface GuildMember {
     id: Snowflake;

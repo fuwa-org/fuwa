@@ -18,23 +18,15 @@ export class Channel<
   T extends APIChannel = APIChannel
 > extends BaseStructure<T> {
   public type: ChannelType = ChannelType.GuildCategory;
-  public guild: Guild | null = null;
+  public guildId: Snowflake | null = null;
+  public get guild(): Guild | null {
+    return this.client.guilds.get(this.guildId!) ?? null;
+  }
 
   _deserialise(data: T & { guild_id?: Snowflake }): this {
     this.id = data.id as Snowflake;
     if ('type' in data) this.type = data.type as ChannelType;
-    if ('guild_id' in data) {
-      this.guild = this.client.guilds.get(data.guild_id as Snowflake) ?? null;
-
-      setTimeout(
-        (async () => {
-          this.guild = await this.client.guilds.fetch(
-            data.guild_id as Snowflake
-          )!;
-        }).bind(this),
-        0
-      );
-    }
+    if ('guild_id' in data) this.guildId = data.guild_id as Snowflake;
 
     return this;
   }
@@ -75,6 +67,13 @@ export class Channel<
       route: Routes.channel(this.id),
       method: 'DELETE',
     });
+  }
+
+  public toJSON(): T {
+    return {
+      id: this.id,
+      type: this.type,
+    } as T;
   }
 }
 

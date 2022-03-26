@@ -17,4 +17,11 @@ export class DMChannel extends BaseTextChannel {
 
     return this;
   }
+
+  toJSON(): APIDMChannel {
+    return {
+      ...super.toJSON(),
+      recipients: [this.client.user!.toJSON(), this.recipient.toJSON()],
+    } as APIDMChannel;
+  }
 }

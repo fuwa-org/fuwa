@@ -33,9 +33,11 @@ export class Guild extends BaseStructure<APIGuild | APIUnavailableGuild> {
   public name: string | null = null;
   public description: string | null = null;
   public ownerId: Snowflake = '0';
-  /* public get owner() {
+  public get owner() {
     return this.client.users.cache.get(this.ownerId)
-  } */
+  }
+  public applicationId: Snowflake | null = null;
+
   public preferredLocale = 'en_US';
 
   public features: GuildFeature[] = [];
@@ -114,6 +116,8 @@ export class Guild extends BaseStructure<APIGuild | APIUnavailableGuild> {
     if ('preferred_locale' in data)
       this.preferredLocale = data.preferred_locale ?? 'en_US';
     if ('owner_id' in data) this.ownerId = data.owner_id as Snowflake;
+    if ('application_id' in data)
+      this.applicationId = data.application_id as Snowflake;
     if ('features' in data) this.features = data.features;
     if ('mfa_level' in data) this.mfaLevel = data.mfa_level;
     if ('nsfw_level' in data) this.nsfwLevel = data.nsfw_level;
@@ -335,5 +339,60 @@ export class Guild extends BaseStructure<APIGuild | APIUnavailableGuild> {
 
   public async delete() {
     await this.client.guilds.delete(this.id);
+  }
+
+  public async leave() {
+    return this.client.guilds.leave(this.id);
+  } 
+
+  public toJSON(): APIGuild {
+    return {
+      id: this.id,
+      name: this.name ?? "",
+      icon: this.icon,
+      splash: this.splash,
+      banner: this.banner,
+      discovery_splash: this.discoverySplash,
+      owner_id: this.ownerId,
+      application_id: this.applicationId,
+      owner: this.ownerId === this.client.user!.id,
+      region: "deprecated",
+      afk_channel_id: this.afkChannelId,
+      afk_timeout: this.afkTimeout ?? 0,
+      widget_enabled: this.widgetEnabled,
+      widget_channel_id: this.widgetChannelId,
+      system_channel_id: this.systemChannelId,
+      system_channel_flags: this.systemChannelFlags?.bits ?? 0,
+      rules_channel_id: this.rulesChannelId,
+      verification_level: this.verificationLevel,
+      explicit_content_filter: this.explicitContentFilter,
+      nsfw_level: this.nsfwLevel,
+      default_message_notifications: this.defaultMessageNotifications,
+      features: this.features,
+      mfa_level: this.mfaLevel,
+      joined_at: this.joinedAt?.toISOString(),
+      large: this.large,
+      unavailable: !this.available,
+      approximate_member_count: this.approximateMemberCount,
+      member_count: this.memberCount ?? 0,
+      members: this.members.map((v) => v.toJSON()),
+      channels: this.channels.map((v) => v.toJSON()),
+      voice_states: [], // TODO
+      approximate_presence_count: this.approximatePresenceCount,
+      presences: [], // TODO
+      max_presences: this.maxPresences ?? 0,
+      max_members: this.maxMembers ?? 0,
+      vanity_url_code: this.vanityURLCode,
+      description: this.description,
+      premium_tier: this.premiumTier,
+      premium_subscription_count: this.premiumSubscriptionCount,
+      preferred_locale: this.preferredLocale,
+      public_updates_channel_id: this.publicUpdatesChannelId,
+      max_video_channel_users: this.maxVideoChannelUsers ?? 0,
+      roles: [], // TODO
+      emojis: [], // TODO
+      stickers: [], // TODO
+      premium_progress_bar_enabled: this.premiumProgressBarEnabled,
+    }
   }
 }

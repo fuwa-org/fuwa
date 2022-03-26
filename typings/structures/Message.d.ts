@@ -20,9 +20,15 @@ export declare class Message<ChannelType extends TextChannel = TextChannel> exte
     content: string | null;
     get createdTimestamp(): number;
     get createdAt(): Date;
+    timestamp: number;
+    editedTimestamp: number | null;
+    get editedAt(): Date | null;
     _deserialise(data: APIMessage): this;
     _modify(data: Partial<APIMessage>): Promise<NonNullable<this>>;
     fetchMember(): Promise<import("./GuildMember").GuildMember | null>;
     edit(content: string): Promise<NonNullable<this>>;
     delete(): Promise<void>;
+    toJSON(): APIMessage;
+}
+export declare class MessageAttachment {
 }

@@ -12,8 +12,6 @@ import { GuildTextChannel } from './GuildTextChannel.js';
 export class GuildChannel<
   T extends APIGuildChannel<GuildChannelType> = APIGuildChannel<GuildChannelType>
 > extends Channel<T> {
-  public declare guild: Guild;
-  public declare type: GuildChannelType;
 
   public name = '';
   public position = 0;
@@ -21,12 +19,7 @@ export class GuildChannel<
 
   public parentId: Snowflake | null = null;
   public get parent() {
-    return this.guild.channels.get(this.parentId!);
-  }
-
-  constructor(guild: Guild) {
-    super(guild.client);
-    this.guild = guild;
+    return this.guild!.channels.get(this.parentId!);
   }
 
   _deserialise(data: T): this {
@@ -48,14 +41,14 @@ export class GuildChannel<
     switch (data.type as GuildChannelType) {
       case ChannelType.GuildText:
       case ChannelType.GuildNews:
-        return new GuildTextChannel(client, guild)._deserialise(
+        return new GuildTextChannel(client)._deserialise(
           data as unknown as any
         );
       default: {
         guild.client.logger.warn(
           `unknown guild channel type ${data.type} (${ChannelType[data.type]})`
         );
-        return new GuildChannel(guild)._deserialise(data as unknown as any);
+        return new GuildChannel(client)._deserialise(data as unknown as any);
       }
     }
   }
@@ -78,6 +71,16 @@ export class GuildChannel<
         ? (parent as unknown as any).id
         : parent,
     });
+  }
+
+  toJSON(): T {
+    return {
+      ...super.toJSON(),
+      name: this.name,
+      position: this.position,
+      nsfw: this.nsfw,
+      parent_id: this.parentId,
+    };
   }
 }
 

@@ -37,7 +37,7 @@ export class GuildManager extends BaseManager<Guild> {
     data?: { name: string } & Partial<APIGuild>
   ): Promise<Guild> {
     const guild = await this.client.http
-      .queue({
+      .queue<APIGuild>({
         route: '/guilds',
         method: 'POST',
         body: data,
@@ -52,6 +52,14 @@ export class GuildManager extends BaseManager<Guild> {
   public async delete(id: Snowflake): Promise<void> {
     await this.client.http.queue({
       route: Routes.guild(id),
+      method: 'DELETE',
+    });
+    this.delete(id);
+  }
+
+  public async leave(id: Snowflake): Promise<void> {
+    await this.client.http.queue({
+      route: Routes.guildMember(id, this.client.user!.id),
       method: 'DELETE',
     });
     this.delete(id);

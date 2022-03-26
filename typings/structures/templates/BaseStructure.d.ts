@@ -7,6 +7,6 @@ export declare abstract class BaseStructure<T> {
     get createdTimestamp(): number;
     constructor(client: Client, data?: T);
     abstract _deserialise(_data: T): void;
-    toJSON(): T;
+    abstract toJSON(): T;
     static toJSON(data: any): any;
 }

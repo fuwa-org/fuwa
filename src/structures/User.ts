@@ -38,4 +38,17 @@ export class User extends BaseStructure<APIUser> {
   public fetch(): Promise<this> {
     return this.client.users.fetch(this.id) as Promise<this>;
   }
+
+  toJSON(): APIUser {
+    return {
+      id: this.id,
+      bot: this.bot,
+      system: this.system,
+      public_flags: this.flags.bits,
+      username: this.username,
+      discriminator: this.discriminator,
+      avatar: this.avatar,
+      banner: this.banner,
+    };
+  }
 }

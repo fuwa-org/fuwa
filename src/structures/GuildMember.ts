@@ -176,6 +176,19 @@ export class GuildMember extends BaseStructure<APIGuildMember> {
   public async setMute(mute: boolean, reason?: string) {
     await this.edit({ mute }, reason);
   }
+
+  toJSON(): APIGuildMember {
+    return {
+      user: this.user?.toJSON(),
+      nick: this.nickname,
+      avatar: this.avatar,
+      joined_at: this.joinedAt.toISOString(),
+      premium_since: this.premiumSince?.toISOString() ?? null,
+      deaf: this.deaf,
+      mute: this.mute,
+      roles: [] // TODO
+    };
+  }
 }
 
 // @ts-ignore

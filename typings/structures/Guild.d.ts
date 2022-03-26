@@ -10,6 +10,8 @@ export declare class Guild extends BaseStructure<APIGuild | APIUnavailableGuild>
     name: string | null;
     description: string | null;
     ownerId: Snowflake;
+    get owner(): import("./ExtendedUser").ExtendedUser | import("./User").User | undefined;
+    applicationId: Snowflake | null;
     preferredLocale: string;
     features: GuildFeature[];
     mfaLevel: GuildMFALevel;
@@ -72,4 +74,6 @@ export declare class Guild extends BaseStructure<APIGuild | APIUnavailableGuild>
     setVanityURLCode(code: string, reason?: string): Promise<this>;
     setDescription(description: string, reason?: string): Promise<this>;
     delete(): Promise<void>;
+    leave(): Promise<void>;
+    toJSON(): APIGuild;
 }

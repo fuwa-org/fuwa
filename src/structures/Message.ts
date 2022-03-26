@@ -35,10 +35,16 @@ export class Message<
   public content: string | null = null;
 
   public get createdTimestamp() {
-    return DiscordSnowflake.timestampFrom(this.id);
+    return this.timestamp;
   }
   public get createdAt() {
     return new Date(this.createdTimestamp);
+  }
+
+  public timestamp!: number;
+  public editedTimestamp: number | null = null;
+  public get editedAt() {
+    return this.editedTimestamp ? new Date(this.editedTimestamp!) : null;
   }
 
   _deserialise(data: APIMessage): this {
@@ -60,6 +66,8 @@ export class Message<
     // TODO: embeds
     if ('pinned' in data) this.pinned = data.pinned;
     if ('content' in data) this.content = data.content;
+    if ('timestamp' in data) this.timestamp = new Date(data.timestamp).getTime();
+    if ('edited_timestamp' in data) this.editedTimestamp = data.edited_timestamp ? new Date(data.edited_timestamp).getTime() : null;
     // TODO: attachments, mentions, applications, webhooks, reactions, references, etc.
 
     return this;
@@ -95,4 +103,29 @@ export class Message<
       })
       .then(() => this.channel!.messages.remove(this.id));
   }
+
+  toJSON(): APIMessage {
+    return {
+      id: this.id,
+      guild_id: this.guildId ?? undefined,
+      channel_id: this.channelId!,
+      tts: this.tts,
+      type: this.type, 
+      content: this.content ?? "",
+      pinned: !!this.pinned,
+      nonce: this.nonce ?? undefined,
+      flags: this.flags.bits,
+      author: this.author.toJSON(),
+      timestamp: this.createdAt.toISOString(),
+      edited_timestamp: this.editedAt?.toISOString() ?? null,
+      mentions: [], // TODO 
+      mention_roles: [], // TODO
+      mention_everyone: false, // TODO
+      mention_channels: [], // TODO
+      attachments: [], // TODO
+      embeds: [], // TODO
+    }
+  }
 }
+
+export class MessageAttachment {}
