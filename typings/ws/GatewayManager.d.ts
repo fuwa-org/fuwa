@@ -2,11 +2,12 @@ import { Client } from '../client/Client.js';
 import { GatewayShard } from './GatewayShard.js';
 export declare class GatewayManager {
     #private;
-    private client;
+    client: Client;
     shards: Map<number, GatewayShard>;
+    get ping(): number;
     constructor(client: Client);
-    private debug;
-    private error;
+    debug(...args: any[]): void;
+    error(...args: any[]): void;
     spawnWithShardingManager(options: GatewayManagerShardingOptions): Promise<void>;
     spawn(options: GatewayManagerOptions): Promise<void>;
     private _registerListeners;

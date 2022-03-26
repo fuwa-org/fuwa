@@ -23,7 +23,7 @@ import { Message } from '../structures/Message.js';
 import { Guild } from '../structures/Guild.js';
 import { TextChannel } from '../structures/templates/BaseTextChannel.js';
 import { redactToken } from '../util/tokens.js';
-import { GatewayManager } from '../index.js';
+import { GatewayManager } from '../ws/GatewayManager.js';
 import { workerData } from 'worker_threads';
 
 export class Client extends EventEmitter {

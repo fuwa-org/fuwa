@@ -398,9 +398,9 @@ export class GatewayShard extends EventEmitter {
             );
 
             if (guild) {
-              const member = guild.members.get(
-                data.user.id as Snowflake
-              ) as GuildMember;
+              const member =
+                guild.members.get(data.user.id as Snowflake) ??
+                (await guild.members.fetch(data.user.id as Snowflake));
 
               const newMember = member._deserialise(data as APIGuildMember);
 

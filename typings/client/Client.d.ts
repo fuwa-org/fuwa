@@ -11,7 +11,7 @@ import Events from '@fuwa/events';
 import { Message } from '../structures/Message.js';
 import { Guild } from '../structures/Guild.js';
 import { TextChannel } from '../structures/templates/BaseTextChannel.js';
-import { GatewayManager } from '../index.js';
+import { GatewayManager } from '../ws/GatewayManager.js';
 export declare class Client extends EventEmitter {
     #private;
     http: RequestManager;

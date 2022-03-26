@@ -17,7 +17,7 @@ export declare class Message<ChannelType extends TextChannel = TextChannel> exte
     pinned: boolean;
     author: User | ExtendedUser;
     get member(): import("./GuildMember").GuildMember | null;
-    content: string | null;
+    content: string;
     get createdTimestamp(): number;
     get createdAt(): Date;
     timestamp: number;

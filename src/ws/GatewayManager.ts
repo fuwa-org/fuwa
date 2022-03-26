@@ -1,12 +1,27 @@
 import { APIGatewayBotInfo, Routes } from '@splatterxl/discord-api-types';
 import { Client } from '../client/Client.js';
-import { consumeJSON } from '../index.js';
+import { consumeJSON } from '../rest/RequestManager.js';
 import { GatewayShard } from './GatewayShard.js';
 
 export class GatewayManager {
   shards: Map<number, GatewayShard> = new Map();
 
-  constructor(private client: Client) {}
+  get ping() {
+    let val = 0;
+
+    for (const shard of this.shards.values()) {
+      val += shard.ping;
+    }
+
+    return val / this.shards.size;
+  }
+
+  constructor(public client: Client) {
+    Object.defineProperty(this, 'client', {
+      value: this.client,
+      enumerable: false,
+    });
+  }
 
   #__log_header() {
     return `[${this.client.logger.kleur().blue('WS')} => ${this.client.logger
@@ -14,11 +29,11 @@ export class GatewayManager {
       .green('Manager')}]`;
   }
 
-  private debug(...args: any[]) {
+  debug(...args: any[]) {
     this.client.logger.debug(this.#__log_header(), ...args);
   }
 
-  private error(...args: any[]) {
+  error(...args: any[]) {
     this.client.logger.error(this.#__log_header(), ...args);
   }
 
@@ -116,23 +131,14 @@ export class GatewayManager {
 
   private _registerListeners(shard: GatewayShard) {
     shard
-      .on('ready', () => {
-        this.debug('shard ready:', shard.id);
+      .on('_refresh', () => {
+        this.debug('refreshing shard', shard.id);
+        shard.close(false);
+        shard.reset(true);
+        this.shards.delete(shard.id);
       })
-      .on('disconnect', () => {
-        this.debug('shard disconnected:', shard.id);
-      })
-      .on('reconnect', () => {
-        this.debug('shard reconnected:', shard.id);
-      })
-      .on('resume', () => {
-        this.debug('shard resumed:', shard.id);
-      })
-      .on('invalid', () => {
-        this.error('shard invalid:', shard.id);
-      })
-      .on('close', () => {
-        this.debug('shard closed:', shard.id);
+      .on('_throw', (e) => {
+        throw new Error(`Shard ${shard.id}: ${e}`);
       });
     return shard;
   }

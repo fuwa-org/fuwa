@@ -5,7 +5,6 @@ import { User } from './User';
 import { ExtendedUser } from './ExtendedUser';
 import { MessageFlags } from '../util/bitfields/MessageFlags';
 import { TextChannel } from './templates/BaseTextChannel';
-import { DiscordSnowflake } from '@sapphire/snowflake';
 import { DataTransformer } from '../rest/DataTransformer';
 
 // TODO: Add support for DM messages
@@ -32,7 +31,7 @@ export class Message<
   public get member() {
     return this.guild?.members.get(this.author.id as Snowflake) ?? null;
   }
-  public content: string | null = null;
+  public content!: string;
 
   public get createdTimestamp() {
     return this.timestamp;
