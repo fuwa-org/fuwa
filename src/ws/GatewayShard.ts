@@ -32,6 +32,7 @@ import { Intents } from '../util/bitfields/Intents';
 import { GuildMember } from '../structures/GuildMember';
 import { Message } from '../structures/Message';
 import { TextChannel } from '../structures/templates/BaseTextChannel';
+import EventEmitter from 'node:events';
 
 /**
  * Typeguard for Erlpack interfaces
@@ -49,7 +50,7 @@ try {
 }
 
 /** A shard connection the Discord gateway. */
-export class GatewayShard {
+export class GatewayShard extends EventEmitter {
   private _socket?: WebSocket;
   #messageQueue = new AsyncQueue();
   private messageQueueCount = 0;
@@ -78,6 +79,8 @@ export class GatewayShard {
     public readonly shard: [number, number],
     token: string
   ) {
+    super();
+
     this.id = shard[0]!;
     this.compress = client.options.compress;
 
@@ -99,6 +102,10 @@ export class GatewayShard {
 
   private authenticate() {
     if (this.session) {
+      this.debugPretty('Resuming...', {
+        session: this.session,
+        seq: this.s,
+      });
       this.send(<GatewayResume>{
         op: GatewayOpcodes.Resume,
         d: {
@@ -108,6 +115,11 @@ export class GatewayShard {
         },
       });
     } else {
+      this.debugPretty('Identifying...', {
+        token: this.#token.split('.').map((v, i) => i === 2 ? "*".repeat(v.length) : v).join('.'),
+        shard: this.shard.join(", "),
+        intents: this.client.options.intents,
+      });
       this.send(<GatewayIdentify>{
         op: GatewayOpcodes.Identify,
         d: {
@@ -137,39 +149,13 @@ export class GatewayShard {
     });
 
     this._socket.on('open', () => {
+      this.emit('open', this);
       this.authenticate();
     });
     this._socket.on('message', this.onMessage.bind(this));
     this._socket.on('close', (code, reason) => {
-      this.debug(
-        `Gateway closed with code`,
-        code,
-        `reason`,
-        reason?.toString() ?? GatewayCloseCodes[code]
-      );
-      switch (code) {
-        case GatewayCloseCodes.InvalidIntents:
-          throw new Error(
-            `Gateway intents ${this.client.options.intents} are invalid.`
-          );
-        case GatewayCloseCodes.InvalidShard:
-          throw new Error('Invalid shard passed to GatewayShard');
-        case GatewayCloseCodes.DisallowedIntents:
-          throw new Error(
-            `Gateway intents ${this.client.options.intents} are disallowed for the client.`
-          );
-        case GatewayCloseCodes.AuthenticationFailed:
-          throw new Error('Client token is invalid');
-        case 1000:
-        case GatewayCloseCodes.InvalidSeq:
-        case GatewayCloseCodes.SessionTimedOut:
-          this.reset();
-        // eslint-disable-next-line no-fallthrough
-        default:
-          this.debug('Socket closed, reconnecting...');
-          this.connect(url);
-          break;
-      }
+      this.emit('close', code, reason);
+      this.onClose(code, reason.toString());
     });
   }
 
@@ -210,6 +196,40 @@ export class GatewayShard {
     );
   }
 
+  private onClose(code: number, reason: string) {
+    this.debug(`Closed with code ${code} and reason ${reason}`);
+
+    this.debug(
+      `Gateway closed with code`,
+      code,
+      `reason`,
+      reason?.toString() ?? GatewayCloseCodes[code]
+    );
+    switch (code) {
+      case GatewayCloseCodes.InvalidIntents:
+        throw new Error(
+          `Gateway intents ${this.client.options.intents} are invalid.`
+        );
+      case GatewayCloseCodes.InvalidShard:
+        throw new Error('Invalid shard passed to GatewayShard');
+      case GatewayCloseCodes.DisallowedIntents:
+        throw new Error(
+          `Gateway intents ${this.client.options.intents} are disallowed for the client.`
+        );
+      case GatewayCloseCodes.AuthenticationFailed:
+        throw new Error('Client token is invalid');
+      case 1000:
+      case GatewayCloseCodes.InvalidSeq:
+      case GatewayCloseCodes.SessionTimedOut:
+        this.reset();
+      // eslint-disable-next-line no-fallthrough
+      default:
+        this.debug('Socket closed, reconnecting...');
+        this.connect(this.url);
+        break;
+    }
+  }
+
   private async onMessage(message: Buffer) {
     let buffer = message;
 
@@ -220,6 +240,8 @@ export class GatewayShard {
     const data: GatewayReceivePayload = this.erlpack
       ? (buffer as unknown as any)
       : JSON.parse(buffer.toString());
+
+    this.emit('packet', data);
 
     const payload: any = data.d;
 
@@ -258,6 +280,7 @@ export class GatewayShard {
       }
       case GatewayOpcodes.InvalidSession: {
         this.debug('invalid session passed');
+        this._socket?.removeAllListeners();
         this.close(false);
         this.reset();
         this.connect();
@@ -269,6 +292,8 @@ export class GatewayShard {
 
         this.debug('received dispatch', data.t);
 
+        this.emit(data.t, data.d);
+
         switch (data.t) {
           case GatewayDispatchEvents.Ready: {
             event = event as GatewayReadyDispatchData;
@@ -276,9 +301,8 @@ export class GatewayShard {
             this.session = event.session_id;
             this._awaitedGuilds = event.guilds.map((v) => v.id as Snowflake);
 
-            this.debugPretty('ready for user ' + event.user.id, {
+            this.debugPretty('ready!', {
               session: this.session,
-              shard: '[' + event.shard?.join(', ') + ']',
               guilds: event.guilds?.length,
             });
 
@@ -575,7 +599,17 @@ export class GatewayShard {
    * @param resume Whether to keep the session ID and sequence intact.
    */
   public close(resume = true) {
-    this._socket?.close(resume ? 4000 : 1000);
+    switch (this._socket?.readyState) {
+      case WebSocket.OPEN:
+        this._socket.close(resume ? 4000 : 1000, 'Closed by user');
+        break;
+      case WebSocket.CONNECTING:
+        break;
+      case WebSocket.CLOSING:
+        break;
+      case WebSocket.CLOSED:
+        break;
+    }
 
     if (!resume) {
       this.session = undefined;

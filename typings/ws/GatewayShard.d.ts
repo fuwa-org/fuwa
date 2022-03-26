@@ -1,11 +1,12 @@
 /// <reference types="node" />
 import { GatewaySendPayload } from '@splatterxl/discord-api-types';
 import { Client } from '../client/Client';
+import EventEmitter from 'node:events';
 export interface Erlpack {
     pack(data: any): Buffer;
     unpack<T>(data: Buffer): T;
 }
-export declare class GatewayShard {
+export declare class GatewayShard extends EventEmitter {
     #private;
     client: Client;
     readonly shard: [number, number];
@@ -28,6 +29,7 @@ export declare class GatewayShard {
     reset(full?: boolean): void;
     debug(...data: any[]): void;
     private debugPretty;
+    private onClose;
     private onMessage;
     send(packet: GatewaySendPayload): Promise<void>;
     heartbeat(): void;
