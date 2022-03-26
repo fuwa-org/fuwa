@@ -2,7 +2,6 @@ import { AsyncQueue } from '@sapphire/async-queue';
 import {
   APIGuildMember,
   APIMessage,
-  GatewayCloseCodes,
   GatewayDispatchEvents,
   GatewayDispatchPayload,
   GatewayGuildCreateDispatchData,
@@ -157,9 +156,10 @@ export class GatewayShard extends EventEmitter {
     });
     this._socket.on('message', this.onMessage.bind(this));
     this._socket.on('close', (code, reason) => {
-      this.emit('close', code, reason);
-      this.onClose(code, reason.toString());
+      this.emit('close', this, code, reason);
     });
+
+    await this.awaitPacket((p) => p.t === 'READY');
   }
 
   public reset(full = false) {
@@ -199,38 +199,17 @@ export class GatewayShard extends EventEmitter {
     );
   }
 
-  private onClose(code: number, reason: string) {
-    this.debug(`Closed with code ${code} and reason ${reason}`);
+  public awaitPacket(filter: (payload: GatewayReceivePayload) => boolean) {
+    return new Promise((res) => {
+      const handler = (payload: GatewayReceivePayload) => {
+        if (filter(payload)) {
+          this.removeListener('packet', handler);
+          res(payload);
+        }
+      };
 
-    this.debug(
-      `Gateway closed with code`,
-      code,
-      `reason`,
-      reason?.toString() ?? GatewayCloseCodes[code]
-    );
-    switch (code) {
-      case GatewayCloseCodes.InvalidIntents:
-        throw new Error(
-          `Gateway intents ${this.client.options.intents} are invalid.`
-        );
-      case GatewayCloseCodes.InvalidShard:
-        throw new Error('Invalid shard passed to GatewayShard');
-      case GatewayCloseCodes.DisallowedIntents:
-        throw new Error(
-          `Gateway intents ${this.client.options.intents} are disallowed for the client.`
-        );
-      case GatewayCloseCodes.AuthenticationFailed:
-        throw new Error('Client token is invalid');
-      case 1000:
-      case GatewayCloseCodes.InvalidSeq:
-      case GatewayCloseCodes.SessionTimedOut:
-        this.reset();
-      // eslint-disable-next-line no-fallthrough
-      default:
-        this.debug('Socket closed, reconnecting...');
-        this.connect(this.url);
-        break;
-    }
+      this.on('packet', handler);
+    });
   }
 
   private async onMessage(message: Buffer) {

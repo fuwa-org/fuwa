@@ -18,9 +18,9 @@ export class Message<
   public get guild() {
     return this.client.guilds.get(this.guildId!) ?? null;
   }
-  public channelId: Snowflake | null = null;
-  public get channel(): ChannelType | null {
-    return (this.client.channels.get(this.channelId!) as ChannelType) ?? null;
+  public channelId!: Snowflake;
+  public get channel(): ChannelType {
+    return this.client.channels.get(this.channelId)! as ChannelType;
   }
 
   public tts = false;

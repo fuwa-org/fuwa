@@ -9,6 +9,7 @@ export * from './util/resolvables/FileResolvable';
 export * from './util/resolvables/MessagePayload';
 export * as Tokens from './util/tokens';
 export * from './ws/GatewayShard';
+export * from './ws/GatewayManager';
 export * from './rest/RESTClient';
 export * from './rest/RESTError';
 export * from './rest/APIRequest';

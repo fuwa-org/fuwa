@@ -26,6 +26,7 @@ export class GuildMemberManager extends BaseManager<GuildMember> {
     return member;
   }
 
+  /*
   public requestMembers(ids: Snowflake[], limit = 50): void {
     this.client.ws!.send({
       op: GatewayOpcodes.RequestGuildMembers,
@@ -46,7 +47,7 @@ export class GuildMemberManager extends BaseManager<GuildMember> {
         limit,
       },
     });
-  }
+  }*/
 
   public disableCommunicationFor(
     member: Snowflake | GuildMember,

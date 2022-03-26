@@ -9,8 +9,8 @@ export declare class Message<ChannelType extends TextChannel = TextChannel> exte
     nonce: string | number | null;
     guildId: Snowflake | null;
     get guild(): import("./Guild").Guild | null;
-    channelId: Snowflake | null;
-    get channel(): ChannelType | null;
+    channelId: Snowflake;
+    get channel(): ChannelType;
     tts: boolean;
     type: MessageType;
     flags: MessageFlags;

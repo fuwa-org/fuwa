@@ -2,7 +2,6 @@
 import { RequestManager } from '../rest/RequestManager.js';
 import { ClientOptions, Snowflake } from './ClientOptions';
 import EventEmitter from 'events';
-import { GatewayShard } from '../ws/GatewayShard.js';
 import { GuildManager } from '../structures/managers/GuildManager.js';
 import { ILogger } from '../logging/ILogger.js';
 import { UserManager } from '../structures/managers/UserManager.js';
@@ -12,12 +11,13 @@ import Events from '@fuwa/events';
 import { Message } from '../structures/Message.js';
 import { Guild } from '../structures/Guild.js';
 import { TextChannel } from '../structures/templates/BaseTextChannel.js';
+import { GatewayManager } from '../index.js';
 export declare class Client extends EventEmitter {
     #private;
     http: RequestManager;
     options: Required<ClientOptions>;
     logger: ILogger;
-    ws?: GatewayShard;
+    ws: GatewayManager;
     guilds: GuildManager;
     users: UserManager;
     channels: ChannelManager;

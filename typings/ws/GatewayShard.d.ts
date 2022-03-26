@@ -1,5 +1,5 @@
 /// <reference types="node" />
-import { GatewaySendPayload } from '@splatterxl/discord-api-types';
+import { GatewayReceivePayload, GatewaySendPayload } from '@splatterxl/discord-api-types';
 import { Client } from '../client/Client';
 import EventEmitter from 'node:events';
 export interface Erlpack {
@@ -29,7 +29,7 @@ export declare class GatewayShard extends EventEmitter {
     reset(full?: boolean): void;
     debug(...data: any[]): void;
     private debugPretty;
-    private onClose;
+    awaitPacket(filter: (payload: GatewayReceivePayload) => boolean): Promise<unknown>;
     private onMessage;
     send(packet: GatewaySendPayload): Promise<void>;
     heartbeat(): void;

@@ -6,9 +6,7 @@ import {
   resolveIntents,
   Snowflake,
 } from './ClientOptions';
-import { APIGatewayBotInfo, Routes } from '@splatterxl/discord-api-types';
 import EventEmitter from 'events';
-import { GatewayShard } from '../ws/GatewayShard.js';
 import { GuildManager } from '../structures/managers/GuildManager.js';
 import { ILogger } from '../logging/ILogger.js';
 import { DisabledLogger } from '../logging/DisabledLogger.js';
@@ -25,6 +23,8 @@ import { Message } from '../structures/Message.js';
 import { Guild } from '../structures/Guild.js';
 import { TextChannel } from '../structures/templates/BaseTextChannel.js';
 import { redactToken } from '../util/tokens.js';
+import { GatewayManager } from '../index.js';
+import { workerData } from 'worker_threads';
 
 export class Client extends EventEmitter {
   #token: string;
@@ -33,7 +33,7 @@ export class Client extends EventEmitter {
 
   public logger: ILogger;
 
-  public ws?: GatewayShard;
+  public ws: GatewayManager;
 
   public guilds: GuildManager;
   public users: UserManager;
@@ -59,6 +59,7 @@ export class Client extends EventEmitter {
       ),
       this
     );
+    this.ws = new GatewayManager(this);
 
     if (!this.options.logger) {
       this.logger = new DisabledLogger();
@@ -76,51 +77,36 @@ export class Client extends EventEmitter {
   }
 
   public async connect(): Promise<void> {
-    let gatewayInfo: APIGatewayBotInfo;
+    this.logger.info('connecting to gateway...');
 
-    if (!process.env.__FUWA_SHARD_ID) {
-      gatewayInfo = await this.http
-        .queue({
-          route: Routes.gatewayBot(),
-        })
-        .then((res) => res.body.json());
-    } else {
-      gatewayInfo = {
-        shards: +process.env.__FUWA_SHARD_COUNT!,
-        session_start_limit: {
-          remaining: 1,
-          reset_after: -1,
-          total: Infinity,
-          max_concurrency: +process.env.__FUWA_SHARD_CONCURRENCY!,
-        },
-        url: process.env.__FUWA_GATEWAY_URL!,
+    if (
+      process.env.__FUWA_SHARDING_MANAGER ||
+      workerData?.__fuwa_sharding_manager
+    ) {
+      const options = {
+        token: this.#token,
+        url: this.constructGatewayURL('wss://gateway.discord.gg'),
       };
+
+      if (process.env.__FUWA_SHARDING_MANAGER) {
+        this.ws.spawnWithShardingManager({
+          ...options,
+          mode: 'env',
+        });
+      } else if (workerData.__fuwa_sharding_manager) {
+        this.ws.spawnWithShardingManager({
+          ...options,
+          mode: 'worker',
+          workerData: workerData,
+        });
+      }
     }
 
-    if (gatewayInfo.shards > 1 && !process.env.__FUWA_SHARD_COUNT)
-      throw new Error(
-        'Discord has recommended to use shards for this user but no shard information was found. Consider using a ShardingManager.'
-      );
-
-    const url = this.constructGatewayURL(gatewayInfo.url);
-    const shard: [id: number, total: number] = [
-      +(process.env.__FUWA_SHARD_ID ?? 0),
-      +(gatewayInfo.shards ?? 1),
-    ];
-
-    this.debug(
-      `
-[${this.logger.kleur().blue('WS')} => ${this.logger
-        .kleur()
-        .green('Manager')}] connecting to gateway 
-\t url \t:\t ${url}
-\t shard \t:\t [${shard.join(', ')}]
-`.trim()
-    );
-
-    this.ws = new GatewayShard(this, shard, this.#token);
-
-    await this.ws.connect(url);
+    await this.ws.spawn({
+      token: this.#token,
+      url: this.constructGatewayURL('wss://gateway.discord.gg'),
+      shards: 'auto',
+    });
   }
 
   public token(redact = true) {
@@ -147,8 +133,7 @@ export class Client extends EventEmitter {
   }
 
   public reset() {
-    this.ws?.close(false);
-    this.ws?.reset(true);
+    this.ws?.reset();
     this.http.buckets.clear();
     this.timeouts.forEach((t) => clearTimeout(t));
     this.timers.forEach((t) => clearInterval(t));
