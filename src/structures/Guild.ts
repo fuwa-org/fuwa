@@ -34,7 +34,7 @@ export class Guild extends BaseStructure<APIGuild | APIUnavailableGuild> {
   public description: string | null = null;
   public ownerId: Snowflake = '0';
   public get owner() {
-    return this.client.users.cache.get(this.ownerId)
+    return this.client.users.cache.get(this.ownerId);
   }
   public applicationId: Snowflake | null = null;
 
@@ -343,12 +343,12 @@ export class Guild extends BaseStructure<APIGuild | APIUnavailableGuild> {
 
   public async leave() {
     return this.client.guilds.leave(this.id);
-  } 
+  }
 
   public toJSON(): APIGuild {
     return {
       id: this.id,
-      name: this.name ?? "",
+      name: this.name ?? '',
       icon: this.icon,
       splash: this.splash,
       banner: this.banner,
@@ -356,7 +356,7 @@ export class Guild extends BaseStructure<APIGuild | APIUnavailableGuild> {
       owner_id: this.ownerId,
       application_id: this.applicationId,
       owner: this.ownerId === this.client.user!.id,
-      region: "deprecated",
+      region: 'deprecated',
       afk_channel_id: this.afkChannelId,
       afk_timeout: this.afkTimeout ?? 0,
       widget_enabled: this.widgetEnabled,
@@ -393,6 +393,6 @@ export class Guild extends BaseStructure<APIGuild | APIUnavailableGuild> {
       emojis: [], // TODO
       stickers: [], // TODO
       premium_progress_bar_enabled: this.premiumProgressBarEnabled,
-    }
+    };
   }
 }

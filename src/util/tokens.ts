@@ -1,5 +1,5 @@
-import { Client } from "../client/Client";
-import { Snowflake } from "../client/ClientOptions";
+import { Client } from '../client/Client';
+import { Snowflake } from '../client/ClientOptions';
 
 export const EPOCH = 1420070400000;
 
@@ -19,7 +19,7 @@ export function validate(token: string) {
   return {
     header,
     payload,
-    signature
+    signature,
   };
 }
 
@@ -27,7 +27,9 @@ export function parse(token: string, client?: Client) {
   const { header, payload } = validate(token);
 
   const userId = Buffer.from(header, 'base64').toString('utf8');
-  const timestamp = new Date(parseInt(Buffer.from(payload, 'base64').toString('hex'), 16) * 1000);
+  const timestamp = new Date(
+    parseInt(Buffer.from(payload, 'base64').toString('hex'), 16) * 1000
+  );
 
   return new TokenInfo(token, { user: userId as Snowflake, timestamp }, client);
 }
@@ -35,7 +37,7 @@ export function parse(token: string, client?: Client) {
 export function redactToken(token: string) {
   const { header, payload, signature } = validate(token);
 
-  return `${header}.${payload}.${"*".repeat(signature.length)}`;
+  return `${header}.${payload}.${'*'.repeat(signature.length)}`;
 }
 
 export class TokenInfo {
@@ -43,7 +45,11 @@ export class TokenInfo {
   user: Snowflake;
   timestamp: Date;
 
-  constructor(original: string, deconstructed: { user: Snowflake, timestamp: Date }, client?: Client) {
+  constructor(
+    original: string,
+    deconstructed: { user: Snowflake; timestamp: Date },
+    client?: Client
+  ) {
     Object.defineProperties(this, {
       original: { value: original, enumerable: false },
       client: { value: client, enumerable: false },

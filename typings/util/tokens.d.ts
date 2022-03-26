@@ -1,5 +1,5 @@
-import { Client } from "../client/Client";
-import { Snowflake } from "../client/ClientOptions";
+import { Client } from '../client/Client';
+import { Snowflake } from '../client/ClientOptions';
 export declare const EPOCH = 1420070400000;
 export declare function validate(token: string): {
     header: string;

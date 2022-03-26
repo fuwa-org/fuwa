@@ -186,7 +186,7 @@ export class GuildMember extends BaseStructure<APIGuildMember> {
       premium_since: this.premiumSince?.toISOString() ?? null,
       deaf: this.deaf,
       mute: this.mute,
-      roles: [] // TODO
+      roles: [], // TODO
     };
   }
 }

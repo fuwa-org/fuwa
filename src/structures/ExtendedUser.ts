@@ -51,6 +51,6 @@ export class ExtendedUser extends User {
       mfa_enabled: !!this.mfaEnabled,
       verified: !!this.emailVerified,
       locale: this.locale ?? undefined,
-    }
+    };
   }
 }

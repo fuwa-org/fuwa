@@ -12,7 +12,6 @@ import { GuildTextChannel } from './GuildTextChannel.js';
 export class GuildChannel<
   T extends APIGuildChannel<GuildChannelType> = APIGuildChannel<GuildChannelType>
 > extends Channel<T> {
-
   public name = '';
   public position = 0;
   public nsfw = false;

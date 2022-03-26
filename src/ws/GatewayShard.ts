@@ -116,8 +116,11 @@ export class GatewayShard extends EventEmitter {
       });
     } else {
       this.debugPretty('Identifying...', {
-        token: this.#token.split('.').map((v, i) => i === 2 ? "*".repeat(v.length) : v).join('.'),
-        shard: this.shard.join(", "),
+        token: this.#token
+          .split('.')
+          .map((v, i) => (i === 2 ? '*'.repeat(v.length) : v))
+          .join('.'),
+        shard: this.shard.join(', '),
         intents: this.client.options.intents,
       });
       this.send(<GatewayIdentify>{
