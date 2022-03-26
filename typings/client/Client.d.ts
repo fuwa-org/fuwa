@@ -26,6 +26,7 @@ export declare class Client extends EventEmitter {
     private timers;
     constructor(token: string, options?: ClientOptions);
     connect(): Promise<void>;
+    token(redact?: boolean): string;
     private constructGatewayURL;
     debug(...data: any[]): void;
     delegate(event: `${string}.${string}`, ...data: any[]): void;

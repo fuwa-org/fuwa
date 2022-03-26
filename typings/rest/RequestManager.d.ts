@@ -24,3 +24,8 @@ export declare class RequestManager {
     private updateOffset;
 }
 export declare type RouteLike = `/${string}`;
+export declare function consumeJSON<T>(res: ResponseData & {
+    body: {
+        json(): Promise<T>;
+    };
+}): Promise<T>;

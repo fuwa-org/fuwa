@@ -148,3 +148,9 @@ export class RequestManager {
 }
 
 export type RouteLike = `/${string}`;
+
+export function consumeJSON<T>(
+  res: ResponseData & { body: { json(): Promise<T> } }
+): Promise<T> {
+  return res.body.json();
+} 

@@ -24,6 +24,7 @@ import Events from '@fuwa/events';
 import { Message } from '../structures/Message.js';
 import { Guild } from '../structures/Guild.js';
 import { TextChannel } from '../structures/templates/BaseTextChannel.js';
+import { redactToken } from '../util/tokens.js';
 
 export class Client extends EventEmitter {
   #token: string;
@@ -120,6 +121,11 @@ export class Client extends EventEmitter {
     this.ws = new GatewayShard(this, shard, this.#token);
 
     await this.ws.connect(url);
+  }
+
+  public token(redact = true) {
+    if (redact) return redactToken(this.#token);
+    return this.#token;
   }
 
   private constructGatewayURL(url: string) {

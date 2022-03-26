@@ -10,6 +10,8 @@ export * from './util/bitfields/MessageFlags';
 export * from './util/resolvables/FileResolvable';
 export * from './util/resolvables/MessagePayload';
 
+export * as Tokens from './util/tokens';
+
 export * from './ws/GatewayShard';
 
 export * from './rest/RESTClient';
