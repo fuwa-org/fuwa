@@ -1,9 +1,10 @@
 import { APIGatewayBotInfo, Routes } from '@splatterxl/discord-api-types';
+import EventEmitter from 'node:events';
 import { Client } from '../client/Client.js';
 import { consumeJSON } from '../rest/RequestManager.js';
 import { GatewayShard } from './GatewayShard.js';
 
-export class GatewayManager {
+export class GatewayManager extends EventEmitter {
   shards: Map<number, GatewayShard> = new Map();
 
   get ping() {
@@ -17,6 +18,8 @@ export class GatewayManager {
   }
 
   constructor(public client: Client) {
+    super();
+
     Object.defineProperty(this, 'client', {
       value: this.client,
       enumerable: false,
@@ -139,7 +142,13 @@ export class GatewayManager {
       })
       .on('_throw', (e) => {
         throw new Error(`Shard ${shard.id}: ${e}`);
-      });
+      })
+      .on("packet", (p) => {
+        this.emit("packet", p, shard);
+      })
+      .on("dispatch", (d) => {
+        this.emit("dispatch", d, shard);
+      })
     return shard;
   }
 

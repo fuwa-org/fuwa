@@ -1,6 +1,8 @@
+/// <reference types="node" />
+import EventEmitter from 'node:events';
 import { Client } from '../client/Client.js';
 import { GatewayShard } from './GatewayShard.js';
-export declare class GatewayManager {
+export declare class GatewayManager extends EventEmitter {
     #private;
     client: Client;
     shards: Map<number, GatewayShard>;
