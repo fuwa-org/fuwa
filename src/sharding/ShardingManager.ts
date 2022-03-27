@@ -31,7 +31,7 @@ export class ShardingManager {
 
     if (!shards) throw new Error('Invalid shards option');
 
-    let _ = [...new Set(shards)];
+    const _ = [...new Set(shards)];
 
     switch (this.options.mode) {
       case 'process':
