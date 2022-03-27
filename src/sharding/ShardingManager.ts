@@ -1,9 +1,9 @@
-import { APIGatewayBotInfo, Routes } from "@splatterxl/discord-api-types";
-import { ChildProcess, fork } from "child_process";
-import { isMainThread, Worker } from "worker_threads";
-import { resolveRequest } from "../rest/APIRequest";
-import { consumeJSON } from "../rest/RequestManager";
-import { RESTClient } from "../rest/RESTClient";
+import { APIGatewayBotInfo, Routes } from '@splatterxl/discord-api-types';
+import { ChildProcess, fork } from 'child_process';
+import { isMainThread, Worker } from 'worker_threads';
+import { resolveRequest } from '../rest/APIRequest';
+import { consumeJSON } from '../rest/RequestManager';
+import { RESTClient } from '../rest/RESTClient';
 
 export class ShardingManager {
   gatewayInfo!: APIGatewayBotInfo;
@@ -15,42 +15,43 @@ export class ShardingManager {
   }
 
   public async spawn() {
-    this.gatewayInfo = await this.client.execute(resolveRequest({ route: Routes.gatewayBot() })).then(consumeJSON);
+    this.gatewayInfo = await this.client
+      .execute(resolveRequest({ route: Routes.gatewayBot() }))
+      .then(consumeJSON);
 
     const { totalShards = this.gatewayInfo.shards } = this.options;
 
-    const shards = 
-      Array.isArray(this.options.shards) 
-        ? this.options.shards 
-        : this.options.shards === "auto" 
-          ? range(totalShards - 1)
-          : typeof this.options.shards === "number" 
-            ? range(this.options.increment ?? 0, this.options.shards - 1)
-            : null;
+    const shards = Array.isArray(this.options.shards)
+      ? this.options.shards
+      : this.options.shards === 'auto'
+      ? range(totalShards - 1)
+      : typeof this.options.shards === 'number'
+      ? range(this.options.increment ?? 0, this.options.shards - 1)
+      : null;
 
-    if (!shards) throw new Error("Invalid shards option");
+    if (!shards) throw new Error('Invalid shards option');
 
     let _ = [...new Set(shards)];
 
     switch (this.options.mode) {
-      case "process":
+      case 'process':
         for (const i of _) {
           console.debug(`[ShardingManager] Spawning process for shard ${i}`);
           this.workers.set(i, this.spawnProcess(i));
         }
         break;
-      case "worker":
+      case 'worker':
         for (const i of _) {
           console.debug(`[ShardingManager] Spawning worker for shard ${i}`);
           this.workers.set(i, this.spawnWorker(i));
         }
         break;
       default:
-        throw new Error("Invalid mode option");
+        throw new Error('Invalid mode option');
     }
 
-    process.on("exit", () => {
-      console.log("[ShardingManager] Shutting down");
+    process.on('exit', () => {
+      console.log('[ShardingManager] Shutting down');
       for (const [id, worker] of this.workers) {
         if (worker instanceof ChildProcess) {
           worker.kill();
@@ -63,29 +64,33 @@ export class ShardingManager {
   }
 
   private spawnProcess(id: number) {
-    const worker = fork(this.options.file, this.options.shardArgs ?? [], { 
+    const worker = fork(this.options.file, this.options.shardArgs ?? [], {
       env: {
         ...process.env,
         __FUWA_SHARD_ID: id.toString(),
         __FUWA_SHARD_COUNT: this.gatewayInfo.shards.toString(),
-        __FUWA_SHARDING_MANAGER: "true",
-      }
+        __FUWA_SHARDING_MANAGER: 'true',
+      },
     });
 
-    worker.on("exit", code => {
+    worker.on('exit', (code) => {
       if (code !== 0) {
-        console.error(`[ShardingManager] Worker ${id} exited with code ${code}, respawning`);
+        console.error(
+          `[ShardingManager] Worker ${id} exited with code ${code}, respawning`
+        );
         this.respawn(id);
       } else {
-        console.log(`[ShardingManager] Worker ${id} exited with success code ${code}`);
+        console.log(
+          `[ShardingManager] Worker ${id} exited with success code ${code}`
+        );
       }
     });
 
     return worker;
-  } 
+  }
 
   private spawnWorker(id: number) {
-    if (!isMainThread) throw new Error("Cannot spawn worker in worker thread");
+    if (!isMainThread) throw new Error('Cannot spawn worker in worker thread');
 
     const worker = new Worker(this.options.file, {
       workerData: {
@@ -95,12 +100,16 @@ export class ShardingManager {
       },
     });
 
-    worker.on("exit", code => {
+    worker.on('exit', (code) => {
       if (code !== 0) {
-        console.error(`[ShardingManager] Worker ${id} exited with code ${code}, respawning`);
+        console.error(
+          `[ShardingManager] Worker ${id} exited with code ${code}, respawning`
+        );
         this.respawn(id);
       } else {
-        console.log(`[ShardingManager] Worker ${id} exited with success code ${code}`);
+        console.log(
+          `[ShardingManager] Worker ${id} exited with success code ${code}`
+        );
       }
     });
 
@@ -109,10 +118,10 @@ export class ShardingManager {
 
   respawn(id: number) {
     switch (this.options.mode) {
-      case "process":
+      case 'process':
         this.workers.set(id, this.spawnProcess(id));
         break;
-      case "worker":
+      case 'worker':
         this.workers.set(id, this.spawnWorker(id));
         break;
     }

@@ -1,8 +1,8 @@
 /// <reference types="node" />
-import { APIGatewayBotInfo } from "@splatterxl/discord-api-types";
-import { ChildProcess } from "child_process";
-import { Worker } from "worker_threads";
-import { RESTClient } from "../rest/RESTClient";
+import { APIGatewayBotInfo } from '@splatterxl/discord-api-types';
+import { ChildProcess } from 'child_process';
+import { Worker } from 'worker_threads';
+import { RESTClient } from '../rest/RESTClient';
 export declare class ShardingManager {
     token: string;
     options: ShardingManagerOptions;
