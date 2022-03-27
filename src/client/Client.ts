@@ -89,17 +89,19 @@ export class Client extends EventEmitter {
       };
 
       if (process.env.__FUWA_SHARDING_MANAGER) {
-        this.ws.spawnWithShardingManager({
+        await this.ws.spawnWithShardingManager({
           ...options,
           mode: 'env',
         });
       } else if (workerData.__fuwa_sharding_manager) {
-        this.ws.spawnWithShardingManager({
+        await this.ws.spawnWithShardingManager({
           ...options,
           mode: 'worker',
           workerData: workerData,
         });
       }
+
+      return;
     }
 
     await this.ws.spawn({

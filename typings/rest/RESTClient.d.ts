@@ -9,6 +9,7 @@ export declare class RESTClient {
     version?: number;
     constructor(options: RESTClientOptions);
     static createRESTOptions(clientOptions: ClientOptions, token: string, tokenType: 'Bot' | 'Bearer'): RESTClientOptions;
+    static getDefaultOptions(token: string): Required<RESTClientOptions>;
     createHeaders(request: APIRequest): Record<string, string>;
     formatRoute(route: RouteLike, versioned?: boolean, useBase?: boolean): string;
     resolveBody(req: APIRequest): APIRequest;

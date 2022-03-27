@@ -1,4 +1,4 @@
-import { ClientOptions } from '../client/ClientOptions';
+import { ClientOptions, DefaultClientOptions } from '../client/ClientOptions';
 import { APIRequest } from './APIRequest';
 import { RouteLike } from './RequestManager.js';
 import FormData from 'form-data';
@@ -43,6 +43,15 @@ export class RESTClient {
       version: options.apiVersion,
       auth: `${tokenType} ${token}`,
       userAgent: options.httpUserAgent,
+      headers: {},
+    };
+  }
+  public static getDefaultOptions(token: string): Required<RESTClientOptions> {
+    return {
+      baseUrl: DefaultClientOptions.httpBaseUrl!,
+      version: DefaultClientOptions.apiVersion!,
+      auth: `Bot ${token}`,
+      userAgent: DefaultClientOptions.httpUserAgent!,
       headers: {},
     };
   }

@@ -551,6 +551,8 @@ export class GatewayShard extends EventEmitter {
    * **Warning**: if you use this too soon after previously heartbeating, the internal property {@link GatewayShard.heartbeat_acked} may not be set correctly, causing the shard to assume a dead connection and close the socket.
    */
   public heartbeat() {
+    if (this.s <= 0) return;
+
     if (!this.heartbeat_acked) {
       this.reconnect();
     }
@@ -583,7 +585,8 @@ export class GatewayShard extends EventEmitter {
   public close(resume = true) {
     switch (this._socket?.readyState) {
       case WebSocket.OPEN:
-        this._socket.close(resume ? 4000 : 1000, 'Closed by user');
+        this._socket?.removeAllListeners();
+        this._socket?.close(resume ? 4000 : 1000, 'Closed by user');
         break;
       case WebSocket.CONNECTING:
         break;
@@ -595,7 +598,7 @@ export class GatewayShard extends EventEmitter {
 
     if (!resume) {
       this.session = undefined;
-      this.s = -1;
+      this.s = 0;
     }
 
     this.#timers.forEach((t) => clearInterval(t));
