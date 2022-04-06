@@ -1,5 +1,6 @@
 import { APIGatewayBotInfo, Routes } from '@splatterxl/discord-api-types';
 import { ChildProcess, fork } from 'child_process';
+import { STATUS_CODES } from 'http';
 import { isMainThread, Worker } from 'worker_threads';
 import { resolveRequest } from '../rest/APIRequest';
 import { consumeJSON } from '../rest/RequestManager';
@@ -17,14 +18,27 @@ export class ShardingManager {
   public async spawn() {
     this.gatewayInfo = await this.client
       .execute(resolveRequest({ route: Routes.gatewayBot() }))
+      .then((res) => {
+        if (res.statusCode !== 200) {
+          throw new Error(
+            `[ShardingManager] Failed to get gateway info: ${res.statusCode} ${
+              STATUS_CODES[res.statusCode]
+            }`
+          );
+        }
+
+        return res;
+      })
       .then(consumeJSON);
 
     const { totalShards = this.gatewayInfo.shards } = this.options;
 
     const shards = Array.isArray(this.options.shards)
-      ? this.options.shards
+      ? this.options.shards.length === 2
+         ? range(this.options.shards[0], this.options.shards[1])
+          : this.options.shards
       : this.options.shards === 'auto'
-      ? range(totalShards - 1)
+      ? range(this.options.increment ?? 0, totalShards - 1)
       : typeof this.options.shards === 'number'
       ? range(this.options.increment ?? 0, this.options.shards - 1)
       : null;
@@ -142,7 +156,7 @@ export class ShardingManager {
 
 export interface ShardingManagerOptions {
   token: string;
-  shards: number | 'auto' | number[];
+  shards: number | 'auto' | [number, number] | number[];
   fetchInfo?: boolean;
   totalShards?: number;
   limitPerWorker?: number;
@@ -155,5 +169,5 @@ export interface ShardingManagerOptions {
 }
 
 function range(start: number, end: number = start) {
-  return Array.from(new Array(end - start + 1), (x, i) => i + start);
+  return Array.from(new Array(end - start + 1), (_, i) => i + start);
 }

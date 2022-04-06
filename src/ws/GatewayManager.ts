@@ -79,17 +79,17 @@ export class GatewayManager extends EventEmitter {
           shards: data.range,
           count: data.count,
         });
-      } else if (data.id) {
+      } else if ("id" in data) {
         return this.spawn({
           ...options,
           shards: 1,
           id: data.id,
           count: data.count,
         });
-      } else if (data.increment) {
+      } else if ("increment" in data) {
         return this.spawn({
           ...options,
-          shards: [data.increment, data.increment + data.limitPerWorker!],
+          shards: [data.increment!, data.increment! + data.limitPerWorker!],
           count: data.count,
         });
       } else {

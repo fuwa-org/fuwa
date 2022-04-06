@@ -1,4 +1,4 @@
 #!/bin/sh
 set -e
 
-yarn precise-commits
+yarn precise-commits || true

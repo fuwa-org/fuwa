@@ -18,7 +18,7 @@ export declare class ShardingManager {
 }
 export interface ShardingManagerOptions {
     token: string;
-    shards: number | 'auto' | number[];
+    shards: number | 'auto' | [number, number] | number[];
     fetchInfo?: boolean;
     totalShards?: number;
     limitPerWorker?: number;
