@@ -1,4 +1,8 @@
-import { APIGatewayBotInfo, GatewayCloseCodes, Routes } from '@splatterxl/discord-api-types';
+import {
+  APIGatewayBotInfo,
+  GatewayCloseCodes,
+  Routes,
+} from '@splatterxl/discord-api-types';
 import EventEmitter from 'node:events';
 import { Client } from '../client/Client.js';
 import { consumeJSON } from '../rest/RequestManager.js';
@@ -79,14 +83,14 @@ export class GatewayManager extends EventEmitter {
           shards: data.range,
           count: data.count,
         });
-      } else if ("id" in data) {
+      } else if ('id' in data) {
         return this.spawn({
           ...options,
           shards: 1,
           id: data.id,
           count: data.count,
         });
-      } else if ("increment" in data) {
+      } else if ('increment' in data) {
         return this.spawn({
           ...options,
           shards: [data.increment!, data.increment! + data.limitPerWorker!],
@@ -149,13 +153,13 @@ export class GatewayManager extends EventEmitter {
       .on('_throw', (e) => {
         throw new Error(`Shard ${shard.id}: ${e}`);
       })
-      .on("packet", (p) => {
-        this.emit("packet", p, shard);
+      .on('packet', (p) => {
+        this.emit('packet', p, shard);
       })
-      .on("dispatch", (d) => {
-        this.emit("dispatch", d, shard);
+      .on('dispatch', (d) => {
+        this.emit('dispatch', d, shard);
       })
-      .on("close", (code, reason) => {
+      .on('close', (code, reason) => {
         this.onClose(shard, code, reason.toString());
       });
     return shard;
@@ -184,7 +188,7 @@ export class GatewayManager extends EventEmitter {
       case 1000:
       case GatewayCloseCodes.InvalidSeq:
       case GatewayCloseCodes.SessionTimedOut:
-        shard.emit("_refresh");
+        shard.emit('_refresh');
         break;
       // eslint-disable-next-line no-fallthrough
       default:
