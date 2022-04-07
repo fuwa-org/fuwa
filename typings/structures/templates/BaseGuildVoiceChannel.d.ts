@@ -20,24 +20,8 @@ export declare class BaseGuildVoiceChannel extends GuildChannel {
         id: string;
         name?: string | undefined;
     };
-    setBitrate(bitrate: number): Promise<import("undici/types/dispatcher").ResponseData & {
-        body: {
-            json(): Promise<unknown>;
-        };
-    }>;
-    setRegion(region: string): Promise<import("undici/types/dispatcher").ResponseData & {
-        body: {
-            json(): Promise<unknown>;
-        };
-    }>;
-    setUserLimit(userLimit: number): Promise<import("undici/types/dispatcher").ResponseData & {
-        body: {
-            json(): Promise<unknown>;
-        };
-    }>;
-    setVideoQualityMode(mode: VideoQualityMode): Promise<import("undici/types/dispatcher").ResponseData & {
-        body: {
-            json(): Promise<unknown>;
-        };
-    }>;
+    setBitrate(bitrate: number): Promise<this>;
+    setRegion(region: string): Promise<this>;
+    setUserLimit(userLimit: number): Promise<this>;
+    setVideoQualityMode(mode: VideoQualityMode): Promise<this>;
 }

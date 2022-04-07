@@ -61,8 +61,8 @@ export class Channel<T extends APIChannel = APIChannel> extends BaseStructure<T>
           method: 'PATCH',
           body: DataTransformer.asJSON(data),
         })
-      .then(((d)) => consumeJSON<T & { guild_id?: Snowflake }>(d))
-      .then(((data)) => this._deserialise(data));
+      .then((d) => consumeJSON<T & { guild_id?: Snowflake }>(d))
+      .then((data) => this._deserialise(data));
   }
 
   public delete() {
