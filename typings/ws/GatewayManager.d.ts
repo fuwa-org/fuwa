@@ -13,6 +13,7 @@ export declare class GatewayManager extends EventEmitter {
     spawnWithShardingManager(options: GatewayManagerShardingOptions): Promise<void>;
     spawn(options: GatewayManagerOptions): Promise<void>;
     private _registerListeners;
+    private onClose;
     private fetchGatewayBot;
     reset(): void;
 }

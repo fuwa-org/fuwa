@@ -1,4 +1,4 @@
-import { APIGatewayBotInfo, Routes } from '@splatterxl/discord-api-types';
+import { APIGatewayBotInfo, GatewayCloseCodes, Routes } from '@splatterxl/discord-api-types';
 import EventEmitter from 'node:events';
 import { Client } from '../client/Client.js';
 import { consumeJSON } from '../rest/RequestManager.js';
@@ -139,6 +139,12 @@ export class GatewayManager extends EventEmitter {
         shard.close(false);
         shard.reset(true);
         this.shards.delete(shard.id);
+        this.spawn({
+          shards: 1,
+          id: shard.id,
+          token: shard.client.token(false),
+          url: shard.url,
+        });
       })
       .on('_throw', (e) => {
         throw new Error(`Shard ${shard.id}: ${e}`);
@@ -149,7 +155,43 @@ export class GatewayManager extends EventEmitter {
       .on("dispatch", (d) => {
         this.emit("dispatch", d, shard);
       })
+      .on("close", (code, reason) => {
+        this.onClose(shard, code, reason.toString());
+      });
     return shard;
+  }
+
+  private onClose(shard: GatewayShard, code: number, reason: string) {
+    this.debug(
+      `Shard ${shard.id} closed with code`,
+      code,
+      `reason`,
+      reason?.toString() ?? GatewayCloseCodes[code]
+    );
+    switch (code) {
+      case GatewayCloseCodes.InvalidIntents:
+        throw new Error(
+          `Gateway intents ${this.client.options.intents} are invalid.`
+        );
+      case GatewayCloseCodes.InvalidShard:
+        throw new Error('Invalid shard id: ' + shard.id);
+      case GatewayCloseCodes.DisallowedIntents:
+        throw new Error(
+          `Gateway intents ${this.client.options.intents} are disallowed for the client.`
+        );
+      case GatewayCloseCodes.AuthenticationFailed:
+        throw new Error('Client token is invalid');
+      case 1000:
+      case GatewayCloseCodes.InvalidSeq:
+      case GatewayCloseCodes.SessionTimedOut:
+        shard.emit("_refresh");
+        break;
+      // eslint-disable-next-line no-fallthrough
+      default:
+        this.debug('Socket closed, reconnecting...');
+        shard.reconnect();
+        break;
+    }
   }
 
   private async fetchGatewayBot() {

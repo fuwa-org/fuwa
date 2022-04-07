@@ -60,7 +60,7 @@ export class GatewayShard extends EventEmitter {
   private heartbeat_interval = -1;
   private heartbeat_at = -1;
   private heartbeat_acked = true;
-  private url = 'wss://gateway.discord.gg/?v=9&encoding=json';
+  public url = 'wss://gateway.discord.gg/?v=9&encoding=json';
 
   /** The latency between us and Discord, in milliseconds. */
   public ping = -1;
@@ -156,7 +156,7 @@ export class GatewayShard extends EventEmitter {
     });
     this._socket.on('message', this.onMessage.bind(this));
     this._socket.on('close', (code, reason) => {
-      this.emit('close', this, code, reason);
+      this.emit('close', code, reason);
     });
 
     await this.awaitPacket((p) => p.t === 'READY');
