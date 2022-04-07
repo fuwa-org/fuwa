@@ -1,9 +1,14 @@
-import { APIGatewayBotInfo, Routes } from '@splatterxl/discord-api-types';
+import {
+  APIGatewayBotInfo,
+  GatewayCloseCodes,
+  Routes,
+} from '@splatterxl/discord-api-types';
+import EventEmitter from 'node:events';
 import { Client } from '../client/Client.js';
 import { consumeJSON } from '../rest/RequestManager.js';
 import { GatewayShard } from './GatewayShard.js';
 
-export class GatewayManager {
+export class GatewayManager extends EventEmitter {
   shards: Map<number, GatewayShard> = new Map();
 
   get ping() {
@@ -17,6 +22,8 @@ export class GatewayManager {
   }
 
   constructor(public client: Client) {
+    super();
+
     Object.defineProperty(this, 'client', {
       value: this.client,
       enumerable: false,
@@ -76,17 +83,17 @@ export class GatewayManager {
           shards: data.range,
           count: data.count,
         });
-      } else if (data.id) {
+      } else if ('id' in data) {
         return this.spawn({
           ...options,
           shards: 1,
           id: data.id,
           count: data.count,
         });
-      } else if (data.increment) {
+      } else if ('increment' in data) {
         return this.spawn({
           ...options,
-          shards: [data.increment, data.increment + data.limitPerWorker!],
+          shards: [data.increment!, data.increment! + data.limitPerWorker!],
           count: data.count,
         });
       } else {
@@ -136,11 +143,59 @@ export class GatewayManager {
         shard.close(false);
         shard.reset(true);
         this.shards.delete(shard.id);
+        this.spawn({
+          shards: 1,
+          id: shard.id,
+          token: shard.client.token(false),
+          url: shard.url,
+        });
       })
       .on('_throw', (e) => {
         throw new Error(`Shard ${shard.id}: ${e}`);
+      })
+      .on('packet', (p) => {
+        this.emit('packet', p, shard);
+      })
+      .on('dispatch', (d) => {
+        this.emit('dispatch', d, shard);
+      })
+      .on('close', (code, reason) => {
+        this.onClose(shard, code, reason.toString());
       });
     return shard;
+  }
+
+  private onClose(shard: GatewayShard, code: number, reason: string) {
+    this.debug(
+      `Shard ${shard.id} closed with code`,
+      code,
+      `reason`,
+      reason?.toString() ?? GatewayCloseCodes[code]
+    );
+    switch (code) {
+      case GatewayCloseCodes.InvalidIntents:
+        throw new Error(
+          `Gateway intents ${this.client.options.intents} are invalid.`
+        );
+      case GatewayCloseCodes.InvalidShard:
+        throw new Error('Invalid shard id: ' + shard.id);
+      case GatewayCloseCodes.DisallowedIntents:
+        throw new Error(
+          `Gateway intents ${this.client.options.intents} are disallowed for the client.`
+        );
+      case GatewayCloseCodes.AuthenticationFailed:
+        throw new Error('Client token is invalid');
+      case 1000:
+      case GatewayCloseCodes.InvalidSeq:
+      case GatewayCloseCodes.SessionTimedOut:
+        shard.emit('_refresh');
+        break;
+      // eslint-disable-next-line no-fallthrough
+      default:
+        this.debug('Socket closed, reconnecting...');
+        shard.reconnect();
+        break;
+    }
   }
 
   private async fetchGatewayBot() {

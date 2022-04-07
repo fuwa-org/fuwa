@@ -18,7 +18,7 @@ export declare class GatewayShard extends EventEmitter {
     private heartbeat_interval;
     private heartbeat_at;
     private heartbeat_acked;
-    private url;
+    url: string;
     ping: number;
     private s;
     session?: string;

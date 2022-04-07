@@ -184,7 +184,7 @@ export class Guild extends BaseStructure<APIGuild | APIUnavailableGuild> {
     if ('members' in data) {
       for (const member of data.members!) {
         const m = new GuildMember(this.client, this.id)._deserialise(member);
-        this.members.cache.set(m.user!.id, m);
+        this.members.cache.set(m.userId!, m);
       }
     }
 
