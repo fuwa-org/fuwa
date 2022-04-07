@@ -1,4 +1,4 @@
-import { RequestManager } from '../rest/RequestManager.js';
+import { consumeJSON, RequestManager } from '../rest/RequestManager.js';
 import { RESTClient } from '../rest/RESTClient';
 import {
   ClientOptions,
@@ -25,6 +25,8 @@ import { TextChannel } from '../structures/templates/BaseTextChannel.js';
 import { redactToken } from '../util/tokens.js';
 import { GatewayManager } from '../ws/GatewayManager.js';
 import { workerData } from 'worker_threads';
+import { APIRequest } from '../rest/APIRequest.js';
+import { HttpMethod } from 'undici/types/dispatcher';
 
 export class Client extends EventEmitter {
   #token: string;
@@ -97,7 +99,7 @@ export class Client extends EventEmitter {
         await this.ws.spawnWithShardingManager({
           ...options,
           mode: 'worker',
-          workerData: workerData,
+          workerData,
         });
       }
 
@@ -141,6 +143,50 @@ export class Client extends EventEmitter {
     this.timers.forEach((t) => clearInterval(t));
     this.logger.info('reset client: done');
   }
+
+  /**
+   * Kept for compatibility with Discord.js
+   * @deprecated Please prefer {@link Client.http}
+   */
+  public get rest(): APIProxy {
+    this.logger.warn('Client.api is deprecated, please use Client.http');
+    const client = this;
+    let route: string[] = [''];
+
+    const handler: ProxyHandler<typeof addRoute> = {
+      get(_, prop, receiver) {
+        switch (prop) {
+          case 'route':
+            return route.join('/');
+          case 'get':
+          case 'post':
+          case 'put':
+          case 'delete':
+            return <T>(options: APIRequestOptions): Promise<T> => {
+              return client.http
+                .queue<T>({
+                  route: route.join('/'),
+                  method: prop.toUpperCase() as HttpMethod,
+                  ...options,
+                })
+                .then(consumeJSON);
+            };
+          default: {
+            if (typeof prop === 'symbol') return receiver[prop];
+            route.push(prop);
+            return new Proxy(addRoute, handler);
+          }
+        }
+      },
+    };
+
+    function addRoute(...fragments: string[]) {
+      route.push(...fragments);
+      return new Proxy(addRoute, handler);
+    }
+
+    return new Proxy(addRoute, handler) as APIProxy;
+  }
 }
 
 export interface Client {
@@ -168,3 +214,14 @@ export interface ClientEvents {
 }
 
 export type Awaitable<T> = Promise<T> | T;
+
+export type APIRequestOptions = Omit<APIRequest, 'route'>;
+
+export type APIProxy = {
+  [key: string]: APIProxy;
+} & {
+  get<T>(options: APIRequestOptions): Promise<T>;
+  post<T>(options: APIRequestOptions): Promise<T>;
+  put<T>(options: APIRequestOptions): Promise<T>;
+  delete<T>(options: Omit<APIRequestOptions, 'body' | 'files'>): Promise<T>;
+} & ((...args: any[]) => APIProxy);

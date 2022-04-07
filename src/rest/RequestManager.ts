@@ -152,5 +152,9 @@ export type RouteLike = `/${string}`;
 export function consumeJSON<D>(
   res: ResponseData & { body: { json(): Promise<D> } }
 ): Promise<D> {
-  return res.body.json();
+  if (res.headers['content-type']!.includes('application/json')) {
+    return res.body.json();
+  } else {
+    throw new Error('API response was not JSON');
+  }
 }

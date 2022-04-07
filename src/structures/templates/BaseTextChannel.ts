@@ -2,21 +2,38 @@ import {
   APITextBasedChannel,
   TextChannelType,
 } from '@splatterxl/discord-api-types';
+import { Client } from '../../client/Client';
 import { Snowflake } from '../../client/ClientOptions';
 import { MessagePayload } from '../../util/resolvables/MessagePayload';
 import { Channel } from '../Channel.js';
 import { DMChannel } from '../DMChannel';
+import { GuildChannel } from '../GuildChannel';
 import { GuildTextChannel } from '../GuildTextChannel';
 import { ChannelMessageManager } from '../managers/ChannelMessageManager';
 
-export class BaseTextChannel extends Channel<
-  APITextBasedChannel<TextChannelType>
-> {
+// i hate this so much
+// this is so scuffed
+
+export interface BaseTextChannel
+  extends Channel<APITextBasedChannel<TextChannelType>> {
+  lastMessageId: Snowflake | null;
+  messages: ChannelMessageManager;
+  _deserialise(data: APITextBasedChannel<TextChannelType>): this;
+  createMessage(
+    data: MessagePayload | string
+  ): ReturnType<ChannelMessageManager['create']>;
+}
+
+// @ts-ignore
+export class BaseTextChannelInGuild
+  extends GuildChannel
+  implements BaseTextChannel
+{
   public lastMessageId: Snowflake | null = null;
 
   public messages = new ChannelMessageManager(this as unknown as TextChannel);
 
-  _deserialise(data: APITextBasedChannel<TextChannelType>) {
+  _deserialise(data: any) {
     super._deserialise(data);
 
     if ('last_message_id' in data) {
@@ -30,5 +47,17 @@ export class BaseTextChannel extends Channel<
     return this.messages.create(data);
   }
 }
+
+export const BaseTextChannel = function (this: any): BaseTextChannel {
+  this.lastMessageId = null;
+  this.messages = new ChannelMessageManager(this as unknown as TextChannel);
+  this._deserialise = BaseTextChannelInGuild.prototype._deserialise.bind(this);
+  this.createMessage =
+    BaseTextChannelInGuild.prototype.createMessage.bind(this);
+
+  return this;
+} as unknown as {
+  new (client: Client): BaseTextChannel;
+};
 
 export type TextChannel = DMChannel | GuildTextChannel;

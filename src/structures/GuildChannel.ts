@@ -7,7 +7,6 @@ import { Client } from '../client/Client.js';
 import { Snowflake } from '../client/ClientOptions';
 import { Channel } from './Channel';
 import { Guild } from './Guild';
-import { GuildTextChannel } from './GuildTextChannel.js';
 
 export class GuildChannel<
   T extends APIGuildChannel<GuildChannelType> = APIGuildChannel<GuildChannelType>
@@ -37,18 +36,18 @@ export class GuildChannel<
     data: APIGuildChannel<GuildChannelType>,
     guild: Guild
   ): GuildChannels {
-    switch (data.type as GuildChannelType) {
+    switch (data.type as ChannelType) {
       case ChannelType.GuildText:
       case ChannelType.GuildNews:
-        return new GuildTextChannel(client)._deserialise(
-          data as unknown as any
-        );
+        return new GuildTextChannel(client)._deserialise(data as unknown as any);
+      case ChannelType.GuildVoice:
       default: {
         guild.client.logger.warn(
           `unknown guild channel type ${data.type} (${ChannelType[data.type]})`
         );
-        return new GuildChannel(client)._deserialise(data as unknown as any);
       }
+      case ChannelType.GuildCategory:
+        return new GuildChannel(client)._deserialise(data as unknown as any);
     }
   }
 
@@ -84,3 +83,8 @@ export class GuildChannel<
 }
 
 export type GuildChannels = GuildChannel | GuildTextChannel;
+
+// BaseTextChannel depends on this file, but we depend on it 
+// in a function, so we import at the bottom of the file to avoid
+// circular dependencies which result in a runtime error
+import { GuildTextChannel } from './GuildTextChannel.js';

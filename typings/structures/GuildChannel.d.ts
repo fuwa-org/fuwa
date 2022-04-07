@@ -3,7 +3,6 @@ import { Client } from '../client/Client.js';
 import { Snowflake } from '../client/ClientOptions';
 import { Channel } from './Channel';
 import { Guild } from './Guild';
-import { GuildTextChannel } from './GuildTextChannel.js';
 export declare class GuildChannel<T extends APIGuildChannel<GuildChannelType> = APIGuildChannel<GuildChannelType>> extends Channel<T> {
     name: string;
     position: number;
@@ -19,3 +18,4 @@ export declare class GuildChannel<T extends APIGuildChannel<GuildChannelType> = 
     toJSON(): T;
 }
 export declare type GuildChannels = GuildChannel | GuildTextChannel;
+import { GuildTextChannel } from './GuildTextChannel.js';

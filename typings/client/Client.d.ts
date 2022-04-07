@@ -12,6 +12,7 @@ import { Message } from '../structures/Message.js';
 import { Guild } from '../structures/Guild.js';
 import { TextChannel } from '../structures/templates/BaseTextChannel.js';
 import { GatewayManager } from '../ws/GatewayManager.js';
+import { APIRequest } from '../rest/APIRequest.js';
 export declare class Client extends EventEmitter {
     #private;
     http: RequestManager;
@@ -32,6 +33,7 @@ export declare class Client extends EventEmitter {
     delegate(event: `${string}.${string}`, ...data: any[]): void;
     event(name: string): Events.SubscriptionBuilder<string, any[]>;
     reset(): void;
+    get rest(): APIProxy;
 }
 export interface Client {
     on<K extends keyof ClientEvents>(event: K, listener: (...args: ClientEvents[K]) => void): this;
@@ -54,3 +56,12 @@ export interface ClientEvents {
     'messages.update': [old: Message, new: Message];
 }
 export declare type Awaitable<T> = Promise<T> | T;
+export declare type APIRequestOptions = Omit<APIRequest, 'route'>;
+export declare type APIProxy = {
+    [key: string]: APIProxy;
+} & {
+    get<T>(options: APIRequestOptions): Promise<T>;
+    post<T>(options: APIRequestOptions): Promise<T>;
+    put<T>(options: APIRequestOptions): Promise<T>;
+    delete<T>(options: Omit<APIRequestOptions, 'body' | 'files'>): Promise<T>;
+} & ((...args: any[]) => APIProxy);

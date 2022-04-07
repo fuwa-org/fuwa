@@ -25,6 +25,7 @@ export declare class Channel<T extends APIChannel = APIChannel> extends BaseStru
             json(): Promise<unknown>;
         };
     }>;
+    fetch(): Promise<this>;
     toJSON(): T;
 }
 export declare type Channels<T = DMChannel | GuildChannels | Channel, D = APIChannel> = T & {

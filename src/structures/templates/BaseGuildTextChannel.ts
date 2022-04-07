@@ -3,9 +3,9 @@ import {
   GuildTextChannelType,
 } from '@splatterxl/discord-api-types';
 import { Client } from '../../client/Client.js';
-import { BaseTextChannel } from './BaseTextChannel.js';
+import { BaseTextChannelInGuild } from './BaseTextChannel.js';
 
-export class BaseGuildTextChannel extends BaseTextChannel {
+export class BaseGuildTextChannel extends BaseTextChannelInGuild {
   public lastPinAt: Date | null = null;
   public get lastPinTimestamp() {
     return this.lastPinAt?.getTime() ?? null;
