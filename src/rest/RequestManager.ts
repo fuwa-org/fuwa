@@ -62,7 +62,13 @@ export class RequestManager {
     if (req.useBaseUrl) this.updateOffset(res);
 
     this.debug(
-      `${req.method.toUpperCase()} ${req.route} -> ${res.statusCode} ${STATUS_CODES[res.statusCode]}`
+      `${req.method.toUpperCase()} ${req.route} -> ${res.statusCode} ${
+        
+        
+        STATUS_CODES[res.statusCode]
+      
+      
+      }`
     );
 
     if (res.statusCode < 200) {

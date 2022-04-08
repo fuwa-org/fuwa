@@ -50,9 +50,13 @@ export class GuildChannel<
         );
       case ChannelType.GuildVoice:
       case ChannelType.GuildStageVoice:
-        return new GuildVoiceChannel(client)._deserialise(data as unknown as any);
+        return new GuildVoiceChannel(client)._deserialise(
+          data as unknown as any
+        );
       case ChannelType.GuildCategory:
-        return new GuildChannel(client)._deserialise(data as unknown as any);
+        return new GuildChannel(client)._deserialise(
+          data as unknown as any
+        );
       default:
         guild.client.logger.warn(
           `unknown guild channel type ${data.type} (${ChannelType[data.type]})`
