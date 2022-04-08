@@ -78,12 +78,12 @@ export class BucketQueueManager {
   }
 
   private debug(...data: any[]) {
-    this.manager._client.debug(
-      `[${this.manager._client.logger
+    this.manager._client?.debug(
+      `[${this.manager._client?.logger
         .kleur()
-        .blueBright('REST')} => ${this.manager._client.logger
+        .blueBright('REST')} => ${this.manager._client?.logger
         .kleur()
-        .green('Queue')}]`,
+        .green(this.id)}]`,
       ...data
     );
   }

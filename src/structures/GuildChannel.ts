@@ -20,6 +20,12 @@ export class GuildChannel<
     return this.guild!.channels.get(this.parentId!);
   }
 
+  get children() {
+    return [...this.guild!.channels.cache.values()].filter(
+      (channel) => channel.parentId === this.id
+    );
+  }
+
   _deserialise(data: T): this {
     super._deserialise(data as T & { guild_id: Snowflake });
 
@@ -43,6 +49,10 @@ export class GuildChannel<
           data as unknown as any
         );
       case ChannelType.GuildVoice:
+      case ChannelType.GuildStageVoice:
+        return new GuildVoiceChannel(client)._deserialise(data as unknown as any);
+      case ChannelType.GuildCategory:
+        return new GuildChannel(client)._deserialise(data as unknown as any);
       default:
         guild.client.logger.warn(
           `unknown guild channel type ${data.type} (${ChannelType[data.type]})`
@@ -82,9 +92,11 @@ export class GuildChannel<
   }
 }
 
-export type GuildChannels = GuildChannel | GuildTextChannel;
+export type GuildChannels = GuildChannel | GuildTextChannel | GuildVoiceChannel;
 
 // BaseTextChannel depends on this file, but we depend on it 
 // in a function, so we import at the bottom of the file to avoid
 // circular dependencies which result in a runtime error
 import { GuildTextChannel } from './GuildTextChannel.js';
+import { GuildVoiceChannel } from './GuildVoiceChannel.js';
+

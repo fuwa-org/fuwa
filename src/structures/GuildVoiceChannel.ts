@@ -1,7 +1,10 @@
-import { VideoQualityMode } from '@splatterxl/discord-api-types';
-import { GuildChannel } from '../GuildChannel';
+import {
+  APIVoiceChannel,
+  VideoQualityMode,
+} from '@splatterxl/discord-api-types';
+import { BaseTextChannelInGuild } from './templates/BaseTextChannel';
 
-export class BaseGuildVoiceChannel extends GuildChannel {
+export class GuildVoiceChannel extends BaseTextChannelInGuild {
   public bitrate: number | null = null;
   public region: string | null = null;
   public userLimit: number | null = null;
@@ -19,13 +22,14 @@ export class BaseGuildVoiceChannel extends GuildChannel {
     return this;
   }
 
-  toJSON() {
+  toJSON(): APIVoiceChannel {
     return {
       ...super.toJSON(),
-      bitrate: this.bitrate,
-      region: this.region,
-      user_limit: this.userLimit,
+      bitrate: this.bitrate ?? 0,
+      rtc_region: this.region,
+      user_limit: this.userLimit! ?? undefined,
       video_quality_mode: this.videoQuality,
+      type: this.type as any,
     };
   }
 
@@ -43,5 +47,10 @@ export class BaseGuildVoiceChannel extends GuildChannel {
 
   public setVideoQualityMode(mode: VideoQualityMode) {
     return this.edit({ video_quality_mode: mode });
+  }
+
+  // voice channel is merged with stage channel for maintainability
+  public createStageInstance() {
+    throw new Error('Not implemented');
   }
 }

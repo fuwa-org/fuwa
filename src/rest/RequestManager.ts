@@ -1,6 +1,5 @@
 import { STATUS_CODES } from 'node:http';
 import { ResponseData } from 'undici/types/dispatcher';
-import { Client } from '../client/Client.js';
 import { APIRequest, resolveRequest } from './APIRequest.js';
 import { BucketQueueManager } from './BucketQueueManager.js';
 import { RESTClient } from './RESTClient';
@@ -29,7 +28,7 @@ export class RequestManager {
   /** When the global rate limit will reset. */
   public reset = Date.now() + 1e3;
 
-  constructor(public client: RESTClient, public _client: Client) {}
+  constructor(public client: RESTClient, public _client?: any) {}
 
   public get durUntilReset() {
     return this.reset + this.offset - Date.now();
@@ -62,12 +61,8 @@ export class RequestManager {
 
     if (req.useBaseUrl) this.updateOffset(res);
 
-    this._client.debug(
-      `[${this._client.logger.kleur().green('REST')} => ${this._client.logger
-        .kleur()
-        .green('Manager')}] ${req.method.toUpperCase()} ${req.route} -> ${
-        res.statusCode
-      } ${STATUS_CODES[res.statusCode]}`
+    this.debug(
+      `${req.method.toUpperCase()} ${req.route} -> ${res.statusCode} ${STATUS_CODES[res.statusCode]}`
     );
 
     if (res.statusCode < 200) {
@@ -144,6 +139,14 @@ export class RequestManager {
     const local = Date.now();
 
     this.offset = local - discordDate;
+  }
+
+  #__log_header() {
+    return `[${this._client?.logger.kleur().green('REST')}]`;
+  }
+
+  private debug(...args: any[]) {
+    this._client?.logger.debug(this.#__log_header(), ...args);
   }
 }
 
