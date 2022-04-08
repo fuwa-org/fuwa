@@ -39,7 +39,9 @@ export class GuildChannel<
     switch (data.type as ChannelType) {
       case ChannelType.GuildText:
       case ChannelType.GuildNews:
-        return new GuildTextChannel(client)._deserialise(data as unknown as any);
+        return new GuildTextChannel(client)._deserialise(
+          data as unknown as any
+        );
       case ChannelType.GuildVoice:
       default:
         guild.client.logger.warn(
