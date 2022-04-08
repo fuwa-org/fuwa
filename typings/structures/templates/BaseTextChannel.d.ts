@@ -16,6 +16,7 @@ export interface BaseTextChannel extends Channel<APITextBasedChannel<TextChannel
 export declare class BaseTextChannelInGuild extends GuildChannel implements BaseTextChannel {
     lastMessageId: Snowflake | null;
     messages: ChannelMessageManager;
+    constructor(client: Client);
     _deserialise(data: any): this;
     createMessage(data: MessagePayload | string): Promise<import("../Message").Message<TextChannel>>;
 }

@@ -1,5 +1,4 @@
 import { ILogger } from './ILogger.js';
-/** @internal */
 export declare class DisabledLogger implements ILogger {
     info(..._data: any[]): void;
     warn(..._data: any[]): void;

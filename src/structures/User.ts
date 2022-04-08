@@ -1,6 +1,8 @@
 import { APIUser } from 'discord-api-types/v10';
 import { Snowflake } from '../client/ClientOptions.js';
 import { UserFlags } from '../util/bitfields/UserFlags.js';
+import { MessagePayload } from '../util/resolvables/MessagePayload.js';
+import { DMChannel } from './DMChannel.js';
 import { BaseStructure } from './templates/BaseStructure.js';
 
 export class User extends BaseStructure<APIUser> {
@@ -16,6 +18,8 @@ export class User extends BaseStructure<APIUser> {
 
   public avatar: string | null = null;
   public banner: string | null = null;
+
+  public dm: DMChannel | null = null;
 
   _deserialise(data: APIUser): this {
     this.id = data.id as Snowflake;
@@ -37,6 +41,15 @@ export class User extends BaseStructure<APIUser> {
 
   public fetch(): Promise<this> {
     return this.client.users.fetch(this.id) as Promise<this>;
+  }
+
+  public async createDM(cache = false) {
+    return (this.dm = await this.client.channels.createDM(this.id, cache));
+  }
+
+  public async send(content: MessagePayload | string) {
+    await this.createDM();
+    return this.dm!.createMessage(content);
   }
 
   toJSON(): APIUser {

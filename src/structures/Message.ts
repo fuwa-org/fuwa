@@ -6,6 +6,7 @@ import { ExtendedUser } from './ExtendedUser';
 import { MessageFlags } from '../util/bitfields/MessageFlags';
 import { TextChannel } from './templates/BaseTextChannel';
 import { DataTransformer } from '../rest/DataTransformer';
+import { consumeJSON } from '../rest/RequestManager';
 
 // TODO: Add support for DM messages
 export class Message<
@@ -60,6 +61,9 @@ export class Message<
         this.author = this.client.users.resolve(data.author)!;
       }
     }
+    if ('member' in data && !!data.member) {
+      this.guild?.members.resolve(data.member!);
+    }
     if ('nonce' in data) this.nonce = data.nonce! ?? null;
     if ('flags' in data) this.flags = new MessageFlags(data.flags!);
     // TODO: embeds
@@ -83,7 +87,8 @@ export class Message<
         method: 'PATCH',
         body: DataTransformer.asJSON(data),
       })
-      .then(async (data) => this._deserialise(await data.body.json())!);
+      .then(consumeJSON)
+      .then((data: any) => this._deserialise(data));
   }
 
   public async fetchMember() {
@@ -105,6 +110,23 @@ export class Message<
         method: 'DELETE',
       })
       .then(() => this.channel!.messages.remove(this.id));
+  }
+
+  public setFlags(flags: MessageFlags | number) {
+    return this._modify({
+      flags: flags instanceof MessageFlags ? flags.bits : flags,
+    });
+  }
+
+  /**
+   * @alias Message.setFlags
+   */
+  public suppressEmbeds(suppress: boolean) {
+    return this.setFlags(
+      suppress
+        ? this.flags.add(MessageFlags.Bits.SuppressEmbeds)
+        : this.flags.remove(MessageFlags.Bits.SuppressEmbeds)
+    );
   }
 
   toJSON(): APIMessage {

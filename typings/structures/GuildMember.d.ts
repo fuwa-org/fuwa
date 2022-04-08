@@ -2,17 +2,12 @@ import { APIGuildMember } from 'discord-api-types/v10';
 import { Client } from '../client/Client.js';
 import { Snowflake } from '../client/ClientOptions.js';
 import { Guild } from './Guild.js';
+import { BanGuildMemberOptions } from './managers/GuildMemberManager.js';
 import { BaseStructure } from './templates/BaseStructure.js';
 import { User } from './User.js';
 export declare class GuildMember extends BaseStructure<APIGuildMember> {
     guildId: Snowflake;
-    /**
-     * @deprecated use {@link GuildMember.joinedAt} instead
-     */
     get createdAt(): Date;
-    /**
-     * @deprecated use {@link GuildMember.joinedTimestamp} instead
-     */
     get createdTimestamp(): number;
     get guild(): Guild;
     userId: Snowflake | null;
@@ -21,12 +16,13 @@ export declare class GuildMember extends BaseStructure<APIGuildMember> {
     avatar: string | null;
     pending: boolean;
     communicationDisabledUntil: Date | null;
-    get communicationDisabledUntilTimestamp(): number;
+    get communicationDisabledUntilTimestamp(): number | null;
+    isCommunicationDisabled(): boolean;
     joinedAt: Date;
     get joinedTimestamp(): number;
     premiumSince: Date | null;
-    get premiumSinceTimestamp(): number;
-    get isPremiumSupporter(): boolean;
+    get premiumSinceTimestamp(): number | null;
+    isPremiumSupporter(): boolean;
     deaf: boolean;
     mute: boolean;
     constructor(client: Client, guildId: Snowflake);
@@ -37,7 +33,7 @@ export declare class GuildMember extends BaseStructure<APIGuildMember> {
     fetch(): Promise<GuildMember>;
     edit(data: Partial<APIGuildMember | GuildMember>, reason?: string): Promise<GuildMember>;
     disableCommunication(until: Date | number, reason?: string): Promise<GuildMember>;
-    ban(deleteMessageDays?: number, reason?: string): Promise<void>;
+    ban(options?: BanGuildMemberOptions): Promise<void>;
     unban(reason?: string): Promise<void>;
     kick(reason?: string): Promise<void>;
     setNickname(nickname: string, reason?: string): Promise<void>;

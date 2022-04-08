@@ -1,4 +1,5 @@
 import { Routes } from 'discord-api-types/v10';
+import { consumeJSON } from '../../rest/RequestManager';
 import {
   MessagePayload,
   payload2data,
@@ -26,13 +27,16 @@ export class ChannelMessageManager extends BaseManager<Message<TextChannel>> {
     return message;
   }
 
-  public async fetch(id: string): Promise<Message<TextChannel>> {
-    const message = await this.client.http
-      .queue({
-        route: Routes.channelMessage(this.channel.id, id),
-      })
-      .then(async (d) => this.resolve(await d.body.json())!);
-
-    return message;
+  public async fetch(id: string, cache = false) {
+    return this.client.http
+      .queue(Routes.channelMessage(this.channel.id, id))
+      .then((d) => consumeJSON<any>(d))
+      .then((data) => {
+        if (cache) {
+          return this.resolve(data)!;
+        } else {
+          return new Message(this.client)._deserialise(data);
+        }
+      });
   }
 }

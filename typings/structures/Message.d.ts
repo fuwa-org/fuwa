@@ -8,7 +8,7 @@ import { TextChannel } from './templates/BaseTextChannel';
 export declare class Message<ChannelType extends TextChannel = TextChannel> extends BaseStructure<APIMessage> {
     nonce: string | number | null;
     guildId: Snowflake | null;
-    get guild(): import("./Guild").Guild;
+    get guild(): import("./Guild").Guild | null;
     channelId: Snowflake;
     get channel(): ChannelType;
     tts: boolean;
@@ -16,18 +16,20 @@ export declare class Message<ChannelType extends TextChannel = TextChannel> exte
     flags: MessageFlags;
     pinned: boolean;
     author: User | ExtendedUser;
-    get member(): import("./GuildMember").GuildMember;
+    get member(): import("./GuildMember").GuildMember | null;
     content: string;
     get createdTimestamp(): number;
     get createdAt(): Date;
     timestamp: number;
     editedTimestamp: number | null;
-    get editedAt(): Date;
+    get editedAt(): Date | null;
     _deserialise(data: APIMessage): this;
     _modify(data: Partial<APIMessage>): Promise<this>;
-    fetchMember(): Promise<import("./GuildMember").GuildMember>;
+    fetchMember(): Promise<import("./GuildMember").GuildMember | null>;
     edit(content: string): Promise<this>;
     delete(): Promise<void>;
+    setFlags(flags: MessageFlags | number): Promise<this>;
+    suppressEmbeds(suppress: boolean): Promise<this>;
     toJSON(): APIMessage;
 }
 export declare class MessageAttachment {

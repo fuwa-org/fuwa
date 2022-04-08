@@ -1,6 +1,11 @@
-import { Routes } from 'discord-api-types/v10';
+import {
+  RESTPutAPIGuildMemberJSONBody,
+  RESTPutAPIGuildMemberResult,
+  Routes,
+} from 'discord-api-types/v10';
 import { Client } from '../../client/Client';
 import { Snowflake } from '../../client/ClientOptions';
+import { consumeJSON } from '../../rest/RequestManager';
 import { GuildMember } from '../GuildMember';
 import { BaseManager } from './BaseManager';
 
@@ -59,14 +64,65 @@ export class GuildMemberManager extends BaseManager<GuildMember> {
     )!.disableCommunication(until, reason);
   }
 
-  public ban(
+  public async ban(
     member: Snowflake | GuildMember,
-    deleteMessageDays?: number,
-    reason?: string
+    { deleteMessageDays = 0, reason }: BanGuildMemberOptions = {}
   ): Promise<void> {
-    return this.get(member instanceof GuildMember ? member.id : member)!.ban(
-      deleteMessageDays,
-      reason
-    );
+    await this.client.http.queue({
+      route: Routes.guildBan(
+        this.guildId,
+        member instanceof GuildMember ? member.userId! : member
+      ),
+      method: 'PUT',
+      body: {
+        delete_message_days: deleteMessageDays,
+      },
+      reason,
+    });
   }
+
+  public async unban(id: Snowflake, reason?: string): Promise<void> {
+    await this.client.http.queue({
+      route: Routes.guildBan(this.guildId, id),
+      method: 'DELETE',
+      reason,
+    });
+  }
+
+  /**
+   * Add a guild member to the guild using an OAuth2 access token. The access token requires the `guilds.join` scope.
+   */
+  public create(
+    id: Snowflake,
+    token: string,
+    { cache = false, ...options }: AddGuildMemberOptions = {}
+  ) {
+    return this.client.http
+      .queue({
+        route: Routes.guildMember(this.guildId, id),
+        method: 'PUT',
+        body: {
+          ...options,
+          access_token: token,
+        },
+      })
+      .then((d) => consumeJSON<RESTPutAPIGuildMemberResult>(d))
+      .then((data) => {
+        if (cache) {
+          return this.resolve(data)!;
+        } else {
+          return new GuildMember(this.client, this.guildId)._deserialise(data);
+        }
+      });
+  }
+}
+
+export interface AddGuildMemberOptions
+  extends Omit<RESTPutAPIGuildMemberJSONBody, 'access_token'> {
+  cache?: boolean;
+}
+
+export interface BanGuildMemberOptions {
+  deleteMessageDays?: number;
+  reason?: string;
 }

@@ -6,5 +6,5 @@ export declare class ChannelMessageManager extends BaseManager<Message<TextChann
     channel: TextChannel;
     constructor(channel: TextChannel);
     create(data: MessagePayload | string): Promise<Message<TextChannel>>;
-    fetch(id: string): Promise<Message<TextChannel>>;
+    fetch(id: string, cache?: boolean): Promise<Message<TextChannel>>;
 }

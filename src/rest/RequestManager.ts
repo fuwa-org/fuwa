@@ -154,7 +154,7 @@ export class RequestManager {
 
 export type RouteLike = `/${string}`;
 
-export function consumeJSON<D>(
+export function consumeJSON<D = any>(
   res: ResponseData & { body: { json(): Promise<D> } }
 ): Promise<D> {
   if (res.headers['content-type']!.includes('application/json')) {

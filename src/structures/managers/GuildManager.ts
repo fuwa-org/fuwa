@@ -1,6 +1,8 @@
-import { APIGuild, Routes } from 'discord-api-types/v10';
+import { RESTPostAPIGuildsJSONBody, Routes } from 'discord-api-types/v10';
 import { Client } from '../../client/Client';
 import { Snowflake } from '../../client/ClientOptions';
+import { consumeJSON } from '../../rest/RequestManager';
+import { CreateEntityOptions } from '../../util/util';
 import { Guild } from '../Guild';
 import { BaseManager } from './BaseManager';
 
@@ -9,44 +11,40 @@ export class GuildManager extends BaseManager<Guild> {
     super(client, Guild);
   }
 
-  public async fetch(id: Snowflake, force = false): Promise<Guild> {
-    if (!force && this.cache.has(id)) {
-      return this.get(id)!;
-    } else {
-      return this.client.http
-        .queue({ route: Routes.guild(id) })
-        .then(async (res) => {
-          if (this.cache.has(id)) {
-            this.cache.set(
-              id,
-              this.cache.get(id)!._deserialise(await res.body.json())
-            );
-          } else {
-            // GUILD_CREATE guilds have specific fields which cannot be accessed when fetched
-            this.add(
-              new Guild(this.client)._deserialise(await res.body.json())
-            );
-          }
-
-          return this.get(id)!;
-        });
-    }
+  public async fetch(id: Snowflake, cache = false): Promise<Guild> {
+    return this.client.http
+      .queue({ route: Routes.guild(id) })
+      .then((d) => consumeJSON<any>(d))
+      .then((data) => {
+        if (cache) {
+          return this.resolve(data)!;
+        } else {
+          return new Guild(this.client)._deserialise(data);
+        }
+      });
   }
 
   public async create(
-    data?: { name: string } & Partial<APIGuild>
+    name: string,
+    { cache, ...options }: CreateGuildOptions = {}
   ): Promise<Guild> {
-    const guild = await this.client.http
-      .queue<APIGuild>({
-        route: '/guilds',
+    return this.client.http
+      .queue({
+        route: Routes.guilds(),
         method: 'POST',
-        body: data,
+        body: {
+          name,
+          ...options,
+        },
       })
-      .then((res) => res.body.json());
-
-    return this.cache
-      .set(guild.id, new Guild(this.client)._deserialise(guild))
-      .get(guild.id)!;
+      .then((d) => consumeJSON<any>(d))
+      .then((data) => {
+        if (cache) {
+          return this.resolve(data)!;
+        } else {
+          return new Guild(this.client)._deserialise(data);
+        }
+      });
   }
 
   public async delete(id: Snowflake): Promise<void> {
@@ -65,3 +63,6 @@ export class GuildManager extends BaseManager<Guild> {
     this.delete(id);
   }
 }
+
+export type CreateGuildOptions = CreateEntityOptions &
+  Omit<RESTPostAPIGuildsJSONBody, 'name'>;

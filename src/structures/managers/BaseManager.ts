@@ -1,7 +1,7 @@
 import { Client } from '../../client/Client';
 import { Snowflake } from '../../client/ClientOptions';
 
-export class BaseManager<
+export abstract class BaseManager<
   T extends { id: Snowflake; _deserialise(data: any): T }
 > {
   public cache: Map<Snowflake, T> = new Map();
@@ -67,4 +67,6 @@ export class BaseManager<
       }
     }
   }
+
+  public abstract fetch(id: Snowflake, cache?: boolean): Promise<T>;
 }

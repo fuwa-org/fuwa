@@ -1,6 +1,6 @@
 import { Client } from '../../client/Client';
 import { Snowflake } from '../../client/ClientOptions';
-export declare class BaseManager<T extends {
+export declare abstract class BaseManager<T extends {
     id: Snowflake;
     _deserialise(data: any): T;
 }> {
@@ -15,6 +15,7 @@ export declare class BaseManager<T extends {
     removeMany(ids: Snowflake[]): void;
     update(data: T): T;
     remove(id: Snowflake): void;
-    map(fn: (data: T, key: Snowflake, cache: Map<Snowflake, T>) => any): unknown[];
-    resolve(data: Snowflake | any): T;
+    map(fn: (data: T, key: Snowflake, cache: Map<Snowflake, T>) => any): any[];
+    resolve(data: Snowflake | any): T | undefined;
+    abstract fetch(id: Snowflake, cache?: boolean): Promise<T>;
 }

@@ -26,6 +26,7 @@ import { GuildMember } from './GuildMember.js';
 import { GuildChannelManager } from './managers/GuildChannelManager';
 import { GuildMemberManager } from './managers/GuildMemberManager';
 import { BaseStructure } from './templates/BaseStructure';
+import { CreateEntityOptions } from '../util/util';
 
 export class Guild extends BaseStructure<APIGuild | APIUnavailableGuild> {
   public available = false;
@@ -394,5 +395,13 @@ export class Guild extends BaseStructure<APIGuild | APIUnavailableGuild> {
       stickers: [], // TODO
       premium_progress_bar_enabled: this.premiumProgressBarEnabled,
     };
+  }
+
+  public createChannel(
+    name: string,
+    type: GuildChannelType,
+    options: CreateEntityOptions = {}
+  ) {
+    return this.channels.create(name, type, options);
   }
 }

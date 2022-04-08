@@ -37,6 +37,9 @@ export class GuildChannel<
     return this;
   }
 
+  /**
+   * Creates a type-strong version of the channel, based on its type.
+   */
   public static resolve(
     client: Client,
     data: APIGuildChannel<GuildChannelType>,
@@ -96,9 +99,8 @@ export class GuildChannel<
 
 export type GuildChannels = GuildChannel | GuildTextChannel | GuildVoiceChannel;
 
-// BaseTextChannel depends on this file, but we depend on it 
+// BaseTextChannel depends on this file, but we depend on it
 // in a function, so we import at the bottom of the file to avoid
 // circular dependencies which result in a runtime error
 import { GuildTextChannel } from './GuildTextChannel.js';
 import { GuildVoiceChannel } from './GuildVoiceChannel.js';
-

@@ -1,5 +1,5 @@
+import { GatewayIntentBits } from 'discord-api-types/v10';
 import { Bitfield } from './Bitfield';
 export declare class Intents extends Bitfield {
-    /** https://discord.com/developers/docs/topics/gateway#list-of-intents */
-    static Bits: any;
+    static Bits: typeof GatewayIntentBits;
 }

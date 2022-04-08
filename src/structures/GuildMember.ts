@@ -3,6 +3,7 @@ import { Client } from '../client/Client.js';
 import { Snowflake } from '../client/ClientOptions.js';
 import { DataTransformer } from '../rest/DataTransformer.js';
 import { Guild } from './Guild.js';
+import { BanGuildMemberOptions } from './managers/GuildMemberManager.js';
 import { BaseStructure } from './templates/BaseStructure.js';
 import { User } from './User.js';
 
@@ -32,8 +33,11 @@ export class GuildMember extends BaseStructure<APIGuildMember> {
 
   public pending = false;
   public communicationDisabledUntil: Date | null = null;
-  public get communicationDisabledUntilTimestamp() {
+  public get communicationDisabledUntilTimestamp(): number | null {
     return this.communicationDisabledUntil?.getTime() ?? null;
+  }
+  public isCommunicationDisabled(): boolean {
+    return this.communicationDisabledUntil !== null;
   }
 
   public joinedAt!: Date;
@@ -42,10 +46,10 @@ export class GuildMember extends BaseStructure<APIGuildMember> {
   }
 
   public premiumSince: Date | null = null;
-  public get premiumSinceTimestamp() {
+  public get premiumSinceTimestamp(): number | null {
     return this.premiumSince?.getTime() ?? null;
   }
-  public get isPremiumSupporter(): boolean {
+  public isPremiumSupporter(): boolean {
     return this.premiumSince !== null;
   }
 
@@ -138,23 +142,12 @@ export class GuildMember extends BaseStructure<APIGuildMember> {
     );
   }
 
-  public async ban(deleteMessageDays?: number, reason?: string) {
-    await this.client.http.queue({
-      route: Routes.guildBan(this.guild.id, this.user!.id),
-      method: 'PUT',
-      body: {
-        delete_message_days: deleteMessageDays,
-      },
-      reason,
-    });
+  public ban(options: BanGuildMemberOptions = {}) {
+    return this.guild.members.ban(this.userId!, options);
   }
 
   public async unban(reason?: string) {
-    await this.client.http.queue({
-      route: Routes.guildBan(this.guild.id, this.user!.id),
-      method: 'DELETE',
-      reason,
-    });
+    return this.guild.members.unban(this.userId!, reason);
   }
 
   public async kick(reason?: string) {

@@ -9,7 +9,6 @@ export declare class RateLimitedError extends RESTError {
     _message: string;
     constructor(req: APIRequest, res: ResponseData, bucket?: string);
 }
-/** Pretty-prints a Discord API error. */
 export declare function parseErr(req: APIRequest, res: ResponseData, error?: any, stack?: string): RateLimitedError | APIError;
 export declare class APIError extends Error {
     route: string;

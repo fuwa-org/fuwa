@@ -11,8 +11,6 @@ export class BaseGuildTextChannel extends BaseTextChannelInGuild {
     return this.lastPinAt?.getTime() ?? null;
   }
 
-  public nsfw = false;
-
   constructor(client: Client) {
     super(client);
   }
@@ -24,7 +22,6 @@ export class BaseGuildTextChannel extends BaseTextChannelInGuild {
       this.lastPinAt = data.last_pin_timestamp
         ? new Date(data.last_pin_timestamp!)
         : null;
-    if ('nsfw' in data) this.nsfw = !!data.nsfw;
 
     return this;
   }

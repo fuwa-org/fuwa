@@ -186,6 +186,10 @@ export class Client extends EventEmitter {
 
     return new Proxy(addRoute, handler) as APIProxy;
   }
+
+  public createDM(recipient: Snowflake, cache = false) {
+    return this.channels.createDM(recipient, cache);
+  }
 }
 
 export interface Client {

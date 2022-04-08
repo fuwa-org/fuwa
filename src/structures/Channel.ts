@@ -10,12 +10,14 @@ import { Client } from '../client/Client.js';
 import { Snowflake } from '../client/ClientOptions';
 import { DataTransformer } from '../rest/DataTransformer';
 import { consumeJSON } from '../rest/RequestManager.js';
-import { DMChannel } from './DMChannel.js';
+import type { DMChannel } from './DMChannel.js';
 import { Guild } from './Guild';
 import { GuildChannel, GuildChannels } from './GuildChannel.js';
 import { BaseStructure } from './templates/BaseStructure';
 
-export class Channel<T extends APIChannel = APIChannel> extends BaseStructure<T> {
+export class Channel<
+  T extends APIChannel = APIChannel
+> extends BaseStructure<T> {
   public type: ChannelType = ChannelType.GuildCategory;
   public guildId: Snowflake | null = null;
   public get guild(): Guild | null {
@@ -42,6 +44,10 @@ export class Channel<T extends APIChannel = APIChannel> extends BaseStructure<T>
       );
     else
       switch (data.type) {
+        case ChannelType.DM: {
+          const { DMChannel } = require('./DMChannel');
+          return new DMChannel(client)._deserialise(data as any);
+        }
         default:
           client.logger.warn(
             `Unknown channel type: ${data.type} (${ChannelType[data.type]})`
@@ -86,12 +92,13 @@ export class Channel<T extends APIChannel = APIChannel> extends BaseStructure<T>
     return {
       id: this.id,
       type: this.type,
+      guild_id: this.guildId,
     } as T;
   }
 }
 
 export type Channels<
-  T = DMChannel | GuildChannels | Channel,
+  T = GuildChannels | Channel | DMChannel,
   D = APIChannel
 > = T & {
   id: Snowflake;

@@ -1,3 +1,4 @@
+/// <reference types="node" />
 import { APIGatewayBotInfo } from 'discord-api-types/v10';
 import { ChildProcess } from 'child_process';
 import { Worker } from 'worker_threads';

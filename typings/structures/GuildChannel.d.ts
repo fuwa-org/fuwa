@@ -8,7 +8,7 @@ export declare class GuildChannel<T extends APIGuildChannel<GuildChannelType> = 
     position: number;
     nsfw: boolean;
     parentId: Snowflake | null;
-    get parent(): GuildChannels;
+    get parent(): GuildChannels | undefined;
     get children(): GuildChannels[];
     _deserialise(data: T): this;
     static resolve(client: Client, data: APIGuildChannel<GuildChannelType>, guild: Guild): GuildChannels;

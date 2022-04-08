@@ -49,7 +49,7 @@ export function parseErr(
   return new APIError(req, res, error, stack);
 }
 
-function parse400(error: any) {
+function flattenErrors(error: any) {
   return {
     code: error.code,
     message: error.message,
@@ -89,9 +89,10 @@ export class APIError extends Error {
   ) {
     super();
 
-    const err = parse400(error);
+    const err = flattenErrors(error);
 
-    this.message = `[${err.code}] ${err.message}`;
+    this.message = `${err.message}`;
+    if (err.code) this.name += ` [${err.code}]`;
     if (err.errors)
       this.message += `\n${Object.entries(err.errors)
         .map(([k, v]) => `${k}: ${v}`)
