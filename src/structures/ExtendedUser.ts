@@ -1,4 +1,4 @@
-import { APIUser, Locale, Routes } from '@splatterxl/discord-api-types';
+import { APIUser, Locale, Routes } from 'discord-api-types/v10';
 import { UserFlags } from '../util/bitfields/UserFlags.js';
 import {
   FileResolvable,

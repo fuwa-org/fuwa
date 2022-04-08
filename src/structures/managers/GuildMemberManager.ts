@@ -1,4 +1,4 @@
-import { Routes } from '@splatterxl/discord-api-types';
+import { Routes } from 'discord-api-types/v10';
 import { Client } from '../../client/Client';
 import { Snowflake } from '../../client/ClientOptions';
 import { GuildMember } from '../GuildMember';

@@ -1,5 +1,5 @@
 import { BaseStructure } from './templates/BaseStructure';
-import { APIMessage, MessageType, Routes } from '@splatterxl/discord-api-types';
+import { APIMessage, MessageType, Routes } from 'discord-api-types/v10';
 import { Snowflake } from '../client/ClientOptions';
 import { User } from './User';
 import { ExtendedUser } from './ExtendedUser';

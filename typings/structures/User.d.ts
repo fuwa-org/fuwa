@@ -1,4 +1,4 @@
-import { APIUser } from '@splatterxl/discord-api-types';
+import { APIUser } from 'discord-api-types/v10';
 import { UserFlags } from '../util/bitfields/UserFlags.js';
 import { BaseStructure } from './templates/BaseStructure.js';
 export declare class User extends BaseStructure<APIUser> {

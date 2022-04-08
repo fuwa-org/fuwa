@@ -63,11 +63,7 @@ export class RequestManager {
 
     this.debug(
       `${req.method.toUpperCase()} ${req.route} -> ${res.statusCode} ${
-        
-        
         STATUS_CODES[res.statusCode]
-      
-      
       }`
     );
 

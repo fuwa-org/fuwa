@@ -1,4 +1,4 @@
-import { APIGuildTextChannel, ChannelType } from '@splatterxl/discord-api-types';
+import { APIGuildTextChannel, ChannelType } from 'discord-api-types/v10';
 import { BaseGuildTextChannel } from './templates/BaseGuildTextChannel';
 export declare class GuildTextChannel extends BaseGuildTextChannel {
     topic: string | null;

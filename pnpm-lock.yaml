@@ -4,12 +4,12 @@ specifiers:
   '@fuwa/events': 1.2.3
   '@sapphire/async-queue': 1.2.0
   '@sapphire/snowflake': 3.1.0
-  '@splatterxl/discord-api-types': 0.27.4
   '@splatterxl/tsconfig': 1.1.1
   '@types/node': 17.0.18
   '@types/ws': 8.5.1
   '@typescript-eslint/eslint-plugin': 5.12.1
   '@typescript-eslint/parser': 5.12.1
+  discord-api-types: ^0.31.0
   eslint: 8.9.0
   form-data: 4.0.0
   lodash.snakecase: 4.1.1
@@ -25,8 +25,8 @@ dependencies:
   '@fuwa/events': 1.2.3
   '@sapphire/async-queue': 1.2.0
   '@sapphire/snowflake': 3.1.0
-  '@splatterxl/discord-api-types': 0.27.4
   '@types/ws': 8.5.1
+  discord-api-types: 0.31.0
   form-data: 4.0.0
   lodash.snakecase: 4.1.1
   undici: 4.16.0
@@ -137,10 +137,6 @@ packages:
   /@sapphire/snowflake/3.1.0:
     resolution: {integrity: sha512-K+OiqXSx4clIaXcoaghrCV56zsm3bZZ5SBpgJkgvAKegFFdETMntHviUfypjt8xVleIuDaNyQA4APOIl3BMcxg==}
     engines: {node: '>=v14.0.0', npm: '>=7.0.0'}
-    dev: false
-
-  /@splatterxl/discord-api-types/0.27.4:
-    resolution: {integrity: sha512-ycd25H61ofwfCK+kZWaL6rPuBLkyYG/oYHIfGXs8sQT9JHfnPqv12VJufOu1r5ZwbYyj9/b+EIUTXwdxw2LDyA==}
     dev: false
 
   /@splatterxl/tsconfig/1.1.1:
@@ -747,6 +743,10 @@ packages:
     dependencies:
       path-type: 4.0.0
     dev: true
+
+  /discord-api-types/0.31.0:
+    resolution: {integrity: sha512-IL4KKEo3QOQRcrtkpAYiDOQHIVuDBgtzFgDKsMqllbPKi3o/54mJOvYEG38oFa1G2qR4b+nTB5mMgc85W4/eQw==}
+    dev: false
 
   /doctrine/3.0.0:
     resolution: {integrity: sha512-yS+Q5i3hBf7GBkd4KG8a7eBNNWNGLTaEwwYWUijIYM7zrlYDM0BFXHjjPWlWZ1Rg7UaddZeIDmi9jF3HmqiQ2w==}

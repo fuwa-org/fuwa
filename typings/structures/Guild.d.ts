@@ -1,4 +1,4 @@
-import { APIGuild, APIUnavailableGuild, GuildDefaultMessageNotifications, GuildExplicitContentFilter, GuildFeature, GuildMFALevel, GuildNSFWLevel, GuildPremiumTier, GuildVerificationLevel } from '@splatterxl/discord-api-types';
+import { APIGuild, APIUnavailableGuild, GuildDefaultMessageNotifications, GuildExplicitContentFilter, GuildFeature, GuildMFALevel, GuildNSFWLevel, GuildPremiumTier, GuildVerificationLevel } from 'discord-api-types/v10';
 import { Snowflake } from '../client/ClientOptions';
 import { GuildSystemChannelFlags } from '../util/bitfields/GuildSystemChannelFlags';
 import { FileResolvable } from '../util/resolvables/FileResolvable.js';
@@ -10,7 +10,7 @@ export declare class Guild extends BaseStructure<APIGuild | APIUnavailableGuild>
     name: string | null;
     description: string | null;
     ownerId: Snowflake;
-    get owner(): import("./User").User | import("./ExtendedUser").ExtendedUser | undefined;
+    get owner(): import("./ExtendedUser").ExtendedUser | import("./User").User;
     applicationId: Snowflake | null;
     preferredLocale: string;
     features: GuildFeature[];
@@ -26,6 +26,7 @@ export declare class Guild extends BaseStructure<APIGuild | APIUnavailableGuild>
     maxPresences: number;
     maxVideoChannelUsers: number;
     members: GuildMemberManager;
+    /** Whether the guild is considered large by Discord. */
     large: boolean;
     icon: string | null;
     banner: string | null;
@@ -49,6 +50,10 @@ export declare class Guild extends BaseStructure<APIGuild | APIUnavailableGuild>
     systemChannelFlags: GuildSystemChannelFlags | null;
     publicUpdatesChannelId: Snowflake | null;
     channels: GuildChannelManager;
+    /**
+     * @internal
+     * @private
+     */
     _deserialise(data: APIGuild | APIUnavailableGuild): this;
     fetch(force?: boolean): Promise<Guild>;
     edit(data: Partial<APIGuild | Guild>, reason?: string): Promise<this>;
@@ -57,6 +62,9 @@ export declare class Guild extends BaseStructure<APIGuild | APIUnavailableGuild>
     setSplash(splash: FileResolvable | null, reason?: string): Promise<this>;
     setDiscoverySplash(splash: FileResolvable | null, reason?: string): Promise<this>;
     setName(name: string, reason?: string): Promise<this>;
+    /**
+     * @deprecated use {@link VoiceChannel.setRTCRegion} instead
+     */
     setRegion(region: string, reason?: string): Promise<this>;
     setAFKTimeout(timeout: number, reason?: string): Promise<this>;
     setAFKChannel(channel: Snowflake, reason?: string): Promise<this>;

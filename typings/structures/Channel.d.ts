@@ -1,4 +1,4 @@
-import { APIChannel, APIChannelBase, ChannelType } from '@splatterxl/discord-api-types';
+import { APIChannel, APIChannelBase, ChannelType } from 'discord-api-types/v10';
 import { Client } from '../client/Client.js';
 import { Snowflake } from '../client/ClientOptions';
 import { DMChannel } from './DMChannel.js';
@@ -15,12 +15,11 @@ export declare class Channel<T extends APIChannel = APIChannel> extends BaseStru
     static create(client: Client, data: APIChannelBase<ChannelType> & {
         guild_id?: Snowflake;
     }): Channels;
+    /**
+     * @internal
+     */
     edit(data: any): Promise<this>;
-    delete(): Promise<import("undici/types/dispatcher").ResponseData & {
-        body: {
-            json(): Promise<unknown>;
-        };
-    }>;
+    delete(): Promise<any>;
     fetch(): Promise<this>;
     toJSON(): T;
 }

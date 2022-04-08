@@ -1,4 +1,4 @@
-import { APIGuildMember } from '@splatterxl/discord-api-types';
+import { APIGuildMember } from 'discord-api-types/v10';
 import { Client } from '../client/Client.js';
 import { Snowflake } from '../client/ClientOptions.js';
 import { Guild } from './Guild.js';
@@ -6,7 +6,13 @@ import { BaseStructure } from './templates/BaseStructure.js';
 import { User } from './User.js';
 export declare class GuildMember extends BaseStructure<APIGuildMember> {
     guildId: Snowflake;
+    /**
+     * @deprecated use {@link GuildMember.joinedAt} instead
+     */
     get createdAt(): Date;
+    /**
+     * @deprecated use {@link GuildMember.joinedTimestamp} instead
+     */
     get createdTimestamp(): number;
     get guild(): Guild;
     userId: Snowflake | null;
@@ -15,11 +21,11 @@ export declare class GuildMember extends BaseStructure<APIGuildMember> {
     avatar: string | null;
     pending: boolean;
     communicationDisabledUntil: Date | null;
-    get communicationDisabledUntilTimestamp(): number | null;
+    get communicationDisabledUntilTimestamp(): number;
     joinedAt: Date;
     get joinedTimestamp(): number;
     premiumSince: Date | null;
-    get premiumSinceTimestamp(): number | null;
+    get premiumSinceTimestamp(): number;
     get isPremiumSupporter(): boolean;
     deaf: boolean;
     mute: boolean;

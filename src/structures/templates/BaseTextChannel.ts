@@ -1,7 +1,7 @@
 import {
   APITextBasedChannel,
   TextChannelType,
-} from '@splatterxl/discord-api-types';
+} from 'discord-api-types/v10';
 import { Client } from '../../client/Client';
 import { Snowflake } from '../../client/ClientOptions';
 import { MessagePayload } from '../../util/resolvables/MessagePayload';

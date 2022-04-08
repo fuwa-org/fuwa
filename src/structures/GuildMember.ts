@@ -1,4 +1,4 @@
-import { APIGuildMember, Routes } from '@splatterxl/discord-api-types';
+import { APIGuildMember, Routes } from 'discord-api-types/v10';
 import { Client } from '../client/Client.js';
 import { Snowflake } from '../client/ClientOptions.js';
 import { DataTransformer } from '../rest/DataTransformer.js';

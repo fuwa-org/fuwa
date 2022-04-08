@@ -1,4 +1,4 @@
-import { APIGuild } from '@splatterxl/discord-api-types';
+import { APIGuild } from 'discord-api-types/v10';
 import { Client } from '../../client/Client';
 import { Snowflake } from '../../client/ClientOptions';
 import { Guild } from '../Guild';

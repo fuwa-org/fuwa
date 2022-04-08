@@ -1,4 +1,4 @@
-import { APIGatewayBotInfo, Routes } from '@splatterxl/discord-api-types';
+import { APIGatewayBotInfo, Routes } from 'discord-api-types/v10';
 import { ChildProcess, fork } from 'child_process';
 import { STATUS_CODES } from 'http';
 import { isMainThread, Worker } from 'worker_threads';

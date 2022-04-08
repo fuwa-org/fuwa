@@ -1,5 +1,5 @@
 /// <reference types="node" />
-import { GatewayReceivePayload, GatewaySendPayload } from '@splatterxl/discord-api-types';
+import { GatewayReceivePayload, GatewaySendPayload } from 'discord-api-types/v10';
 import { Client } from '../client/Client';
 import EventEmitter from 'node:events';
 export interface Erlpack {

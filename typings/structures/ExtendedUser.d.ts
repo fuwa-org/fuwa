@@ -1,4 +1,4 @@
-import { APIUser, Locale } from '@splatterxl/discord-api-types';
+import { APIUser, Locale } from 'discord-api-types/v10';
 import { FileResolvable } from '../util/resolvables/FileResolvable.js';
 import { User } from './User.js';
 export declare class ExtendedUser extends User {

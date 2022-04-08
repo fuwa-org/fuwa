@@ -2,7 +2,7 @@ import {
   APIGuildChannel,
   ChannelType,
   GuildChannelType,
-} from '@splatterxl/discord-api-types';
+} from 'discord-api-types/v10';
 import { Client } from '../client/Client.js';
 import { Snowflake } from '../client/ClientOptions';
 import { Channel } from './Channel';
@@ -54,9 +54,7 @@ export class GuildChannel<
           data as unknown as any
         );
       case ChannelType.GuildCategory:
-        return new GuildChannel(client)._deserialise(
-          data as unknown as any
-        );
+        return new GuildChannel(client)._deserialise(data as unknown as any);
       default:
         guild.client.logger.warn(
           `unknown guild channel type ${data.type} (${ChannelType[data.type]})`

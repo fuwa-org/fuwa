@@ -4,7 +4,7 @@ import {
   RESTPostAPIChannelMessageJSONBody,
   MessageFlags as APIMessageFlags,
   Routes,
-} from '@splatterxl/discord-api-types';
+} from 'discord-api-types/v10';
 import { basename } from 'path';
 import { Snowflake } from '../../client/ClientOptions';
 import { APIRequest } from '../../rest/APIRequest';

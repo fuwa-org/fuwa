@@ -5,7 +5,7 @@ import {
   ChannelType,
   GuildChannelType,
   Routes,
-} from '@splatterxl/discord-api-types';
+} from 'discord-api-types/v10';
 import { Client } from '../client/Client.js';
 import { Snowflake } from '../client/ClientOptions';
 import { DataTransformer } from '../rest/DataTransformer';

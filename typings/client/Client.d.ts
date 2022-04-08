@@ -1,4 +1,3 @@
-/// <reference types="node" />
 import { RequestManager } from '../rest/RequestManager.js';
 import { ClientOptions, Snowflake } from './ClientOptions';
 import EventEmitter from 'events';
@@ -7,7 +6,6 @@ import { ILogger } from '../logging/ILogger.js';
 import { UserManager } from '../structures/managers/UserManager.js';
 import { ExtendedUser } from '../structures/ExtendedUser.js';
 import { ChannelManager } from '../structures/managers/ChannelManager.js';
-import Events from '@fuwa/events';
 import { Message } from '../structures/Message.js';
 import { Guild } from '../structures/Guild.js';
 import { TextChannel } from '../structures/templates/BaseTextChannel.js';
@@ -31,8 +29,12 @@ export declare class Client extends EventEmitter {
     private constructGatewayURL;
     debug(...data: any[]): void;
     delegate(event: `${string}.${string}`, ...data: any[]): void;
-    event(name: string): Events.SubscriptionBuilder<string, any[]>;
+    event(name: string): any;
     reset(): void;
+    /**
+     * Kept for compatibility with Discord.js
+     * @deprecated Please prefer {@link Client.http}
+     */
     get rest(): APIProxy;
 }
 export interface Client {

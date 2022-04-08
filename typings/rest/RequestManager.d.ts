@@ -6,10 +6,15 @@ export declare class RequestManager {
     #private;
     client: RESTClient;
     _client?: any;
+    /** The total amount of requests we can make until we're globally rate-limited. */
     limit: number;
+    /** The time offset between us and Discord. */
     offset: number;
+    /** Queue managers for different buckets */
     buckets: Map<string, BucketQueueManager>;
+    /** The remaining requests we can make until we're globally rate-limited. */
     remaining: number;
+    /** When the global rate limit will reset. */
     reset: number;
     constructor(client: RESTClient, _client?: any);
     get durUntilReset(): number;

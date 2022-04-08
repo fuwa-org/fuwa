@@ -1,7 +1,7 @@
 import {
   APIGuildTextChannel,
   ChannelType,
-} from '@splatterxl/discord-api-types';
+} from 'discord-api-types/v10';
 import { BaseGuildTextChannel } from './templates/BaseGuildTextChannel';
 
 export class GuildTextChannel extends BaseGuildTextChannel {

@@ -1,7 +1,7 @@
 import {
   APIGuildTextChannel,
   GuildTextChannelType,
-} from '@splatterxl/discord-api-types';
+} from 'discord-api-types/v10';
 import { Client } from '../../client/Client.js';
 import { BaseTextChannelInGuild } from './BaseTextChannel.js';
 

@@ -2,7 +2,7 @@ import {
   APIGatewayBotInfo,
   GatewayCloseCodes,
   Routes,
-} from '@splatterxl/discord-api-types';
+} from 'discord-api-types/v10';
 import EventEmitter from 'node:events';
 import { Client } from '../client/Client.js';
 import { consumeJSON } from '../rest/RequestManager.js';

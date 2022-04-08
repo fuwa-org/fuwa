@@ -1,4 +1,4 @@
-import { APIVoiceChannel, VideoQualityMode } from '@splatterxl/discord-api-types';
+import { APIVoiceChannel, VideoQualityMode } from 'discord-api-types/v10';
 import { BaseTextChannelInGuild } from './templates/BaseTextChannel';
 export declare class GuildVoiceChannel extends BaseTextChannelInGuild {
     bitrate: number | null;

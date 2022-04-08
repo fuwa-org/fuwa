@@ -1,4 +1,4 @@
-import { APIDMChannel } from '@splatterxl/discord-api-types';
+import { APIDMChannel } from 'discord-api-types/v10';
 import { BaseTextChannel } from './templates/BaseTextChannel.js';
 import { User } from './User.js';
 

@@ -21,7 +21,7 @@ import {
   GatewayReceivePayload,
   GatewayResume,
   GatewaySendPayload,
-} from '@splatterxl/discord-api-types';
+} from 'discord-api-types/v10';
 import WebSocket from 'ws';
 import { Client } from '../client/Client';
 import { Snowflake } from '../client/ClientOptions';

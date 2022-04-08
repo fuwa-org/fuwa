@@ -1,5 +1,5 @@
 /// <reference types="node" />
-import { MessageFlags as APIMessageFlags } from '@splatterxl/discord-api-types';
+import { MessageFlags as APIMessageFlags } from 'discord-api-types/v10';
 import { Snowflake } from '../../client/ClientOptions';
 import { APIRequest } from '../../rest/APIRequest';
 import { MessageFlags } from '../bitfields/MessageFlags';
@@ -34,16 +34,16 @@ export declare class MessagePayloadAttachment {
     resolve(): Promise<this>;
 }
 export declare function payload2data(payload: MessagePayload, channel: Snowflake): Promise<APIRequest & {
-    body?: Partial<Omit<import("@splatterxl/discord-api-types/utils/internals").AddUndefinedToPossiblyUndefinedPropertiesOfInterface<{
+    body?: Partial<Omit<import("discord-api-types/utils/internals").AddUndefinedToPossiblyUndefinedPropertiesOfInterface<{
         content?: string | undefined;
         nonce?: string | number | undefined;
         tts?: boolean | undefined;
-        embeds?: import("@splatterxl/discord-api-types").APIEmbed[] | undefined;
-        allowed_mentions?: import("@splatterxl/discord-api-types").APIAllowedMentions | undefined;
-        message_reference?: import("@splatterxl/discord-api-types").APIMessageReferenceSend | undefined;
-        components?: import("@splatterxl/discord-api-types").APIActionRowComponent<import("@splatterxl/discord-api-types").APIMessageActionRowComponent>[] | undefined;
+        embeds?: import("discord-api-types/v10").APIEmbed[] | undefined;
+        allowed_mentions?: import("discord-api-types/v10").APIAllowedMentions | undefined;
+        message_reference?: import("discord-api-types/v10").APIMessageReferenceSend | undefined;
+        components?: import("discord-api-types/v10").APIActionRowComponent<import("discord-api-types/v10").APIMessageActionRowComponent>[] | undefined;
         sticker_ids?: [string] | [string, string] | [string, string, string] | undefined;
-        attachments?: (Pick<import("@splatterxl/discord-api-types").APIAttachment, "id" | "description"> & Partial<Pick<import("@splatterxl/discord-api-types").APIAttachment, "filename">>)[] | undefined;
+        attachments?: (Pick<import("discord-api-types/v10").APIAttachment, "id" | "description"> & Partial<Pick<import("discord-api-types/v10").APIAttachment, "filename">>)[] | undefined;
         flags?: APIMessageFlags | undefined;
     }>, "attachments">> | undefined;
 }>;

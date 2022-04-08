@@ -1,4 +1,3 @@
-/// <reference types="node" />
 import EventEmitter from 'node:events';
 import { Client } from '../client/Client.js';
 import { GatewayShard } from './GatewayShard.js';

@@ -7,5 +7,5 @@ export declare class ChannelManager<T extends {
     _deserialise(data: any): T;
 } = Channels> extends BaseManager<T> {
     constructor(client: Client, __class?: any);
-    resolve(data: any): T | undefined;
+    resolve(data: any): T;
 }

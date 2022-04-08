@@ -51,5 +51,5 @@ export * from './logging/LoggerOptions';
 export * from './logging/DefaultLogger';
 // we're not going to export DisabledLogger because it's internal
 
-export * as Types from '@splatterxl/discord-api-types';
-export { Routes } from '@splatterxl/discord-api-types';
+export * as Types from 'discord-api-types/v10';
+export { Routes } from 'discord-api-types/v10';

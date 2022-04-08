@@ -6,6 +6,7 @@ declare type TLoggerOptions = Required<LoggerOptions> & {
 export declare class DefaultLogger implements ILogger {
     options: TLoggerOptions;
     constructor(options?: LoggerOptions);
+    /** Utility function to supply a color formatter if it's installed, and to fallback to a proxy if not */
     kleur(): any;
     info(...data: any[]): void;
     warn(...data: any[]): void;

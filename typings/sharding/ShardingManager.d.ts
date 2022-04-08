@@ -1,5 +1,4 @@
-/// <reference types="node" />
-import { APIGatewayBotInfo } from '@splatterxl/discord-api-types';
+import { APIGatewayBotInfo } from 'discord-api-types/v10';
 import { ChildProcess } from 'child_process';
 import { Worker } from 'worker_threads';
 import { RESTClient } from '../rest/RESTClient';

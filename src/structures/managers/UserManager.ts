@@ -1,4 +1,4 @@
-import { Routes } from '@splatterxl/discord-api-types';
+import { Routes } from 'discord-api-types/v10';
 import { Client } from '../../client/Client.js';
 import { Snowflake } from '../../client/ClientOptions.js';
 import { ExtendedUser } from '../ExtendedUser.js';

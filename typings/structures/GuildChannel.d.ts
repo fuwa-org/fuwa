@@ -1,4 +1,4 @@
-import { APIGuildChannel, GuildChannelType } from '@splatterxl/discord-api-types';
+import { APIGuildChannel, GuildChannelType } from 'discord-api-types/v10';
 import { Client } from '../client/Client.js';
 import { Snowflake } from '../client/ClientOptions';
 import { Channel } from './Channel';
@@ -8,7 +8,7 @@ export declare class GuildChannel<T extends APIGuildChannel<GuildChannelType> = 
     position: number;
     nsfw: boolean;
     parentId: Snowflake | null;
-    get parent(): GuildChannels | undefined;
+    get parent(): GuildChannels;
     get children(): GuildChannels[];
     _deserialise(data: T): this;
     static resolve(client: Client, data: APIGuildChannel<GuildChannelType>, guild: Guild): GuildChannels;
