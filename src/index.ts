@@ -10,6 +10,8 @@ export * from './util/bitfields/MessageFlags';
 export * from './util/resolvables/FileResolvable';
 export * from './util/resolvables/MessagePayload';
 
+export * from './util/util';
+
 export * as Tokens from './util/tokens';
 
 export * from './ws/GatewayShard';
@@ -33,6 +35,7 @@ export * from './structures/GuildChannel';
 export * from './structures/GuildTextChannel';
 export * from './structures/Message';
 export * from './structures/DMChannel';
+export * from './structures/GuildVoiceChannel';
 
 export * from './structures/managers/BaseManager';
 export * from './structures/managers/GuildManager';
