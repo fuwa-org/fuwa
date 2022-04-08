@@ -1,4 +1,4 @@
-import { GatewayOpcodes, Routes } from '@splatterxl/discord-api-types';
+import { Routes } from '@splatterxl/discord-api-types';
 import { Client } from '../../client/Client';
 import { Snowflake } from '../../client/ClientOptions';
 import { GuildMember } from '../GuildMember';

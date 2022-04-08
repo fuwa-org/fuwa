@@ -55,12 +55,12 @@ export class Channel<T extends APIChannel = APIChannel> extends BaseStructure<T>
    */
   edit(data: any) {
     return this.client.http
-      
+
       .queue({
-          route: Routes.channel(this.id),
-          method: 'PATCH',
-          body: DataTransformer.asJSON(data),
-        })
+        route: Routes.channel(this.id),
+        method: 'PATCH',
+        body: DataTransformer.asJSON(data),
+      })
       .then((d) => consumeJSON<T & { guild_id?: Snowflake }>(d))
       .then((data) => this._deserialise(data));
   }

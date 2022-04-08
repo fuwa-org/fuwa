@@ -150,11 +150,10 @@ export class Client extends EventEmitter {
    */
   public get rest(): APIProxy {
     this.logger.warn('Client.api is deprecated, please use Client.http');
-    const client = this;
-    let route: string[] = [''];
+    const route: string[] = [''];
 
     const handler: ProxyHandler<typeof addRoute> = {
-      get(_, prop, receiver) {
+      get: (function (this: Client, _: any, prop: string, receiver: {}) {
         switch (prop) {
           case 'route':
             return route.join('/');
@@ -163,7 +162,7 @@ export class Client extends EventEmitter {
           case 'put':
           case 'delete':
             return <T>(options: APIRequestOptions): Promise<T> => {
-              return client.http
+              return this.http
                 .queue<T>({
                   route: route.join('/'),
                   method: prop.toUpperCase() as HttpMethod,
@@ -177,7 +176,7 @@ export class Client extends EventEmitter {
             return new Proxy(addRoute, handler);
           }
         }
-      },
+      }).bind(this),
     };
 
     function addRoute(...fragments: string[]) {

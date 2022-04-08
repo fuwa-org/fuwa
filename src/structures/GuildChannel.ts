@@ -41,12 +41,10 @@ export class GuildChannel<
       case ChannelType.GuildNews:
         return new GuildTextChannel(client)._deserialise(data as unknown as any);
       case ChannelType.GuildVoice:
-      default: {
+      default:
         guild.client.logger.warn(
           `unknown guild channel type ${data.type} (${ChannelType[data.type]})`
         );
-      }
-      case ChannelType.GuildCategory:
         return new GuildChannel(client)._deserialise(data as unknown as any);
     }
   }
