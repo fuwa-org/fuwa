@@ -153,7 +153,7 @@ export class Client extends EventEmitter {
     const route: string[] = [''];
 
     const handler: ProxyHandler<typeof addRoute> = {
-      get: function (this: Client, _: any, prop: string, receiver: {}) {
+      get: function (this: Client, _: any, prop: string, receiver: any) {
         switch (prop) {
           case 'route':
             return route.join('/');

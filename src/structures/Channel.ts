@@ -45,7 +45,9 @@ export class Channel<
     else
       switch (data.type) {
         case ChannelType.DM: {
-          const { DMChannel } = require('./DMChannel');
+          // FIXME: This is a hack to get around the fact that the DMChannel class requires Channel,
+          // but Channel requires it
+          const { DMChannel } = require('./DMChannel'); // eslint-disable-line @typescript-eslint/no-var-requires
           return new DMChannel(client)._deserialise(data as any);
         }
         default:

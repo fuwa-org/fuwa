@@ -62,7 +62,7 @@ export class ChannelManager<
 
   public dmChannel(id: Snowflake): DMChannel | null {
     for (const [, V] of this.cache) {
-      let c = V as unknown as DMChannel;
+      const c = V as unknown as DMChannel;
       if (c.type === ChannelType.DM && c.recipientId === id)
         return V as unknown as DMChannel;
     }
