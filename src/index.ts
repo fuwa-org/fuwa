@@ -11,6 +11,7 @@ export * from './util/resolvables/FileResolvable';
 export * from './util/resolvables/MessagePayload';
 
 export * from './util/util';
+export * from './util/errors';
 
 export * as Tokens from './util/tokens';
 
@@ -53,6 +54,8 @@ export * from './logging/ILogger';
 export * from './logging/LoggerOptions';
 export * from './logging/DefaultLogger';
 // we're not going to export DisabledLogger because it's internal
+
+export * from './sharding/ShardingManager'; 
 
 export * as Types from 'discord-api-types/v10';
 export { Routes } from 'discord-api-types/v10';
