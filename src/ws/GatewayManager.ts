@@ -6,6 +6,7 @@ import {
 import EventEmitter from 'node:events';
 import { Client } from '../client/Client.js';
 import { consumeJSON } from '../rest/RequestManager.js';
+import { Intents } from '../util/bitfields/Intents.js';
 import { GatewayShard } from './GatewayShard.js';
 
 export class GatewayManager extends EventEmitter {
@@ -179,10 +180,15 @@ export class GatewayManager extends EventEmitter {
         );
       case GatewayCloseCodes.InvalidShard:
         throw new Error('Invalid shard id: ' + shard.id);
-      case GatewayCloseCodes.DisallowedIntents:
-        throw new Error(
+      case GatewayCloseCodes.DisallowedIntents: {
+        const err = new Error(
           `Gateway intents ${this.client.options.intents} are disallowed for the client.`,
-        );
+        ) as any;
+
+        err.intents = (this.client.options.intents as Intents).toArray();
+
+        throw err;
+      }
       case GatewayCloseCodes.AuthenticationFailed:
         throw new Error('Client token is invalid');
       case 1000:

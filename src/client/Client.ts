@@ -27,6 +27,7 @@ import { GatewayManager } from '../ws/GatewayManager.js';
 import { workerData } from 'worker_threads';
 import { APIRequest } from '../rest/APIRequest.js';
 import { HttpMethod } from 'undici/types/dispatcher';
+import { FuwaError } from '../util/errors.js';
 
 export class Client extends EventEmitter {
   #token: string;
@@ -81,12 +82,16 @@ export class Client extends EventEmitter {
   public async connect(): Promise<void> {
     this.logger.info('connecting to gateway...');
 
+    const token = this.#token;
+
+    if (!token || typeof token !== "string" || token.trim() == "") throw new FuwaError('INVALID_TOKEN');
+
     if (
       process.env.__FUWA_SHARDING_MANAGER ||
       workerData?.__fuwa_sharding_manager
     ) {
       const options = {
-        token: this.#token,
+        token,
         url: this.constructGatewayURL('wss://gateway.discord.gg'),
       };
 
@@ -107,7 +112,7 @@ export class Client extends EventEmitter {
     }
 
     await this.ws.spawn({
-      token: this.#token,
+      token,
       url: this.constructGatewayURL('wss://gateway.discord.gg'),
       shards: 'auto',
     });

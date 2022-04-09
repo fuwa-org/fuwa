@@ -3,6 +3,7 @@ import fs from 'fs/promises';
 import { File } from '../../rest/APIRequest';
 import { basename } from 'path';
 import { RequestManager } from '../../rest/RequestManager';
+import { FuwaError } from '../errors';
 
 export type FileResolvable = string | Buffer;
 
@@ -22,6 +23,9 @@ export async function resolveFile(
           useBaseUrl: false,
         })
       : await undici.request(file);
+
+    if (res.statusCode !== 200) throw new FuwaError("FILE_RESOLVE_ERROR", file, res.statusCode);
+
     const data = Buffer.from(await res.body.arrayBuffer());
     let mimeType = mimeTypeFromExtension(file.split('.').pop()!);
 

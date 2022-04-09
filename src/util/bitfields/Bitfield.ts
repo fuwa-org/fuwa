@@ -48,10 +48,8 @@ export abstract class Bitfield {
    * Filter through the bitfield's set {@link Bitfield.Bits} and return an array of the names of the bits that are set.
    */
   public toArray(): string[] {
-    return Object.entries<number>(
-      
-      (this.constructor as unknown as any).Bits,
-    ).filter(([, bit]) => this.has(bit))
+    return Object.entries<number>((this.constructor as unknown as any).Bits)
+      .filter(([, bit]) => this.has(bit))
       .map(([bit]) => bit);
   }
 
@@ -60,9 +58,6 @@ export abstract class Bitfield {
    */
   public toJSON(): number[] {
     return Object.values<number>(
-      
-      
-      
       (this.constructor as unknown as any).Bits,
     ).filter(bit => this.has(bit));
   }

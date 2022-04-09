@@ -1,6 +1,6 @@
 dist/
 node_modules/
-*test*.js
+secret*test*.js
 docs
 .nyc_output
 .env

@@ -5,6 +5,7 @@ import { isMainThread, Worker } from 'worker_threads';
 import { resolveRequest } from '../rest/APIRequest';
 import { consumeJSON } from '../rest/RequestManager';
 import { RESTClient } from '../rest/RESTClient';
+import { FuwaError } from '../util/errors';
 
 export class ShardingManager {
   gatewayInfo!: APIGatewayBotInfo;
@@ -16,6 +17,10 @@ export class ShardingManager {
   }
 
   public async spawn() {
+    const token = this.token;
+
+    if (!token || typeof token !== "string" || token.trim() == "") throw new FuwaError('INVALID_TOKEN');
+
     this.gatewayInfo = await this.client
       .execute(resolveRequest({ route: Routes.gatewayBot() }))
       .then(res => {
