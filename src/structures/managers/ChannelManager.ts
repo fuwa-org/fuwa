@@ -5,7 +5,6 @@ import { BaseManager } from './BaseManager.js';
 import { ChannelType, Routes } from 'discord-api-types/v10';
 import { consumeJSON } from '../../rest/RequestManager.js';
 import { DMChannel } from '../DMChannel.js';
-import { assert } from 'console';
 
 export class ChannelManager<
   T extends { id: Snowflake; _deserialise(data: any): T } = Channels,

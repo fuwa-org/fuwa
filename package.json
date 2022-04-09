@@ -1,7 +1,7 @@
 {
   "name": "fuwa",
-  "version": "3.0.0",
-  "description": "不和 (fuwa) is a Discord API wrapper.",
+  "version": "0.0.1-beta.1",
+  "description": "不和 (fuwa) is a simple, easy-to-use and lightweight Discord API wrapper",
   "main": "./dist/index.js",
   "type": "commonjs",
   "scripts": {
@@ -15,18 +15,18 @@
     "prettify": "prettier -w .",
     "release": "standard-version"
   },
-  "repository": "https://github.com/nearlySplat/fuwa.git",
+  "repository": "https://github.com/FuwaDiscord/fuwa.git",
   "keywords": [],
-  "author": "nearlySplat <splatterxl@outlook.ie>",
+  "author": "Splatterxl <splatterxl@outlook.ie>",
   "license": "AGPL-3.0-or-later",
   "types": "./typings/index.d.ts",
-  "homepage": "https://nearlysplat.github.io/fuwa/",
+  "homepage": "https://fuwadiscord.github.io/fuwa/",
   "dependencies": {
     "@fuwa/events": "1.2.3",
     "@sapphire/async-queue": "1.2.0",
     "@sapphire/snowflake": "3.1.0",
     "@types/ws": "8.5.1",
-    "discord-api-types": "^0.31.0",
+    "discord-api-types": "0.31.0",
     "form-data": "4.0.0",
     "lodash.snakecase": "4.1.1",
     "undici": "4.16.0",
@@ -37,11 +37,17 @@
     "@types/node": "17.0.18",
     "@typescript-eslint/eslint-plugin": "5.12.1",
     "@typescript-eslint/parser": "5.12.1",
+    "cz-conventional-changelog": "3.3.0",
     "eslint": "8.9.0",
     "precise-commits": "^1.0.2",
     "prettier": "2.5.1",
     "standard-version": "9.3.2",
     "typedoc": "0.22.12",
     "typescript": "4.5.5"
+  },
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-conventional-changelog"
+    }
   }
 }
