@@ -1,7 +1,12 @@
 name: Lint Source
 on:
-  - push
-  - pull_request
+  push:
+    paths:
+      - package.json
+      - pnpm-lock.yaml 
+      - "**/*.ts"
+      - "**/*.js"
+  pull_request:
 jobs:
   test:
     name: Lint Source
@@ -12,10 +17,28 @@ jobs:
       - name: Install Node v16
         uses: actions/setup-node@v3
         with:
-          node-version: 16
+          node-version: 16 
 
-      - name: Install dependencies
-        run: npm ci
+      - uses: pnpm/action-setup@v2
+        with:
+          version: 6.32.2
+          run_install: |
+            - recursive: true
+              args: [--frozen-lockfile, --strict-peer-dependencies]
+
+
+      - name: Use dependency cache
+        uses: actions/cache@v3
+        with:
+          path: node_modules
+          key: deps-${{ runner.os }}-${{ hashFiles('**/pnpm-lock.yaml')
+
+      - name: Use build cache
+        uses: actions/cache@v3
+        with:
+          path: dist
+          key: build-${{ runner.os }}-${{ hashFiles('src/**/*.ts') }}-${{ hashFiles('pnpm-lock.yaml') }}
+
       - name: Build project
         run: tsc -p tsconfig.json
 
