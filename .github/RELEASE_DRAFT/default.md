@@ -1,5 +1,0 @@
-# $APP@$VERSION
-
-## Changes
-
-$CHANGES
