@@ -55,15 +55,15 @@ export class DefaultLogger implements ILogger {
   public log(...data: any[]): void {
     process.stdout.write(
       data
-        .map((d) =>
+        .map(d =>
           typeof d === 'string'
             ? d
             : util.inspect(d, {
                 depth: 1,
                 colors: !!this.options.colors,
-              })
+              }),
         )
-        .join(' ') + '\n'
+        .join(' ') + '\n',
     );
   }
 }

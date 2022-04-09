@@ -8,7 +8,7 @@ import { DMChannel } from '../DMChannel.js';
 import { assert } from 'console';
 
 export class ChannelManager<
-  T extends { id: Snowflake; _deserialise(data: any): T } = Channels
+  T extends { id: Snowflake; _deserialise(data: any): T } = Channels,
 > extends BaseManager<T> {
   constructor(client: Client, __class: any = Channel) {
     super(client, __class);
@@ -29,8 +29,8 @@ export class ChannelManager<
   public fetch(id: Snowflake, cache = false) {
     return this.client.http
       .queue(Routes.channel(id))
-      .then((d) => consumeJSON<any>(d))
-      .then((data) => {
+      .then(d => consumeJSON<any>(d))
+      .then(data => {
         if (cache) {
           return this.resolve(data)!;
         } else {
@@ -50,8 +50,8 @@ export class ChannelManager<
           recipient_id: user,
         },
       })
-      .then((d) => consumeJSON<any>(d))
-      .then((data) => {
+      .then(d => consumeJSON<any>(d))
+      .then(data => {
         if (cache) {
           return this.resolve(data)! as unknown as DMChannel;
         } else {

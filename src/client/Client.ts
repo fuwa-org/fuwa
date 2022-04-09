@@ -51,15 +51,15 @@ export class Client extends EventEmitter {
 
     this.options = Object.assign(
       DefaultClientOptions,
-      options
+      options,
     ) as Required<ClientOptions>;
     this.options.intents = resolveIntents(this.options.intents!);
     this.#token = token;
     this.http = new RequestManager(
       new RESTClient(
-        RESTClient.createRESTOptions(this.options, this.#token, 'Bot')
+        RESTClient.createRESTOptions(this.options, this.#token, 'Bot'),
       ),
-      this
+      this,
     );
     this.ws = new GatewayManager(this);
 
@@ -139,8 +139,8 @@ export class Client extends EventEmitter {
   public reset() {
     this.ws?.reset();
     this.http.buckets.clear();
-    this.timeouts.forEach((t) => clearTimeout(t));
-    this.timers.forEach((t) => clearInterval(t));
+    this.timeouts.forEach(t => clearTimeout(t));
+    this.timers.forEach(t => clearInterval(t));
     this.logger.info('reset client: done');
   }
 
@@ -195,11 +195,11 @@ export class Client extends EventEmitter {
 export interface Client {
   on<K extends keyof ClientEvents>(
     event: K,
-    listener: (...args: ClientEvents[K]) => void
+    listener: (...args: ClientEvents[K]) => void,
   ): this;
   on<K extends Exclude<string, keyof ClientEvents>>(
     event: K,
-    listener: (...args: any[]) => void
+    listener: (...args: any[]) => void,
   ): this;
 }
 
@@ -211,7 +211,7 @@ export interface ClientEvents {
   'guilds.update': [old: Guild, new: Guild];
   'messages.create': [Message];
   'messages.delete': [
-    { guild: Guild | null; channel: TextChannel; id: Snowflake }
+    { guild: Guild | null; channel: TextChannel; id: Snowflake },
   ];
   'messages.update': [old: Message, new: Message];
 }

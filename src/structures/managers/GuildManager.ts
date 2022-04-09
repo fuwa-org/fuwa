@@ -14,8 +14,8 @@ export class GuildManager extends BaseManager<Guild> {
   public async fetch(id: Snowflake, cache = false): Promise<Guild> {
     return this.client.http
       .queue({ route: Routes.guild(id) })
-      .then((d) => consumeJSON<any>(d))
-      .then((data) => {
+      .then(d => consumeJSON<any>(d))
+      .then(data => {
         if (cache) {
           return this.resolve(data)!;
         } else {
@@ -26,7 +26,7 @@ export class GuildManager extends BaseManager<Guild> {
 
   public async create(
     name: string,
-    { cache, ...options }: CreateGuildOptions = {}
+    { cache, ...options }: CreateGuildOptions = {},
   ): Promise<Guild> {
     return this.client.http
       .queue({
@@ -37,8 +37,8 @@ export class GuildManager extends BaseManager<Guild> {
           ...options,
         },
       })
-      .then((d) => consumeJSON<any>(d))
-      .then((data) => {
+      .then(d => consumeJSON<any>(d))
+      .then(data => {
         if (cache) {
           return this.resolve(data)!;
         } else {

@@ -34,8 +34,8 @@ export class GuildChannelManager extends ChannelManager<GuildChannels> {
       .queue({
         route: Routes.channel(id),
       })
-      .then((d) => consumeJSON<any>(d))
-      .then((data) => {
+      .then(d => consumeJSON<any>(d))
+      .then(data => {
         if (cache) {
           return this.resolve(data)!;
         } else {
@@ -47,7 +47,7 @@ export class GuildChannelManager extends ChannelManager<GuildChannels> {
   public create(
     name: string,
     type: GuildChannelType,
-    options: CreateEntityOptions
+    options: CreateEntityOptions,
   ): Promise<GuildChannels> {
     return this.client.http
       .queue({
@@ -59,8 +59,8 @@ export class GuildChannelManager extends ChannelManager<GuildChannels> {
         route: Routes.guildChannels(this.guild.id),
         reason: options.reason,
       })
-      .then((d) => consumeJSON<any>(d))
-      .then((data) => {
+      .then(d => consumeJSON<any>(d))
+      .then(data => {
         if (options.cache) {
           return this.resolve(data)!;
         } else {

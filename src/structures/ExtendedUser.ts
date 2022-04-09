@@ -28,7 +28,7 @@ export class ExtendedUser extends User {
   public edit(data: Partial<Pick<APIUser, 'username' | 'avatar'>>) {
     return this.client.http
       .queue({ route: Routes.user('@me'), method: 'PATCH', body: data })
-      .then(async (res) => {
+      .then(async res => {
         this._deserialise(await res.body.json());
         return this;
       });

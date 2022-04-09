@@ -6,7 +6,7 @@ const branch = execSync('git rev-parse --abbrev-ref HEAD').toString().trim();
 const commit = execSync('git rev-parse --short HEAD').toString().trim();
 
 console.log(
-  `debug: writing to CHANGELOG.md on commit ${commit} (@${branch}), latest tag ${tag}`
+  `debug: writing to CHANGELOG.md on commit ${commit} (@${branch}), latest tag ${tag}`,
 );
 
 const existing = readFileSync(`${__dirname}/../CHANGELOG.md`, 'utf8').trim();
@@ -28,9 +28,9 @@ writeFileSync(
   `${__dirname}/../CHANGELOG.md`,
   `${existing}\n\n${data}\n\n${prev.replace(
     /<!-- .* -->$/,
-    ''
+    '',
   )}<!-- ${commit} -->`
     .replace(new RegExp(`<!-- ${prevHash} -->\\s*`, 'gi'), '')
     .replace(/.*update dependency.*/gi, '')
-    .replace(/\n{3,}/g, '\n\n')
+    .replace(/\n{3,}/g, '\n\n'),
 );

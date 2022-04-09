@@ -14,14 +14,14 @@ export class ChannelMessageManager extends BaseManager<Message<TextChannel>> {
   }
 
   public async create(
-    data: MessagePayload | string
+    data: MessagePayload | string,
   ): Promise<Message<TextChannel>> {
     data = MessagePayload.from(data);
 
     const message = new Message(this.client)._deserialise(
       await this.client.http
         .queue(await payload2data(data, this.channel.id))
-        .then(async (d) => d.body.json())
+        .then(async d => d.body.json()),
     );
 
     return message;
@@ -30,8 +30,8 @@ export class ChannelMessageManager extends BaseManager<Message<TextChannel>> {
   public async fetch(id: string, cache = false) {
     return this.client.http
       .queue(Routes.channelMessage(this.channel.id, id))
-      .then((d) => consumeJSON<any>(d))
-      .then((data) => {
+      .then(d => consumeJSON<any>(d))
+      .then(data => {
         if (cache) {
           return this.resolve(data)!;
         } else {

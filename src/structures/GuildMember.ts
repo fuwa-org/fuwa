@@ -61,7 +61,7 @@ export class GuildMember extends BaseStructure<APIGuildMember> {
   }
 
   public _deserialise(
-    data: APIGuildMember & { joined_at: string | null }
+    data: APIGuildMember & { joined_at: string | null },
   ): this {
     if ('user' in data) {
       this.userId = data.user!.id as Snowflake;
@@ -102,7 +102,7 @@ export class GuildMember extends BaseStructure<APIGuildMember> {
         route: Routes.guildMember(this.guild.id, this.user!.id),
         method: 'GET',
       })
-      .then(async (data) => await data.body.json());
+      .then(async data => await data.body.json());
 
     this._deserialise(res as APIGuildMember);
 
@@ -111,7 +111,7 @@ export class GuildMember extends BaseStructure<APIGuildMember> {
 
   public async edit(
     data: Partial<APIGuildMember | GuildMember>,
-    reason?: string
+    reason?: string,
   ): Promise<GuildMember> {
     const res = await this.client.http
       .queue({
@@ -120,16 +120,16 @@ export class GuildMember extends BaseStructure<APIGuildMember> {
         body: DataTransformer.asJSON(data),
         reason,
       })
-      .then(async (data) => await data.body.json());
+      .then(async data => await data.body.json());
 
     return this.guild.members.resolve(
-      this._deserialise(res as APIGuildMember)
+      this._deserialise(res as APIGuildMember),
     )!;
   }
 
   public disableCommunication(
     until: Date | number,
-    reason?: string
+    reason?: string,
   ): Promise<GuildMember> {
     return this.edit(
       {
@@ -138,7 +138,7 @@ export class GuildMember extends BaseStructure<APIGuildMember> {
           : until / 1000
         ).toString(),
       },
-      reason
+      reason,
     );
   }
 

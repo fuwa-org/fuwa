@@ -33,14 +33,14 @@ export function parseErr(
   req: APIRequest,
   res: ResponseData,
   error?: any,
-  stack?: string
+  stack?: string,
 ) {
   if (res.statusCode === 429) {
     const bucket = res.headers['x-ratelimit-bucket']! as string;
     return new RateLimitedError(
       req,
       res,
-      `${bucket} [${req.method} ${req.route}]`
+      `${bucket} [${req.method} ${req.route}]`,
     );
   }
 
@@ -69,7 +69,7 @@ function traverse(obj: any, keyPrefix = '', prev: Record<string, any> = {}) {
       prev = traverse(
         obj[key],
         keyPrefix + (!isNaN(parseInt(key)) ? `[${key}]` : `.${key}`),
-        prev
+        prev,
       );
   }
 
@@ -85,7 +85,7 @@ export class APIError extends Error {
     req: APIRequest,
     _res: ResponseData,
     error?: any,
-    stack?: string
+    stack?: string,
   ) {
     super();
 

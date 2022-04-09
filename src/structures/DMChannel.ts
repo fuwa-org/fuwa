@@ -16,7 +16,7 @@ export class DMChannel extends BaseTextChannel {
       this.recipientId = this.client.users.resolve(
         // bots can't participate in group dms, so we can assume there's only two recipients,
         // meaning we can map to the first that isn't the client
-        data.recipients!.filter((v) => v.id !== this.client.user!.id)[0]
+        data.recipients!.filter(v => v.id !== this.client.user!.id)[0],
       )!.id as Snowflake;
 
     return this;

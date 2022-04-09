@@ -35,7 +35,7 @@ export function DisabledKleurFactory() {
           {},
           {
             get: handler,
-          }
+          },
         );
     };
   };
@@ -43,6 +43,6 @@ export function DisabledKleurFactory() {
     {},
     {
       get: handler,
-    }
+    },
   );
 }

@@ -76,7 +76,7 @@ export class GatewayShard extends EventEmitter {
   constructor(
     public client: Client,
     public readonly shard: [number, number],
-    token: string
+    token: string,
   ) {
     super();
 
@@ -159,7 +159,7 @@ export class GatewayShard extends EventEmitter {
       this.emit('close', code, reason);
     });
 
-    await this.awaitPacket((p) => p.t === 'READY');
+    await this.awaitPacket(p => p.t === 'READY');
   }
 
   public reset(full = false) {
@@ -171,8 +171,8 @@ export class GatewayShard extends EventEmitter {
 
     this.#messageQueue = new AsyncQueue();
     this.messageQueueCount = 0;
-    this.#timers.forEach((t) => clearInterval(t));
-    this.#timeouts.forEach((t) => clearTimeout(t));
+    this.#timers.forEach(t => clearInterval(t));
+    this.#timeouts.forEach(t => clearTimeout(t));
     this.heartbeat_interval = -1;
     // to prevent the heartbeater to immediately panic and reconnect, creating an infinite loop
     this.heartbeat_acked = true;
@@ -185,7 +185,7 @@ export class GatewayShard extends EventEmitter {
       `[${this.client.logger.kleur().blue('WS')} => ${this.client.logger
         .kleur()
         .yellow(this.id.toString())}]`,
-      ...data
+      ...data,
     );
   }
 
@@ -195,12 +195,12 @@ export class GatewayShard extends EventEmitter {
       '\n',
       Object.entries(data)
         .map(([K, V]) => `\t${K}\t\t:\t${V}`)
-        .join('\n')
+        .join('\n'),
     );
   }
 
   public awaitPacket(filter: (payload: GatewayReceivePayload) => boolean) {
-    return new Promise((res) => {
+    return new Promise(res => {
       const handler = (payload: GatewayReceivePayload) => {
         if (filter(payload)) {
           this.removeListener('packet', handler);
@@ -236,7 +236,7 @@ export class GatewayShard extends EventEmitter {
         this.heartbeat_interval = payload.heartbeat_interval;
         this.debug(
           'commencing heartbeating with interval of',
-          this.heartbeat_interval
+          this.heartbeat_interval,
         );
         this.startHeartbeat();
 
@@ -281,7 +281,7 @@ export class GatewayShard extends EventEmitter {
             event = event as GatewayReadyDispatchData;
 
             this.session = event.session_id;
-            this._awaitedGuilds = event.guilds.map((v) => v.id as Snowflake);
+            this._awaitedGuilds = event.guilds.map(v => v.id as Snowflake);
 
             this.debugPretty('ready!', {
               session: this.session,
@@ -289,18 +289,18 @@ export class GatewayShard extends EventEmitter {
             });
 
             this.client.users.add(
-              new ExtendedUser(this.client)._deserialise(event.user)
+              new ExtendedUser(this.client)._deserialise(event.user),
             );
 
             this.client.user = this.client.users.get(
-              event.user.id as Snowflake
+              event.user.id as Snowflake,
             ) as ExtendedUser;
 
             if (
               !(<Intents>this.client.options.intents).has(Intents.Bits.Guilds)
             ) {
               this.client.logger.warn(
-                "Client intents don't include guilds, this may cause issues."
+                "Client intents don't include guilds, this may cause issues.",
               );
               this.client.delegate('meta.ready');
             }
@@ -318,7 +318,7 @@ export class GatewayShard extends EventEmitter {
 
             if (this._awaitedGuilds.includes(data.id as Snowflake)) {
               this._awaitedGuilds = this._awaitedGuilds.filter(
-                (v) => v !== data.id
+                v => v !== data.id,
               );
 
               if (this._awaitedGuilds.length === 0) {
@@ -327,7 +327,7 @@ export class GatewayShard extends EventEmitter {
             } else {
               this.client.delegate(
                 'guilds.create',
-                this.client.guilds.cache.get(data.id as Snowflake)
+                this.client.guilds.cache.get(data.id as Snowflake),
               );
             }
             break;
@@ -354,13 +354,13 @@ export class GatewayShard extends EventEmitter {
           case GatewayDispatchEvents.GuildMemberAdd: {
             const data = event as GatewayGuildMemberAddDispatchData;
             const guild = this.client.guilds.cache.get(
-              data.guild_id as Snowflake
+              data.guild_id as Snowflake,
             );
 
             if (guild) {
               const member = new GuildMember(
                 this.client,
-                guild.id
+                guild.id,
               )._deserialise(data);
               guild.members.add(member);
 
@@ -371,12 +371,12 @@ export class GatewayShard extends EventEmitter {
           case GatewayDispatchEvents.GuildMemberRemove: {
             const data = event as GatewayGuildMemberRemoveDispatchData;
             const guild = this.client.guilds.cache.get(
-              data.guild_id as Snowflake
+              data.guild_id as Snowflake,
             );
 
             if (guild) {
               const member = guild.members.get(
-                data.user.id as Snowflake
+                data.user.id as Snowflake,
               ) as GuildMember;
 
               guild.members.remove(member.id);
@@ -384,7 +384,7 @@ export class GatewayShard extends EventEmitter {
               this.client.delegate(
                 'guilds.members.remove',
                 member.user!,
-                guild
+                guild,
               );
               this.client.guilds.update(guild!);
             }
@@ -394,7 +394,7 @@ export class GatewayShard extends EventEmitter {
           case GatewayDispatchEvents.GuildMemberUpdate: {
             const data = event as GatewayGuildMemberUpdateDispatchData;
             const guild = this.client.guilds.cache.get(
-              data.guild_id as Snowflake
+              data.guild_id as Snowflake,
             );
 
             if (guild) {
@@ -414,12 +414,12 @@ export class GatewayShard extends EventEmitter {
           case GatewayDispatchEvents.GuildMembersChunk: {
             const data = event as GatewayGuildMembersChunkDispatchData;
             const guild = this.client.guilds.cache.get(
-              data.guild_id as Snowflake
+              data.guild_id as Snowflake,
             );
 
             if (guild) {
-              const members = data.members.map((v) =>
-                new GuildMember(this.client, guild.id)._deserialise(v)
+              const members = data.members.map(v =>
+                new GuildMember(this.client, guild.id)._deserialise(v),
               );
 
               guild.members.addMany(members);
@@ -432,12 +432,12 @@ export class GatewayShard extends EventEmitter {
           case GatewayDispatchEvents.MessageCreate: {
             const data = event as GatewayMessageCreateDispatchData;
             const channel = this.client.channels.cache.get(
-              data.channel_id as Snowflake
+              data.channel_id as Snowflake,
             ) as TextChannel;
 
             if (channel) {
               const message = new Message<typeof channel>(
-                this.client
+                this.client,
               )._deserialise(data);
 
               channel.messages.add(message);
@@ -449,12 +449,12 @@ export class GatewayShard extends EventEmitter {
           case GatewayDispatchEvents.MessageUpdate: {
             const data = event as GatewayMessageUpdateDispatchData;
             const channel = this.client.channels.cache.get(
-              data.channel_id as Snowflake
+              data.channel_id as Snowflake,
             ) as TextChannel;
 
             if (channel) {
               const message = channel.messages.cache.get(
-                data.id as Snowflake
+                data.id as Snowflake,
               ) as Message<typeof channel>;
 
               if (message) {
@@ -464,7 +464,7 @@ export class GatewayShard extends EventEmitter {
                 this.client.delegate(
                   'meta.messages.update',
                   message,
-                  newMessage
+                  newMessage,
                 );
               }
             }
@@ -473,7 +473,7 @@ export class GatewayShard extends EventEmitter {
           case GatewayDispatchEvents.MessageDelete: {
             const data = event as GatewayMessageDeleteDispatchData;
             const channel = this.client.channels.cache.get(
-              data.channel_id as Snowflake
+              data.channel_id as Snowflake,
             ) as TextChannel;
 
             if (channel) {
@@ -490,7 +490,7 @@ export class GatewayShard extends EventEmitter {
           case GatewayDispatchEvents.MessageDeleteBulk: {
             const data = event as GatewayMessageDeleteBulkDispatchData;
             const channel = this.client.channels.cache.get(
-              data.channel_id as Snowflake
+              data.channel_id as Snowflake,
             ) as TextChannel;
 
             if (channel) {
@@ -574,7 +574,7 @@ export class GatewayShard extends EventEmitter {
           this.debug('closing due to heartbeat timeout');
           this.reconnect();
         }
-      }, 10e3)
+      }, 10e3),
     );
   }
 
@@ -601,15 +601,15 @@ export class GatewayShard extends EventEmitter {
       this.s = 0;
     }
 
-    this.#timers.forEach((t) => clearInterval(t));
-    this.#timeouts.forEach((t) => clearInterval(t));
+    this.#timers.forEach(t => clearInterval(t));
+    this.#timeouts.forEach(t => clearInterval(t));
   }
 
   private _terminate() {
     this._socket?.terminate();
 
-    this.#timers.forEach((t) => clearInterval(t));
-    this.#timeouts.forEach((t) => clearInterval(t));
+    this.#timers.forEach(t => clearInterval(t));
+    this.#timeouts.forEach(t => clearInterval(t));
   }
 
   public reconnect() {
@@ -618,13 +618,13 @@ export class GatewayShard extends EventEmitter {
 
   private startHeartbeat() {
     this.#timers.push(
-      setInterval(this.heartbeat.bind(this), this.heartbeat_interval)
+      setInterval(this.heartbeat.bind(this), this.heartbeat_interval),
     );
     this.#timeouts.push(
       setTimeout(
         this.heartbeat.bind(this),
-        this.heartbeat_interval * Math.random()
-      )
+        this.heartbeat_interval * Math.random(),
+      ),
     );
   }
 }

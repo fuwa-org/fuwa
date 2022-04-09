@@ -17,7 +17,7 @@ export class BucketQueueManager {
   constructor(
     private readonly manager: RequestManager,
     public readonly id: string,
-    public readonly majorId: string
+    public readonly majorId: string,
   ) {}
 
   private applyRateLimitInfo(res: ResponseData) {
@@ -84,7 +84,7 @@ export class BucketQueueManager {
         .blueBright('REST')} => ${this.manager._client?.logger
         .kleur()
         .green(this.id)}]`,
-      ...data
+      ...data,
     );
   }
 }

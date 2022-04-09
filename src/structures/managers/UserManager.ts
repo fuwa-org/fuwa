@@ -20,7 +20,7 @@ export class UserManager extends BaseManager<ExtendedUser | User> {
           return this.resolve(data)!;
         } else {
           return new (data.id === this.client.user?.id ? ExtendedUser : User)(
-            this.client
+            this.client,
           )._deserialise(data);
         }
       }) as Promise<ExtendedUser | User>;

@@ -20,10 +20,10 @@ export class GuildMemberManager extends BaseManager<GuildMember> {
         route: Routes.guildMember(this.guildId, id ?? '@me'),
       })
       .then(
-        async (data) =>
+        async data =>
           new GuildMember(this.client, this.guildId)._deserialise(
-            await data.body.json()
-          )!
+            await data.body.json(),
+          )!,
       );
 
     this.update(member);
@@ -57,21 +57,21 @@ export class GuildMemberManager extends BaseManager<GuildMember> {
   public disableCommunicationFor(
     member: Snowflake | GuildMember,
     until: Date | number,
-    reason?: string
+    reason?: string,
   ): Promise<GuildMember> {
     return this.get(
-      member instanceof GuildMember ? member.user!.id : member
+      member instanceof GuildMember ? member.user!.id : member,
     )!.disableCommunication(until, reason);
   }
 
   public async ban(
     member: Snowflake | GuildMember,
-    { deleteMessageDays = 0, reason }: BanGuildMemberOptions = {}
+    { deleteMessageDays = 0, reason }: BanGuildMemberOptions = {},
   ): Promise<void> {
     await this.client.http.queue({
       route: Routes.guildBan(
         this.guildId,
-        member instanceof GuildMember ? member.userId! : member
+        member instanceof GuildMember ? member.userId! : member,
       ),
       method: 'PUT',
       body: {
@@ -95,7 +95,7 @@ export class GuildMemberManager extends BaseManager<GuildMember> {
   public create(
     id: Snowflake,
     token: string,
-    { cache = false, ...options }: AddGuildMemberOptions = {}
+    { cache = false, ...options }: AddGuildMemberOptions = {},
   ) {
     return this.client.http
       .queue({
@@ -106,8 +106,8 @@ export class GuildMemberManager extends BaseManager<GuildMember> {
           access_token: token,
         },
       })
-      .then((d) => consumeJSON<RESTPutAPIGuildMemberResult>(d))
-      .then((data) => {
+      .then(d => consumeJSON<RESTPutAPIGuildMemberResult>(d))
+      .then(data => {
         if (cache) {
           return this.resolve(data)!;
         } else {

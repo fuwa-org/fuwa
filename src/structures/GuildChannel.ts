@@ -9,7 +9,7 @@ import { Channel } from './Channel';
 import { Guild } from './Guild';
 
 export class GuildChannel<
-  T extends APIGuildChannel<GuildChannelType> = APIGuildChannel<GuildChannelType>
+  T extends APIGuildChannel<GuildChannelType> = APIGuildChannel<GuildChannelType>,
 > extends Channel<T> {
   public name = '';
   public position = 0;
@@ -22,7 +22,7 @@ export class GuildChannel<
 
   get children() {
     return [...this.guild!.channels.cache.values()].filter(
-      (channel) => channel.parentId === this.id
+      channel => channel.parentId === this.id,
     );
   }
 
@@ -43,24 +43,24 @@ export class GuildChannel<
   public static resolve(
     client: Client,
     data: APIGuildChannel<GuildChannelType>,
-    guild: Guild
+    guild: Guild,
   ): GuildChannels {
     switch (data.type as ChannelType) {
       case ChannelType.GuildText:
       case ChannelType.GuildNews:
         return new GuildTextChannel(client)._deserialise(
-          data as unknown as any
+          data as unknown as any,
         );
       case ChannelType.GuildVoice:
       case ChannelType.GuildStageVoice:
         return new GuildVoiceChannel(client)._deserialise(
-          data as unknown as any
+          data as unknown as any,
         );
       case ChannelType.GuildCategory:
         return new GuildChannel(client)._deserialise(data as unknown as any);
       default:
         guild.client.logger.warn(
-          `unknown guild channel type ${data.type} (${ChannelType[data.type]})`
+          `unknown guild channel type ${data.type} (${ChannelType[data.type]})`,
         );
         return new GuildChannel(client)._deserialise(data as unknown as any);
     }

@@ -53,7 +53,7 @@ export class RequestManager {
 
   public async makeRequest(
     bucket: BucketQueueManager,
-    requestData: APIRequest
+    requestData: APIRequest,
   ): Promise<ResponseData> {
     const req = resolveRequest(requestData);
 
@@ -64,7 +64,7 @@ export class RequestManager {
     this.debug(
       `${req.method.toUpperCase()} ${req.route} -> ${res.statusCode} ${
         STATUS_CODES[res.statusCode]
-      }`
+      }`,
     );
 
     if (res.statusCode < 200) {
@@ -76,7 +76,7 @@ export class RequestManager {
         case 429: {
           if (!req.useRateLimits)
             throw new Error(
-              `Ratelimited on non-bucketed request: ${req.method} ${req.route}`
+              `Ratelimited on non-bucketed request: ${req.method} ${req.route}`,
             );
           if (res.headers['x-ratelimit-global']) {
             this.limit = +res.headers['x-ratelimit-global-limit']!;
@@ -115,7 +115,7 @@ export class RequestManager {
     }
   }
   public queue<T>(
-    req: APIRequest | RouteLike
+    req: APIRequest | RouteLike,
   ): Promise<ResponseData & { body: { json(): Promise<T> } }> {
     if (typeof req === 'string') {
       req = resolveRequest({ route: req });
@@ -129,7 +129,7 @@ export class RequestManager {
     if (!this.buckets.has(endpoint)) {
       this.buckets.set(
         endpoint,
-        new BucketQueueManager(this, endpoint, majorId)
+        new BucketQueueManager(this, endpoint, majorId),
       );
     }
 
@@ -155,7 +155,7 @@ export class RequestManager {
 export type RouteLike = `/${string}`;
 
 export function consumeJSON<D = any>(
-  res: ResponseData & { body: { json(): Promise<D> } }
+  res: ResponseData & { body: { json(): Promise<D> } },
 ): Promise<D> {
   if (res.headers['content-type']!.includes('application/json')) {
     return res.body.json();

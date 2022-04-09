@@ -35,7 +35,7 @@ export class RESTClient {
   public static createRESTOptions(
     clientOptions: ClientOptions,
     token: string,
-    tokenType: 'Bot' | 'Bearer'
+    tokenType: 'Bot' | 'Bearer',
   ): RESTClientOptions {
     const options: Required<ClientOptions> = clientOptions as unknown as any;
     return {
@@ -75,7 +75,7 @@ export class RESTClient {
   public formatRoute(
     route: RouteLike,
     versioned = true,
-    useBase = true
+    useBase = true,
   ): string {
     if (!useBase) return route;
     return (
@@ -101,7 +101,7 @@ export class RESTClient {
           {
             contentType: file.contentType,
             filename: file.filename,
-          }
+          },
         );
       }
 
@@ -148,7 +148,7 @@ export class RESTClient {
     return `${this.formatRoute(
       request.route as RouteLike,
       request.versioned,
-      request.useBaseUrl
+      request.useBaseUrl,
     )}${query}`;
   }
 

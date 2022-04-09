@@ -1,4 +1,7 @@
 #!/bin/sh
 set -e
 
-yarn precise-commits || true
+yarn precise-commits
+yarn build --noEmit 
+yarn lint
+# yarn test

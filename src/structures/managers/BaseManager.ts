@@ -2,7 +2,7 @@ import { Client } from '../../client/Client';
 import { Snowflake } from '../../client/ClientOptions';
 
 export abstract class BaseManager<
-  T extends { id: Snowflake; _deserialise(data: any): T }
+  T extends { id: Snowflake; _deserialise(data: any): T },
 > {
   public cache: Map<Snowflake, T> = new Map();
 
@@ -52,7 +52,7 @@ export abstract class BaseManager<
 
   public map(fn: (data: T, key: Snowflake, cache: Map<Snowflake, T>) => any) {
     return Array.from(this.cache.entries()).map(
-      (([key, data]: [Snowflake, T]) => fn(data, key, this.cache)).bind(this)
+      (([key, data]: [Snowflake, T]) => fn(data, key, this.cache)).bind(this),
     );
   }
 

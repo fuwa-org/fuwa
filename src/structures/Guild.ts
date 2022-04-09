@@ -128,7 +128,7 @@ export class Guild extends BaseStructure<APIGuild | APIUnavailableGuild> {
       this.systemChannelId = data.system_channel_id as Snowflake;
     if ('system_channel_flags' in data)
       this.systemChannelFlags = new GuildSystemChannelFlags(
-        data.system_channel_flags
+        data.system_channel_flags,
       );
     if ('approximate_member_count' in data)
       this.approximateMemberCount = data.approximate_member_count!;
@@ -191,13 +191,13 @@ export class Guild extends BaseStructure<APIGuild | APIUnavailableGuild> {
 
     if ('channels' in data) {
       this.channels.addMany(
-        data.channels!.map((v) =>
+        data.channels!.map(v =>
           GuildChannel.resolve(
             this.client,
             v as APIGuildChannel<GuildChannelType>,
-            this
-          )
-        )
+            this,
+          ),
+        ),
       );
     }
 
@@ -217,14 +217,14 @@ export class Guild extends BaseStructure<APIGuild | APIUnavailableGuild> {
           body: DataTransformer.asJSON(data),
           reason,
         })
-        .then((v) => v.body.json())
+        .then(v => v.body.json()),
     );
   }
 
   public async setIcon(icon: FileResolvable | null, reason?: string) {
     return this.edit(
       { icon: icon ? toDataURI(await resolveFile(icon)) : null },
-      reason
+      reason,
     );
   }
 
@@ -233,7 +233,7 @@ export class Guild extends BaseStructure<APIGuild | APIUnavailableGuild> {
       {
         banner: banner ? toDataURI(await resolveFile(banner)) : null,
       },
-      reason
+      reason,
     );
   }
 
@@ -242,19 +242,19 @@ export class Guild extends BaseStructure<APIGuild | APIUnavailableGuild> {
       {
         splash: splash ? toDataURI(await resolveFile(splash)) : null,
       },
-      reason
+      reason,
     );
   }
 
   public async setDiscoverySplash(
     splash: FileResolvable | null,
-    reason?: string
+    reason?: string,
   ) {
     return this.edit(
       {
         discovery_splash: splash ? toDataURI(await resolveFile(splash)) : null,
       },
-      reason
+      reason,
     );
   }
 
@@ -283,7 +283,7 @@ export class Guild extends BaseStructure<APIGuild | APIUnavailableGuild> {
 
   public setSystemChannelFlags(
     flags: GuildSystemChannelFlags,
-    reason?: string
+    reason?: string,
   ) {
     return this.edit({ system_channel_flags: flags.bits }, reason);
   }
@@ -294,14 +294,14 @@ export class Guild extends BaseStructure<APIGuild | APIUnavailableGuild> {
 
   public setExplicitContentFilter(
     filter: GuildExplicitContentFilter,
-    reason?: string
+    reason?: string,
   ) {
     return this.edit({ explicit_content_filter: filter }, reason);
   }
 
   public setDefaultMessageNotifications(
     notifications: GuildDefaultMessageNotifications,
-    reason?: string
+    reason?: string,
   ) {
     return this.edit({ default_message_notifications: notifications }, reason);
   }
@@ -376,8 +376,8 @@ export class Guild extends BaseStructure<APIGuild | APIUnavailableGuild> {
       unavailable: !this.available,
       approximate_member_count: this.approximateMemberCount,
       member_count: this.memberCount ?? 0,
-      members: this.members.map((v) => v.toJSON()),
-      channels: this.channels.map((v) => v.toJSON()),
+      members: this.members.map(v => v.toJSON()),
+      channels: this.channels.map(v => v.toJSON()),
       voice_states: [], // TODO
       approximate_presence_count: this.approximatePresenceCount,
       presences: [], // TODO
@@ -400,7 +400,7 @@ export class Guild extends BaseStructure<APIGuild | APIUnavailableGuild> {
   public createChannel(
     name: string,
     type: GuildChannelType,
-    options: CreateEntityOptions = {}
+    options: CreateEntityOptions = {},
   ) {
     return this.channels.create(name, type, options);
   }

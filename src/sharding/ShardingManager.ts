@@ -18,12 +18,12 @@ export class ShardingManager {
   public async spawn() {
     this.gatewayInfo = await this.client
       .execute(resolveRequest({ route: Routes.gatewayBot() }))
-      .then((res) => {
+      .then(res => {
         if (res.statusCode !== 200) {
           throw new Error(
             `[ShardingManager] Failed to get gateway info: ${res.statusCode} ${
               STATUS_CODES[res.statusCode]
-            }`
+            }`,
           );
         }
 
@@ -35,8 +35,8 @@ export class ShardingManager {
 
     const shards = Array.isArray(this.options.shards)
       ? this.options.shards.length === 2
-         ? range(this.options.shards[0], this.options.shards[1])
-          : this.options.shards
+        ? range(this.options.shards[0], this.options.shards[1])
+        : this.options.shards
       : this.options.shards === 'auto'
       ? range(this.options.increment ?? 0, totalShards - 1)
       : typeof this.options.shards === 'number'
@@ -87,15 +87,15 @@ export class ShardingManager {
       },
     });
 
-    worker.on('exit', (code) => {
+    worker.on('exit', code => {
       if (code !== 0) {
         console.error(
-          `[ShardingManager] Worker ${id} exited with code ${code}, respawning`
+          `[ShardingManager] Worker ${id} exited with code ${code}, respawning`,
         );
         this.respawn(id);
       } else {
         console.log(
-          `[ShardingManager] Worker ${id} exited with success code ${code}`
+          `[ShardingManager] Worker ${id} exited with success code ${code}`,
         );
       }
     });
@@ -114,15 +114,15 @@ export class ShardingManager {
       },
     });
 
-    worker.on('exit', (code) => {
+    worker.on('exit', code => {
       if (code !== 0) {
         console.error(
-          `[ShardingManager] Worker ${id} exited with code ${code}, respawning`
+          `[ShardingManager] Worker ${id} exited with code ${code}, respawning`,
         );
         this.respawn(id);
       } else {
         console.log(
-          `[ShardingManager] Worker ${id} exited with success code ${code}`
+          `[ShardingManager] Worker ${id} exited with success code ${code}`,
         );
       }
     });

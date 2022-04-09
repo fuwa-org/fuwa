@@ -8,7 +8,7 @@ export type FileResolvable = string | Buffer;
 
 export async function resolveFile(
   file: FileResolvable,
-  reqMan?: RequestManager
+  reqMan?: RequestManager,
 ): Promise<ResolvedFile> {
   if (file instanceof Buffer) return { data: file, mimeType: 'image/png' };
   if (typeof file !== 'string')
@@ -36,8 +36,8 @@ export async function resolveFile(
 
     const data = await fs
       .readFile(file)
-      .then((f) => f.buffer)
-      .then((b) => Buffer.from(b));
+      .then(f => f.buffer)
+      .then(b => Buffer.from(b));
     const mimeType = mimeTypeFromExtension(file.split('.').pop()!);
 
     return { data, mimeType, filename: basename(file) };

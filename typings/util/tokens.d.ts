@@ -16,5 +16,5 @@ export declare class TokenInfo {
         user: Snowflake;
         timestamp: Date;
     }, client?: Client);
-    fetchUser(): Promise<import("..").ExtendedUser | import("..").User>;
+    fetchUser(): Promise<import("..").User | import("..").ExtendedUser>;
 }

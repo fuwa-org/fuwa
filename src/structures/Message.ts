@@ -10,7 +10,7 @@ import { consumeJSON } from '../rest/RequestManager';
 
 // TODO: Add support for DM messages
 export class Message<
-  ChannelType extends TextChannel = TextChannel
+  ChannelType extends TextChannel = TextChannel,
 > extends BaseStructure<APIMessage> {
   public nonce: string | number | null = null;
 
@@ -94,7 +94,7 @@ export class Message<
   public async fetchMember() {
     return (
       this.guild?.members.add(
-        await this.guild?.members.fetch(this.author.id)
+        await this.guild?.members.fetch(this.author.id),
       ) ?? null
     );
   }
@@ -125,7 +125,7 @@ export class Message<
     return this.setFlags(
       suppress
         ? this.flags.add(MessageFlags.Bits.SuppressEmbeds)
-        : this.flags.remove(MessageFlags.Bits.SuppressEmbeds)
+        : this.flags.remove(MessageFlags.Bits.SuppressEmbeds),
     );
   }
 

@@ -16,7 +16,7 @@ import { GuildChannel, GuildChannels } from './GuildChannel.js';
 import { BaseStructure } from './templates/BaseStructure';
 
 export class Channel<
-  T extends APIChannel = APIChannel
+  T extends APIChannel = APIChannel,
 > extends BaseStructure<T> {
   public type: ChannelType = ChannelType.GuildCategory;
   public guildId: Snowflake | null = null;
@@ -34,13 +34,13 @@ export class Channel<
 
   static create(
     client: Client,
-    data: APIChannelBase<ChannelType> & { guild_id?: Snowflake }
+    data: APIChannelBase<ChannelType> & { guild_id?: Snowflake },
   ): Channels {
     if (data.guild_id)
       return GuildChannel.resolve(
         client,
         data as APIGuildChannel<GuildChannelType>,
-        client.guilds.get(data.guild_id)!
+        client.guilds.get(data.guild_id)!,
       );
     else
       switch (data.type) {
@@ -52,7 +52,7 @@ export class Channel<
         }
         default:
           client.logger.warn(
-            `Unknown channel type: ${data.type} (${ChannelType[data.type]})`
+            `Unknown channel type: ${data.type} (${ChannelType[data.type]})`,
           );
           return new Channel(client)._deserialise(data);
       }
@@ -69,8 +69,8 @@ export class Channel<
         method: 'PATCH',
         body: DataTransformer.asJSON(data),
       })
-      .then((d) => consumeJSON<T & { guild_id?: Snowflake }>(d))
-      .then((data) => this._deserialise(data));
+      .then(d => consumeJSON<T & { guild_id?: Snowflake }>(d))
+      .then(data => this._deserialise(data));
   }
 
   public delete() {
@@ -86,8 +86,8 @@ export class Channel<
         route: Routes.channel(this.id),
         method: 'GET',
       })
-      .then((d) => consumeJSON<T & { guild_id?: Snowflake }>(d))
-      .then((data) => this._deserialise(data));
+      .then(d => consumeJSON<T & { guild_id?: Snowflake }>(d))
+      .then(data => this._deserialise(data));
   }
 
   public toJSON(): T {
@@ -101,7 +101,7 @@ export class Channel<
 
 export type Channels<
   T = GuildChannels | Channel | DMChannel,
-  D = APIChannel
+  D = APIChannel,
 > = T & {
   id: Snowflake;
   _deserialise(data: D): T;

@@ -51,13 +51,13 @@ export class MessagePayloadAttachment {
       url?: string;
       data?: Buffer | string;
       contentType?: string;
-    } = {}
+    } = {},
   ) {}
 
   public async resolve() {
     await resolveFile(
-      this.options.data ? Buffer.from(this.options.data!) : this.options.url!
-    ).then((file) => {
+      this.options.data ? Buffer.from(this.options.data!) : this.options.url!,
+    ).then(file => {
       this.name = this.options.name!;
       this.data = file.data;
       this.contentType = file.mimeType;
@@ -77,7 +77,7 @@ export class MessagePayloadAttachment {
 
 export async function payload2data(
   payload: MessagePayload,
-  channel: Snowflake
+  channel: Snowflake,
 ) {
   // FIXME: #55 this is where the data gets squashed
 
@@ -101,7 +101,7 @@ export async function payload2data(
 
   if (payload.attachments) {
     data.files = await Promise.all(
-      payload.attachments.map(async (attachment) => {
+      payload.attachments.map(async attachment => {
         if (attachment instanceof MessagePayloadAttachment) {
           const file = await attachment.resolve();
 
@@ -112,7 +112,7 @@ export async function payload2data(
         } else {
           return resolveFile(attachment);
         }
-      })
+      }),
     );
   }
 

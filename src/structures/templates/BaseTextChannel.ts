@@ -17,7 +17,7 @@ export interface BaseTextChannel
   messages: ChannelMessageManager;
   _deserialise(data: APITextBasedChannel<TextChannelType>): this;
   createMessage(
-    data: MessagePayload | string
+    data: MessagePayload | string,
   ): ReturnType<ChannelMessageManager['create']>;
 }
 
@@ -55,7 +55,7 @@ export class BaseTextChannelInGuild
 
 export const BaseTextChannel = function (
   this: any,
-  client: Client
+  client: Client,
 ): BaseTextChannel {
   Object.defineProperty(this, 'client', {
     value: client,

@@ -14,7 +14,7 @@ export class DataTransformer {
       Object.entries(data).map(([K, V]) => [
         snakeCase(K),
         DataTransformer.snakeCase(V),
-      ])
+      ]),
     );
   }
 

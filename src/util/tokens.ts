@@ -28,7 +28,7 @@ export function parse(token: string, client?: Client) {
 
   const userId = Buffer.from(header, 'base64').toString('utf8');
   const timestamp = new Date(
-    parseInt(Buffer.from(payload, 'base64').toString('hex'), 16) * 1000
+    parseInt(Buffer.from(payload, 'base64').toString('hex'), 16) * 1000,
   );
 
   return new TokenInfo(token, { user: userId as Snowflake, timestamp }, client);
@@ -48,7 +48,7 @@ export class TokenInfo {
   constructor(
     original: string,
     deconstructed: { user: Snowflake; timestamp: Date },
-    client?: Client
+    client?: Client,
   ) {
     Object.defineProperties(this, {
       original: { value: original, enumerable: false },

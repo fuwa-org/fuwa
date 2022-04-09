@@ -150,13 +150,13 @@ export class GatewayManager extends EventEmitter {
           url: shard.url,
         });
       })
-      .on('_throw', (e) => {
+      .on('_throw', e => {
         throw new Error(`Shard ${shard.id}: ${e}`);
       })
-      .on('packet', (p) => {
+      .on('packet', p => {
         this.emit('packet', p, shard);
       })
-      .on('dispatch', (d) => {
+      .on('dispatch', d => {
         this.emit('dispatch', d, shard);
       })
       .on('close', (code, reason) => {
@@ -170,18 +170,18 @@ export class GatewayManager extends EventEmitter {
       `Shard ${shard.id} closed with code`,
       code,
       `reason`,
-      reason?.toString() ?? GatewayCloseCodes[code]
+      reason?.toString() ?? GatewayCloseCodes[code],
     );
     switch (code) {
       case GatewayCloseCodes.InvalidIntents:
         throw new Error(
-          `Gateway intents ${this.client.options.intents} are invalid.`
+          `Gateway intents ${this.client.options.intents} are invalid.`,
         );
       case GatewayCloseCodes.InvalidShard:
         throw new Error('Invalid shard id: ' + shard.id);
       case GatewayCloseCodes.DisallowedIntents:
         throw new Error(
-          `Gateway intents ${this.client.options.intents} are disallowed for the client.`
+          `Gateway intents ${this.client.options.intents} are disallowed for the client.`,
         );
       case GatewayCloseCodes.AuthenticationFailed:
         throw new Error('Client token is invalid');

@@ -6,7 +6,7 @@ import { LoggerOptions } from '../logging/LoggerOptions.js';
 import { Erlpack } from '../ws/GatewayShard.js';
 
 export const pkg = JSON.parse(
-  fs.readFileSync(__dirname + '/../../package.json', 'utf-8')
+  fs.readFileSync(__dirname + '/../../package.json', 'utf-8'),
 );
 
 /** Options for {@link Client}s. For default values see {@link DefaultClientOptions} */
@@ -59,11 +59,11 @@ export function resolveIntents(intents: ClientOptionsIntents): Intents {
       intents.reduce(
         (prev: number, next) =>
           prev | (next instanceof Intents ? next.bits : next),
-        0
-      ) as number
+        0,
+      ) as number,
     );
   throw new TypeError(
-    'Client intents must be a number, an array of numbers or Intents, or an Intents instance.'
+    'Client intents must be a number, an array of numbers or Intents, or an Intents instance.',
   );
 }
 
