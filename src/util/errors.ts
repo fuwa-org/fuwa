@@ -1,4 +1,4 @@
-import { STATUS_CODES } from "http";
+import { STATUS_CODES } from 'http';
 
 export class FuwaError extends Error {
   constructor(key: string, ...args: any[]) {
@@ -13,9 +13,10 @@ export class FuwaError extends Error {
   }
 }
 
-const messages: Record<string, ((...args: any[]) => string)> = {
-  INVALID_TOKEN: () => "Invalid token",
-  INVALID_PARAMETER: (name: string, constraint: string) => `Invalid parameter ${name}, must be ${constraint}`,
-  FILE_RESOLVE_ERROR:
-    (path: string, status: number) => `Failed to resolve file ${path}, status code: ${status} ${STATUS_CODES[status]}`,
-}
+const messages: Record<string, (...args: any[]) => string> = {
+  INVALID_TOKEN: () => 'Invalid token',
+  INVALID_PARAMETER: (name: string, constraint: string) =>
+    `Invalid parameter ${name}, must be ${constraint}`,
+  FILE_RESOLVE_ERROR: (path: string, status: number) =>
+    `Failed to resolve file ${path}, status code: ${status} ${STATUS_CODES[status]}`,
+};

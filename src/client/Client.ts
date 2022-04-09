@@ -84,7 +84,8 @@ export class Client extends EventEmitter {
 
     const token = this.#token;
 
-    if (!token || typeof token !== "string" || token.trim() == "") throw new FuwaError('INVALID_TOKEN');
+    if (!token || typeof token !== 'string' || token.trim() == '')
+      throw new FuwaError('INVALID_TOKEN');
 
     if (
       process.env.__FUWA_SHARDING_MANAGER ||

@@ -24,7 +24,8 @@ export async function resolveFile(
         })
       : await undici.request(file);
 
-    if (res.statusCode !== 200) throw new FuwaError("FILE_RESOLVE_ERROR", file, res.statusCode);
+    if (res.statusCode !== 200)
+      throw new FuwaError('FILE_RESOLVE_ERROR', file, res.statusCode);
 
     const data = Buffer.from(await res.body.arrayBuffer());
     let mimeType = mimeTypeFromExtension(file.split('.').pop()!);
