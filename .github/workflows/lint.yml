@@ -31,7 +31,7 @@ jobs:
         uses: actions/cache@v3
         with:
           path: node_modules
-          key: deps-${{ runner.os }}-${{ hashFiles('**/pnpm-lock.yaml')
+          key: deps-${{ runner.os }}-${{ hashFiles('**/pnpm-lock.yaml') }}
 
       - name: Use build cache
         uses: actions/cache@v3
