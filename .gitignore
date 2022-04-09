@@ -4,4 +4,3 @@ secret*test*.js
 docs
 .nyc_output
 .env
-test/**.js
