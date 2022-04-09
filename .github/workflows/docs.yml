@@ -7,7 +7,9 @@ on:
     tags:
       - '*'
     paths:
-      -  typings/**/*.d.ts
+      -  typings/**/*.d.ts 
+  workflow_dispatch:
+
 jobs:
   docs:
     name: Documentation
