@@ -14,7 +14,7 @@ export declare class RESTClient {
     formatRoute(route: RouteLike, versioned?: boolean, useBase?: boolean): string;
     resolveBody(req: APIRequest): APIRequest;
     createURL(request: APIRequest): string;
-    execute(request: APIRequest): Promise<ResponseData>;
+    execute(request: APIRequest, tracefunc?: any): Promise<ResponseData>;
 }
 export interface RESTClientOptions {
     baseUrl: string;

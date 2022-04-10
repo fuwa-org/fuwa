@@ -1,17 +1,16 @@
-// @ts-nocheck Let's just hope this works.
-import { DiscordSnowflake } from '@sapphire/snowflake';
 import { Client } from '../../client/Client';
 import { Snowflake } from '../../client/ClientOptions.js';
 import { DataTransformer } from '../../rest/DataTransformer';
+import { SnowflakeInfo } from '../../util/Snowflake';
 
 export abstract class BaseStructure<T> {
   public id!: Snowflake;
 
-  public get createdAt(): Date {
-    return DiscordSnowflake.timestampFrom(this.id);
+  public get createdTimestamp() {
+    return new SnowflakeInfo(this.id).timestamp;
   }
-  public get createdTimestamp(): number {
-    return this.createdAt.getTime();
+  public get createdAt() {
+    return new Date(this.createdTimestamp);
   }
 
   constructor(public client: Client, data?: T) {
@@ -25,7 +24,6 @@ export abstract class BaseStructure<T> {
     });
 
     if (data) this._deserialise(data);
-    if (data && 'id' in data && typeof data.id === 'string') this.id = data.id;
   }
 
   abstract _deserialise(_data: T): void;

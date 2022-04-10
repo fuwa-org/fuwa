@@ -1,22 +1,24 @@
 import { STATUS_CODES } from 'http';
+import { ArgumentType } from './util';
 
-export class FuwaError extends Error {
-  constructor(key: string, ...args: any[]) {
-    super(...args);
+export class FuwaError<T extends keyof typeof messages> extends Error {
+  constructor(key: T, ...args: ArgumentType<typeof messages[T]>) {
+    super();
     this.name = 'FuwaError';
     this.message = key;
 
     if (key in messages) {
+      // @ts-ignore
       this.message = messages[key](...args);
       this.name += ' [' + key + ']';
     }
   }
 }
 
-const messages: Record<string, (...args: any[]) => string> = {
+const messages = {
   INVALID_TOKEN: () => 'Invalid token',
   INVALID_PARAMETER: (name: string, constraint: string) =>
-    `Invalid parameter ${name}, must be ${constraint}`,
+    `Invalid parameter "${name}"\n=> must be ${constraint}`,
   FILE_RESOLVE_ERROR: (path: string, status: number) =>
     `Failed to resolve file ${path}, status code: ${status} ${STATUS_CODES[status]}`,
-};
+} as const;

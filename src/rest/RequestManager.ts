@@ -57,7 +57,7 @@ export class RequestManager {
   ): Promise<ResponseData> {
     const req = resolveRequest(requestData);
 
-    const res = await this.client.execute(req);
+    const res = await this.client.execute(req, this.trace.bind(this));
 
     if (req.useBaseUrl) this.updateOffset(res);
 
@@ -114,11 +114,20 @@ export class RequestManager {
       throw new RESTError(req, res);
     }
   }
+
+  public queue<T>(
+    route: RouteLike,
+
+    options?: Omit<APIRequest, 'route'>,
+  ): Promise<Response<T>>;
+  public queue<T>(req: APIRequest): Promise<Response<T>>;
   public queue<T>(
     req: APIRequest | RouteLike,
+
+    options?: APIRequest,
   ): Promise<ResponseData & { body: { json(): Promise<T> } }> {
     if (typeof req === 'string') {
-      req = resolveRequest({ route: req });
+      req = resolveRequest({ route: req, ...options });
     } else req = resolveRequest(req);
 
     if (!req.useRateLimits)
@@ -150,10 +159,14 @@ export class RequestManager {
   private debug(...args: any[]) {
     this._client?.logger.debug(this.#__log_header(), ...args);
   }
+
+  private trace(...args: any[]) {
+    this._client?.logger.trace('[REST]', ...args);
+  }
 }
 
 export type RouteLike = `/${string}`;
-
+export type Response<T> = ResponseData & { body: { json(): Promise<T> } };
 export function consumeJSON<D = any>(
   res: ResponseData & { body: { json(): Promise<D> } },
 ): Promise<D> {

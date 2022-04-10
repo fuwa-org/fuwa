@@ -3,6 +3,7 @@ export interface ILogger {
   warn(...data: any[]): void;
   error(...data: any[]): void;
   debug(...data: any[]): void;
+  trace(...data: any[]): void;
   /** Coloring function, use {@link DefaultKleurFactory} if you're unsure on how to implement this. */
   kleur(): KleurFactory;
 }

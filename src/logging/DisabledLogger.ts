@@ -1,3 +1,4 @@
+// eslint-disable @typescript-eslint/no-unused-vars
 import { ILogger } from './ILogger.js';
 import { DefaultKleurFactory } from './LoggerOptions.js';
 
@@ -16,6 +17,10 @@ export class DisabledLogger implements ILogger {
   }
 
   public debug(..._data: any[]): void {
+    // noop
+  }
+
+  public trace(..._data: any[]): void {
     // noop
   }
 

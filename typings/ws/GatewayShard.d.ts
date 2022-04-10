@@ -28,6 +28,7 @@ export declare class GatewayShard extends EventEmitter {
     connect(url?: string): Promise<void>;
     reset(full?: boolean): void;
     debug(...data: any[]): void;
+    private trace;
     private debugPretty;
     awaitPacket(filter: (payload: GatewayReceivePayload) => boolean): Promise<unknown>;
     private onMessage;

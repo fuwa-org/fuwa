@@ -155,7 +155,7 @@ export class Client extends EventEmitter {
    * @deprecated Please prefer {@link Client.http}
    */
   public get rest(): APIProxy {
-    this.logger.warn('Client.api is deprecated, please use Client.http');
+    this.logger.warn('Client.rest is deprecated, please use Client.http');
     const route: string[] = [''];
 
     const handler: ProxyHandler<typeof addRoute> = {
@@ -177,7 +177,7 @@ export class Client extends EventEmitter {
                 .then(consumeJSON);
             };
           default: {
-            if (typeof prop === 'symbol') return receiver[prop];
+            if (typeof prop === 'symbol') return () => route.join('/');
             route.push(prop);
             return new Proxy(addRoute, handler);
           }

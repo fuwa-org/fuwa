@@ -4,5 +4,6 @@ export declare class DisabledLogger implements ILogger {
     warn(..._data: any[]): void;
     error(..._data: any[]): void;
     debug(..._data: any[]): void;
+    trace(..._data: any[]): void;
     kleur(): any;
 }

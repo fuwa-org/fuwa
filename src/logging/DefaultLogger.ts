@@ -2,9 +2,11 @@ import { ILogger } from './ILogger.js';
 import util from 'node:util';
 import {
   DefaultKleurFactory,
+  hasKleur,
   LoggerOptions,
   LogLevel,
 } from './LoggerOptions.js';
+import { DataResolver } from '../util/DataResolver.js';
 
 type TLoggerOptions = Required<LoggerOptions> & {
   level: LogLevel[];
@@ -17,8 +19,10 @@ export class DefaultLogger implements ILogger {
   };
 
   constructor(options: LoggerOptions = {}) {
-    if (typeof options.level === 'string') options.level = [options.level];
+    if (typeof options.level === 'string')
+      options.level = DataResolver.logLevel(options.level);
     if (typeof options.colors === 'function') this.kleur = options.colors;
+    else if (hasKleur()) options.colors = true;
     this.options = Object.assign(this.options, options) as TLoggerOptions;
   }
 
@@ -49,6 +53,23 @@ export class DefaultLogger implements ILogger {
   public debug(...data: any[]): void {
     if (this.options.level.includes('debug')) {
       this.log(`${this.kleur().gray('debug')}:`, ...data);
+    }
+  }
+
+  public trace(...data: any[]): void {
+    if (this.options.level.includes('trace')) {
+      this.log(
+        `${this.kleur().gray('trace')}:`,
+        this.kleur().gray(
+          data
+            .map(v =>
+              typeof v === 'string'
+                ? v
+                : util.inspect(v, { depth: 1, colors: false }),
+            )
+            .join(' '),
+        ),
+      );
     }
   }
 

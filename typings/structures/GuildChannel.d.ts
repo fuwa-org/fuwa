@@ -12,10 +12,11 @@ export declare class GuildChannel<T extends APIGuildChannel<GuildChannelType> = 
     get children(): GuildChannels[];
     _deserialise(data: T): this;
     static resolve(client: Client, data: APIGuildChannel<GuildChannelType>, guild: Guild): GuildChannels;
-    setName(name: string): void;
-    setPosition(position: number): void;
-    setNsfw(nsfw: boolean): void;
+    setName(name: string): Promise<this>;
+    setPosition(position: number): Promise<this>;
+    setNsfw(nsfw: boolean): Promise<this>;
     setParent(parent: GuildChannels | Snowflake): void;
+    get delete(): (reason?: string | undefined) => Promise<void>;
     toJSON(): T;
 }
 export declare type GuildChannels = GuildChannel | GuildTextChannel | GuildVoiceChannel;

@@ -4,6 +4,7 @@ import { RouteLike } from './RequestManager.js';
 import FormData from 'form-data';
 import undici from 'undici';
 import { ResponseData } from 'undici/types/dispatcher';
+import { omit } from '../util/util';
 
 /**
  * Utility class for easy HTTP requests to the Discord API. Can be used for other APIs if needed.
@@ -152,17 +153,35 @@ export class RESTClient {
     )}${query}`;
   }
 
-  public execute(request: APIRequest): Promise<ResponseData> {
+  public execute(request: APIRequest, tracefunc?: any): Promise<ResponseData> {
     request = this.resolveBody(request);
 
     const options: any = {
-      method: request.method,
-      headers: this.createHeaders(request),
-    };
+        method: request.method,
+        headers: this.createHeaders(request),
+      },
+      url = this.createURL(request);
 
     if (request.body) options.body = request.body;
 
-    return undici.request(this.createURL(request), options);
+    if (tracefunc) {
+      tracefunc(
+        options.method,
+        url,
+
+        omit(
+          {
+            ...options,
+          },
+          ['headers', 'body'],
+        ),
+        '\n',
+        'body:',
+        prettifyBody(options.headers['content-type'] ?? '', options.body),
+      );
+    }
+
+    return undici.request(url, options);
   }
 }
 
@@ -173,4 +192,12 @@ export interface RESTClientOptions {
   userAgent?: string;
   /** Additional headers to send */
   headers?: Record<string, string>;
+}
+
+function prettifyBody(contentType: string, body: Buffer) {
+  if (contentType.startsWith('application/json')) {
+    return JSON.parse(body.toString());
+  }
+
+  return body?.toString();
 }

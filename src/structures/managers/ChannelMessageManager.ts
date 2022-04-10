@@ -1,4 +1,5 @@
 import { Routes } from 'discord-api-types/v10';
+import { Snowflake } from '../../client/ClientOptions';
 import { consumeJSON } from '../../rest/RequestManager';
 import {
   MessagePayload,
@@ -27,7 +28,7 @@ export class ChannelMessageManager extends BaseManager<Message<TextChannel>> {
     return message;
   }
 
-  public async fetch(id: string, cache = false) {
+  public async fetch(id: Snowflake, cache = false) {
     return this.client.http
       .queue(Routes.channelMessage(this.channel.id, id))
       .then(d => consumeJSON<any>(d))
@@ -38,5 +39,15 @@ export class ChannelMessageManager extends BaseManager<Message<TextChannel>> {
           return new Message(this.client)._deserialise(data);
         }
       });
+  }
+
+  public async delete(id: Snowflake, reason?: string) {
+    return this.client.http
+      .queue({
+        route: Routes.channelMessage(this.channel.id, id),
+        method: 'DELETE',
+        reason,
+      })
+      .then(d => consumeJSON<any>(d));
   }
 }

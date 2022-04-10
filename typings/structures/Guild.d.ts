@@ -5,13 +5,12 @@ import { FileResolvable } from '../util/resolvables/FileResolvable.js';
 import { GuildChannelManager } from './managers/GuildChannelManager';
 import { GuildMemberManager } from './managers/GuildMemberManager';
 import { BaseStructure } from './templates/BaseStructure';
-import { CreateEntityOptions } from '../util/util';
 export declare class Guild extends BaseStructure<APIGuild | APIUnavailableGuild> {
     available: boolean;
     name: string | null;
     description: string | null;
     ownerId: Snowflake;
-    get owner(): import("./User").User | import("./ExtendedUser").ExtendedUser | undefined;
+    get owner(): import("./ExtendedUser").ExtendedUser | import("./User").User | undefined;
     applicationId: Snowflake | null;
     preferredLocale: string;
     features: GuildFeature[];
@@ -34,8 +33,6 @@ export declare class Guild extends BaseStructure<APIGuild | APIUnavailableGuild>
     discoverySplash: string | null;
     joinedAt?: Date;
     get joinedTimestamp(): number;
-    created: Date;
-    get createdTimestamp(): number;
     premiumTier: GuildPremiumTier;
     premiumSubscriptionCount: number;
     premiumProgressBarEnabled: boolean;
@@ -77,5 +74,8 @@ export declare class Guild extends BaseStructure<APIGuild | APIUnavailableGuild>
     delete(): Promise<void>;
     leave(): Promise<void>;
     toJSON(): APIGuild;
-    createChannel(name: string, type: GuildChannelType, options?: CreateEntityOptions): Promise<import("./GuildChannel").GuildChannels>;
+    get createChannel(): {
+        (options: import("./managers/GuildChannelManager").CreateGuildChannelOptions): Promise<import("./GuildChannel").GuildChannels>;
+        (name: string, type: GuildChannelType): Promise<import("./GuildChannel").GuildChannels>;
+    };
 }

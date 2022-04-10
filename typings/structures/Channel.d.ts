@@ -12,15 +12,11 @@ export declare class Channel<T extends APIChannel = APIChannel> extends BaseStru
     _deserialise(data: T & {
         guild_id?: Snowflake;
     }): this;
+    _set_guild(id: Snowflake): this;
     static create(client: Client, data: APIChannelBase<ChannelType> & {
         guild_id?: Snowflake;
     }): Channels;
     edit(data: any): Promise<this>;
-    delete(): Promise<import("undici/types/dispatcher").ResponseData & {
-        body: {
-            json(): Promise<unknown>;
-        };
-    }>;
     fetch(): Promise<this>;
     toJSON(): T;
 }

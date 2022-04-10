@@ -189,6 +189,10 @@ export class GatewayShard extends EventEmitter {
     );
   }
 
+  private trace(...data: any[]) {
+    this.client.logger.trace(`[WS => ${this.id}]`, ...data);
+  }
+
   private debugPretty(message: string, data: Record<string, any>) {
     this.debug(
       message,
@@ -506,7 +510,7 @@ export class GatewayShard extends EventEmitter {
           }
           default: {
             this.client.logger.warn('Unhandled dispatch event', data.t);
-            this.debug('Event:', data.d);
+            this.trace('Event:', data.d);
           }
         }
 

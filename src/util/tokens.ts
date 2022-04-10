@@ -1,8 +1,6 @@
 import { Client } from '../client/Client';
 import { Snowflake } from '../client/ClientOptions';
 
-export const EPOCH = 1420070400000;
-
 export function validate(token: string) {
   const split = token.split('.');
 

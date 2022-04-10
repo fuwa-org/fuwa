@@ -16,15 +16,18 @@ export declare class RequestManager {
     getBucket(route: RouteLike): string[];
     get globalLimited(): boolean;
     makeRequest(bucket: BucketQueueManager, requestData: APIRequest): Promise<ResponseData>;
-    queue<T>(req: APIRequest | RouteLike): Promise<ResponseData & {
-        body: {
-            json(): Promise<T>;
-        };
-    }>;
+    queue<T>(route: RouteLike, options?: Omit<APIRequest, 'route'>): Promise<Response<T>>;
+    queue<T>(req: APIRequest): Promise<Response<T>>;
     private updateOffset;
     private debug;
+    private trace;
 }
 export declare type RouteLike = `/${string}`;
+export declare type Response<T> = ResponseData & {
+    body: {
+        json(): Promise<T>;
+    };
+};
 export declare function consumeJSON<D = any>(res: ResponseData & {
     body: {
         json(): Promise<D>;

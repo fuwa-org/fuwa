@@ -80,6 +80,7 @@ export class APIError extends Error {
   public route: string;
   public body: any;
   public files?: File[];
+  public method: string;
 
   constructor(
     req: APIRequest,
@@ -101,6 +102,7 @@ export class APIError extends Error {
     this.route = req.route;
 
     this.files = req.files!;
+    this.method = req.method!;
 
     if (req.headers?.['content-type'] === 'application/json') {
       try {

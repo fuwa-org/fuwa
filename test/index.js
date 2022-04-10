@@ -1,20 +1,15 @@
 #!/bin/node
 /** @format */
 
-Error.stackTraceLimit = Infinity;
-
 const { DefaultClientOptions, Intents } = require('..');
 const Fuwa = require('..');
 
-const client = new Fuwa.Client(
-  process.env.DISCORD_TOKEN,
-  {
-    logger: {
-      level: ['info', 'warn', 'debug', 'error'],
-    },
-    intents: [...DefaultClientOptions.intents, Intents.Bits.MessageContent],
+const client = new Fuwa.Client(process.env.DISCORD_TOKEN, {
+  logger: {
+    level: 'trace',
   },
-).on('ready', () => {
+  intents: [...DefaultClientOptions.intents, Intents.Bits.MessageContent],
+}).on('ready', () => {
   client.logger.info('ready');
 });
 

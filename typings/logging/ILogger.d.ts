@@ -3,6 +3,7 @@ export interface ILogger {
     warn(...data: any[]): void;
     error(...data: any[]): void;
     debug(...data: any[]): void;
+    trace(...data: any[]): void;
     kleur(): KleurFactory;
 }
 export declare type KleurFactory = {

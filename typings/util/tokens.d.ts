@@ -1,6 +1,5 @@
 import { Client } from '../client/Client';
 import { Snowflake } from '../client/ClientOptions';
-export declare const EPOCH = 1420070400000;
 export declare function validate(token: string): {
     header: string;
     payload: string;
@@ -16,5 +15,5 @@ export declare class TokenInfo {
         user: Snowflake;
         timestamp: Date;
     }, client?: Client);
-    fetchUser(): Promise<import("..").User | import("..").ExtendedUser>;
+    fetchUser(): Promise<import("..").ExtendedUser | import("..").User>;
 }

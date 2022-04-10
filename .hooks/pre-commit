@@ -1,8 +1,8 @@
 #!/bin/sh
 set -e
 
-if git status | grep -q "\\.ts"; then
-yarn precise-commits || true # ignore formatting bugs, this is a really stupid CLI command
+if git status | grep -q "\\.ts"; then 
+node scripts/prettifyChanged.js
 yarn build --noEmit 
 yarn lint
 fi

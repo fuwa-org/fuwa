@@ -1,4 +1,3 @@
-import { DiscordSnowflake } from '@sapphire/snowflake';
 import {
   APIGuild,
   APIGuildChannel,
@@ -27,13 +26,12 @@ import { GuildChannelManager } from './managers/GuildChannelManager';
 import { GuildMemberManager } from './managers/GuildMemberManager';
 import { BaseStructure } from './templates/BaseStructure';
 import { CreateEntityOptions } from '../util/util';
-
 export class Guild extends BaseStructure<APIGuild | APIUnavailableGuild> {
   public available = false;
 
   public name: string | null = null;
   public description: string | null = null;
-  public ownerId: Snowflake = '0';
+  public ownerId!: Snowflake;
   public get owner() {
     return this.client.users.cache.get(this.ownerId);
   }
@@ -75,11 +73,6 @@ export class Guild extends BaseStructure<APIGuild | APIUnavailableGuild> {
     return this.joinedAt!.getTime();
   }
 
-  public created!: Date;
-  public get createdTimestamp() {
-    return this.created.getTime();
-  }
-
   public premiumTier: GuildPremiumTier = GuildPremiumTier.None;
   public premiumSubscriptionCount = 0;
   public premiumProgressBarEnabled = false;
@@ -108,7 +101,6 @@ export class Guild extends BaseStructure<APIGuild | APIUnavailableGuild> {
     this.id = data.id as Snowflake;
     this.members.guildId = this.id;
     this.available = !data.unavailable;
-    this.created = new Date(DiscordSnowflake.timestampFrom(this.id));
 
     data = data as APIGuild;
 
@@ -397,11 +389,7 @@ export class Guild extends BaseStructure<APIGuild | APIUnavailableGuild> {
     };
   }
 
-  public createChannel(
-    name: string,
-    type: GuildChannelType,
-    options: CreateEntityOptions = {},
-  ) {
-    return this.channels.create(name, type, options);
+  get createChannel() {
+    return this.channels.create;
   }
 }

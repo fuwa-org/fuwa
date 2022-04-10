@@ -48,16 +48,20 @@ export class GuildChannel<
     switch (data.type as ChannelType) {
       case ChannelType.GuildText:
       case ChannelType.GuildNews:
-        return new GuildTextChannel(client)._deserialise(
-          data as unknown as any,
-        );
+        return new GuildTextChannel(client)
+
+          ._deserialise(data as unknown as any)
+          ._set_guild(guild.id);
       case ChannelType.GuildVoice:
       case ChannelType.GuildStageVoice:
-        return new GuildVoiceChannel(client)._deserialise(
-          data as unknown as any,
-        );
+        return new GuildVoiceChannel(client)
+
+          ._deserialise(data as unknown as any)
+          ._set_guild(guild.id);
       case ChannelType.GuildCategory:
-        return new GuildChannel(client)._deserialise(data as unknown as any);
+        return new GuildChannel(client)
+          ._deserialise(data as unknown as any)
+          ._set_guild(guild.id);
       default:
         guild.client.logger.warn(
           `unknown guild channel type ${data.type} (${ChannelType[data.type]})`,
@@ -67,15 +71,15 @@ export class GuildChannel<
   }
 
   public setName(name: string) {
-    this.edit({ name });
+    return this.edit({ name });
   }
 
   public setPosition(position: number) {
-    this.edit({ position });
+    return this.edit({ position });
   }
 
   public setNsfw(nsfw: boolean) {
-    this.edit({ nsfw });
+    return this.edit({ nsfw });
   }
 
   public setParent(parent: GuildChannels | Snowflake) {
@@ -84,6 +88,10 @@ export class GuildChannel<
         ? (parent as unknown as any).id
         : parent,
     });
+  }
+
+  public get delete() {
+    return this.guild!.channels.delete.bind(this.guild!.channels, this.id);
   }
 
   toJSON(): T {

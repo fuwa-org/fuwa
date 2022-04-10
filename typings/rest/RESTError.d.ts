@@ -14,5 +14,6 @@ export declare class APIError extends Error {
     route: string;
     body: any;
     files?: File[];
+    method: string;
     constructor(req: APIRequest, _res: ResponseData, error?: any, stack?: string);
 }

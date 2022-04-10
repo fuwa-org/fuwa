@@ -12,7 +12,7 @@ export interface LoggerOptions {
   level?: LogLevel | LogLevel[];
 }
 
-export type LogLevel = 'debug' | 'info' | 'warn' | 'error';
+export type LogLevel = 'debug' | 'info' | 'warn' | 'error' | 'trace';
 
 export const DefaultLoggerOptions: LoggerOptions = {
   colors: true,
@@ -24,6 +24,10 @@ export function DefaultKleurFactory() {
   else {
     return DisabledKleurFactory();
   }
+}
+
+export function hasKleur() {
+  return !!kleur;
 }
 
 export function DisabledKleurFactory() {

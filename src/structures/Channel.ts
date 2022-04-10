@@ -32,6 +32,11 @@ export class Channel<
     return this;
   }
 
+  _set_guild(id: Snowflake) {
+    this.guildId = id;
+    return this;
+  }
+
   static create(
     client: Client,
     data: APIChannelBase<ChannelType> & { guild_id?: Snowflake },
@@ -71,13 +76,6 @@ export class Channel<
       })
       .then(d => consumeJSON<T & { guild_id?: Snowflake }>(d))
       .then(data => this._deserialise(data));
-  }
-
-  public delete() {
-    return this.client.http.queue({
-      route: Routes.channel(this.id),
-      method: 'DELETE',
-    });
   }
 
   public fetch() {
