@@ -64,3 +64,4 @@ client.connect();
 - [Website (with documentation)](https://fuwadiscord.github.io/fuwa)
 - [GitHub repository](https://github.com/FuwaDiscord/fuwa)
 - [Related projects](https://discord.com/developers/docs/topics/community-resources)
+- [Discord server](https://discord.gg/tDG9BMz5s7)
