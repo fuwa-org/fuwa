@@ -1,5 +1,5 @@
 function deconstruct(id: Snowflake) {
-  let num = BigInt(id);
+  const num = BigInt(id);
 
   return {
     id: num,

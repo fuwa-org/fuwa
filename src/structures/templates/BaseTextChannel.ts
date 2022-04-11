@@ -11,8 +11,7 @@ import { ChannelMessageManager } from '../managers/ChannelMessageManager';
 // i hate this so much
 // this is so scuffed
 
-export interface BaseTextChannel
-  extends Channel<APITextBasedChannel<TextChannelType>> {
+export interface BaseTextChannel extends Channel {
   lastMessageId: Snowflake | null;
   messages: ChannelMessageManager;
   _deserialise(data: APITextBasedChannel<TextChannelType>): this;

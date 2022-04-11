@@ -5,6 +5,7 @@ import { FileResolvable } from '../util/resolvables/FileResolvable.js';
 import { GuildChannelManager } from './managers/GuildChannelManager';
 import { GuildMemberManager } from './managers/GuildMemberManager';
 import { BaseStructure } from './templates/BaseStructure';
+import { Client } from '../client/Client';
 export declare class Guild extends BaseStructure<APIGuild | APIUnavailableGuild> {
     available: boolean;
     name: string | null;
@@ -47,6 +48,7 @@ export declare class Guild extends BaseStructure<APIGuild | APIUnavailableGuild>
     systemChannelFlags: GuildSystemChannelFlags | null;
     publicUpdatesChannelId: Snowflake | null;
     channels: GuildChannelManager;
+    constructor(client: Client);
     _deserialise(data: APIGuild | APIUnavailableGuild): this;
     fetch(force?: boolean): Promise<Guild>;
     edit(data: Partial<APIGuild | Guild>, reason?: string): Promise<this>;

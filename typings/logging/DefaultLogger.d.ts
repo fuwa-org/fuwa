@@ -12,6 +12,6 @@ export declare class DefaultLogger implements ILogger {
     error(...data: any[]): void;
     debug(...data: any[]): void;
     trace(...data: any[]): void;
-    log(level: string, ...data: any[]): void;
+    log(...data: any[]): void;
 }
 export {};

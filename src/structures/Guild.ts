@@ -26,6 +26,7 @@ import { GuildChannelManager } from './managers/GuildChannelManager';
 import { GuildMemberManager } from './managers/GuildMemberManager';
 import { BaseStructure } from './templates/BaseStructure';
 import { CreateEntityOptions } from '../util/util';
+import { Client } from '../client/Client';
 export class Guild extends BaseStructure<APIGuild | APIUnavailableGuild> {
   public available = false;
 
@@ -91,7 +92,13 @@ export class Guild extends BaseStructure<APIGuild | APIUnavailableGuild> {
   public systemChannelFlags: GuildSystemChannelFlags | null = null;
   public publicUpdatesChannelId: Snowflake | null = null;
 
-  public channels = new GuildChannelManager(this);
+  public channels: GuildChannelManager;
+
+  constructor(client: Client) {
+    super(client);
+
+    this.channels = new GuildChannelManager(this);
+  }
 
   /**
    * @internal
@@ -390,6 +397,6 @@ export class Guild extends BaseStructure<APIGuild | APIUnavailableGuild> {
   }
 
   get createChannel() {
-    return this.channels.create;
+    return this.channels.create.bind(this.channels);
   }
 }

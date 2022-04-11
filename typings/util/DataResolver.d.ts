@@ -1,7 +1,7 @@
-import { ChannelType, GuildChannelType } from "discord-api-types/v10";
-import { LogLevel } from "../logging/LoggerOptions";
-import { File } from "../rest/APIRequest";
-import { Intents } from "./bitfields/Intents";
+import { ChannelType, GuildChannelType } from 'discord-api-types/v10';
+import { LogLevel } from '../logging/LoggerOptions';
+import { File } from '../rest/APIRequest';
+import { Intents } from './bitfields/Intents';
 export declare class DataResolver {
     static LOG_LEVELS: readonly ["info", "warn", "error", "debug", "trace"];
     static channelType(type: ChannelType): ChannelType;
