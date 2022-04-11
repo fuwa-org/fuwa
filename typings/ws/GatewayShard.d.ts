@@ -1,5 +1,4 @@
 /// <reference types="node" />
-/// <reference types="node" />
 import { GatewayReceivePayload, GatewaySendPayload } from 'discord-api-types/v10';
 import { Client } from '../client/Client';
 import EventEmitter from 'node:events';
@@ -11,7 +10,7 @@ export declare class GatewayShard extends EventEmitter {
     #private;
     client: Client;
     readonly shard: [number, number];
-    private _socket?;
+    private _socket;
     private messageQueueCount;
     compress: boolean;
     erlpack: boolean;
@@ -24,7 +23,8 @@ export declare class GatewayShard extends EventEmitter {
     private s;
     session?: string;
     private _awaitedGuilds;
-    constructor(client: Client, shard: [number, number], token: string);
+    get readyState(): 0 | 1 | 2 | 3;
+    constructor(client: Client, shard: [number, number]);
     private authenticate;
     connect(url?: string): Promise<void>;
     reset(full?: boolean): void;
@@ -36,7 +36,6 @@ export declare class GatewayShard extends EventEmitter {
     send(packet: GatewaySendPayload): Promise<void>;
     heartbeat(): void;
     close(resume?: boolean): void;
-    private _terminate;
     reconnect(): void;
     private startHeartbeat;
 }

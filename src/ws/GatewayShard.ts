@@ -48,12 +48,16 @@ try {
   // it's not installed
 }
 
-/** A shard connection the Discord gateway. */
+/**
+ * Represents a WebSocket connection to Discord's gateway.
+ */
 export class GatewayShard extends EventEmitter {
-  private _socket?: WebSocket;
+  /** The raw WebSocket connection. */
+  private _socket!: WebSocket;
+  /** @internal */
   #messageQueue = new AsyncQueue();
+  /** @internal */
   private messageQueueCount = 0;
-  #token: string;
   public compress: boolean;
   public erlpack: boolean;
   public id: number;
@@ -65,19 +69,28 @@ export class GatewayShard extends EventEmitter {
   /** The latency between us and Discord, in milliseconds. */
   public ping = -1;
 
+  /**
+   * The last sequence number received from Discord. Used in heartbeating
+   * and to catch up to recieved events when resuming.
+   */
   private s = -1;
+  /** The current session ID of the shard. */
   public session?: string;
 
+  /** @internal */
   private _awaitedGuilds: Snowflake[] = [];
 
+  /** @internal */
   #timers: NodeJS.Timer[] = [];
+  /** @internal */
   #timeouts: NodeJS.Timeout[] = [];
 
-  constructor(
-    public client: Client,
-    public readonly shard: [number, number],
-    token: string,
-  ) {
+  /** The WebSocket's ready state. */
+  get readyState() {
+    return this._socket?.readyState ?? WebSocket.CONNECTING;
+  }
+
+  constructor(public client: Client, public readonly shard: [number, number]) {
     super();
 
     this.id = shard[0]!;
@@ -90,8 +103,6 @@ export class GatewayShard extends EventEmitter {
       erlpack = this.client.options.etf;
     }
 
-    this.#token = token;
-
     Object.defineProperty(this, 'client', {
       enumerable: false,
       writable: false,
@@ -99,6 +110,10 @@ export class GatewayShard extends EventEmitter {
     });
   }
 
+  /**
+   * Authenticates the shard with the gateway. Do not use while connected,
+   * as it will cause the shard to be refreshed.
+   */
   private authenticate() {
     if (this.session) {
       this.debugPretty('Resuming...', {
@@ -108,24 +123,21 @@ export class GatewayShard extends EventEmitter {
       this.send(<GatewayResume>{
         op: GatewayOpcodes.Resume,
         d: {
-          token: this.#token,
+          token: this.client.token(false),
           session_id: this.session,
           seq: this.s,
         },
       });
     } else {
       this.debugPretty('Identifying...', {
-        token: this.#token
-          .split('.')
-          .map((v, i) => (i === 2 ? '*'.repeat(v.length) : v))
-          .join('.'),
+        token: this.client.token(),
         shard: this.shard.join(', '),
         intents: this.client.options.intents,
       });
       this.send(<GatewayIdentify>{
         op: GatewayOpcodes.Identify,
         d: {
-          token: this.#token,
+          token: this.client.token(false),
           properties: {
             $browser: this.client.options.wsBrowser,
             $device: this.client.options.wsDevice,
@@ -139,15 +151,13 @@ export class GatewayShard extends EventEmitter {
     }
   }
 
-  /** Opens a connection to Discord. */
+  /** Open a connection to Discord, using the custom URL if specified. */
   public async connect(url = this.url) {
     this.url = url;
 
-    this._socket = new WebSocket(url);
-
     Object.defineProperty(this, '_socket', {
       enumerable: false,
-      value: this._socket,
+      value: new WebSocket(url),
     });
 
     this._socket.on('open', () => {
@@ -162,11 +172,14 @@ export class GatewayShard extends EventEmitter {
     await this.awaitPacket(p => p.t === 'READY');
   }
 
+  /**
+   * Performs a reset of the shard, closing the WebSocket and clearing
+   * all state.
+   */
   public reset(full = false) {
     if (full) {
-      this.debug('Shard undergoing reset, closing socket');
-      this._terminate();
-      this._socket = undefined;
+      this.close(false);
+      this._awaitedGuilds = [];
     }
 
     this.#messageQueue = new AsyncQueue();
@@ -180,6 +193,7 @@ export class GatewayShard extends EventEmitter {
     this.debug('Reset shard');
   }
 
+  /** @internal */
   public debug(...data: any[]) {
     this.client.debug(
       `[${this.client.logger.kleur().blue('WS')} => ${this.client.logger
@@ -189,10 +203,12 @@ export class GatewayShard extends EventEmitter {
     );
   }
 
+  /** @internal */
   private trace(...data: any[]) {
     this.client.logger.trace(`[WS => ${this.id}]`, ...data);
   }
 
+  /** @internal */
   private debugPretty(message: string, data: Record<string, any>) {
     this.debug(
       message,
@@ -203,6 +219,7 @@ export class GatewayShard extends EventEmitter {
     );
   }
 
+  /** Await a packet of a specific type from the gateway. */
   public awaitPacket(filter: (payload: GatewayReceivePayload) => boolean) {
     return new Promise(res => {
       const handler = (payload: GatewayReceivePayload) => {
@@ -216,6 +233,7 @@ export class GatewayShard extends EventEmitter {
     });
   }
 
+  /** @internal */
   private async onMessage(message: Buffer) {
     let buffer = message;
 
@@ -266,10 +284,7 @@ export class GatewayShard extends EventEmitter {
       }
       case GatewayOpcodes.InvalidSession: {
         this.debug('invalid session passed');
-        this._socket?.removeAllListeners();
-        this.close(false);
-        this.reset();
-        this.connect();
+        this.emit('_refresh');
 
         break;
       }
@@ -520,7 +535,8 @@ export class GatewayShard extends EventEmitter {
   }
 
   /**
-   * Send a packet to the {@link GatewayShard._socket|socket}. Use at your own risk.
+   * Send a packet to the {@link GatewayShard._socket|socket}. Use at your own risk, as improperly
+   * formatted packets can cause the gateway to disconnect.
    */
   public async send(packet: GatewaySendPayload) {
     if (!this._socket)
@@ -592,34 +608,26 @@ export class GatewayShard extends EventEmitter {
         this._socket?.removeAllListeners();
         this._socket?.close(resume ? 4000 : 1000, 'Closed by user');
         break;
-      case WebSocket.CONNECTING:
-        break;
-      case WebSocket.CLOSING:
-        break;
-      case WebSocket.CLOSED:
+      default:
         break;
     }
 
     if (!resume) {
       this.session = undefined;
-      this.s = 0;
+      this.s = -1;
     }
 
     this.#timers.forEach(t => clearInterval(t));
     this.#timeouts.forEach(t => clearInterval(t));
   }
 
-  private _terminate() {
-    this._socket?.terminate();
-
-    this.#timers.forEach(t => clearInterval(t));
-    this.#timeouts.forEach(t => clearInterval(t));
-  }
-
+  /** Reconnect to the gateway. */
   public reconnect() {
     this.close(true);
+    this.connect(this.url);
   }
 
+  /** @internal */
   private startHeartbeat() {
     this.#timers.push(
       setInterval(this.heartbeat.bind(this), this.heartbeat_interval),

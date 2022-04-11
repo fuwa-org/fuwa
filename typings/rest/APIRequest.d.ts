@@ -1,5 +1,4 @@
 /// <reference types="node" />
-/// <reference types="node" />
 import { HttpMethod } from 'undici/types/dispatcher';
 import { URLSearchParams } from 'url';
 export interface APIRequest {

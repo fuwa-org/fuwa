@@ -93,7 +93,6 @@ export class Client extends EventEmitter {
     ) {
       const options = {
         token,
-        url: this.constructGatewayURL('wss://gateway.discord.gg'),
       };
 
       if (process.env.__FUWA_SHARDING_MANAGER) {
@@ -113,8 +112,6 @@ export class Client extends EventEmitter {
     }
 
     await this.ws.spawn({
-      token,
-      url: this.constructGatewayURL('wss://gateway.discord.gg'),
       shards: 'auto',
     });
   }
@@ -122,12 +119,6 @@ export class Client extends EventEmitter {
   public token(redact = true) {
     if (redact) return redactToken(this.#token);
     return this.#token;
-  }
-
-  private constructGatewayURL(url: string) {
-    return `${url}?v=${this.options.apiVersion}&encoding=${
-      this.options.etf ? 'etf' : 'json'
-    }`;
   }
 
   public debug(...data: any[]) {

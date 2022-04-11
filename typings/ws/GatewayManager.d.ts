@@ -1,4 +1,5 @@
 /// <reference types="node" />
+import { APIGatewayBotInfo } from 'discord-api-types/v10';
 import EventEmitter from 'node:events';
 import { Client } from '../client/Client.js';
 import { GatewayShard } from './GatewayShard.js';
@@ -6,15 +7,20 @@ export declare class GatewayManager extends EventEmitter {
     #private;
     client: Client;
     shards: Map<number, GatewayShard>;
+    count: number;
+    gateway: APIGatewayBotInfo;
     get ping(): number;
     constructor(client: Client);
     debug(...args: any[]): void;
     error(...args: any[]): void;
+    shard(id: number): GatewayShard | undefined;
     spawnWithShardingManager(options: GatewayManagerShardingOptions): Promise<void>;
     spawn(options: GatewayManagerOptions): Promise<void>;
+    respawn(id: number): Promise<boolean>;
     private _registerListeners;
     private onClose;
     private fetchGatewayBot;
+    private constructGatewayURL;
     reset(): void;
 }
 export interface GatewayManagerShardingOptions extends Omit<GatewayManagerOptions, 'shards' | 'id' | 'count'> {
@@ -32,6 +38,5 @@ export interface GatewayManagerOptions {
     shards: 'auto' | 1 | [number, number];
     id?: number;
     count?: number;
-    url: string;
-    token: string;
+    url?: string;
 }
