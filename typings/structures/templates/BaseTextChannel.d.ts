@@ -7,7 +7,7 @@ import { DMChannel } from '../DMChannel';
 import { GuildChannel } from '../GuildChannel';
 import { GuildTextChannel } from '../GuildTextChannel';
 import { ChannelMessageManager } from '../managers/ChannelMessageManager';
-export interface BaseTextChannel extends Channel<APITextBasedChannel<TextChannelType>> {
+export interface BaseTextChannel extends Channel {
     lastMessageId: Snowflake | null;
     messages: ChannelMessageManager;
     _deserialise(data: APITextBasedChannel<TextChannelType>): this;

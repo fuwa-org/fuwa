@@ -1,13 +1,16 @@
+<center>
+  <img src="https://avatars.githubusercontent.com/u/100430266?v=4&s=1024" />
+</center>
+
 # 不和 (fuwa)
 
 不和 is a simple, small and easy-to-use library for use in
-[Node.js](https://nodejs.org) to interact with the popular text and VoIP
-instant messaging application [Discord](https://discord.com) using its 
+[Node.js](https://nodejs.org) to interact with the popular text and VoIP instant
+messaging application [Discord](https://discord.com) using its
 [public API](https://discord.com/developers).
 
-**Note**: this package is currently maintained in 0ver, which means 
-breaking changes may occur at our discretion in compliance with
-SemVer.
+**Note**: this package is currently maintained in 0ver, which means breaking
+changes may occur at our discretion in compliance with SemVer.
 
 ## Installation
 
@@ -26,7 +29,7 @@ npm install --save fuwadiscord/fuwa
 yarn add github:fuwadiscord/fuwa
 ```
 
-**Note**: pin to a commit you like to avoid breaking changes 
+**Note**: pin to a commit you like to avoid breaking changes
 
 ## Getting started
 
@@ -36,13 +39,16 @@ libraries like Discord.js. A simple bot would be programmed along the lines of:
 ```js
 import Fuwa from 'fuwa';
 
-const client = new Client("my token", {
-  intents: [...Fuwa.DefaultClientOptions.intents, Fuwa.Intents.Bits.MessageContent],
+const client = new Client('my token', {
+  intents: [
+    ...Fuwa.DefaultClientOptions.intents,
+    Fuwa.Intents.Bits.MessageContent,
+  ],
 });
 
-client.on("messages.create", message => {
-  if (message.content === "hi, bot!") {
-    return message.channel.createMessage("hello, " + message.author.tag);
+client.on('messages.create', message => {
+  if (message.content === 'hi, bot!') {
+    return message.channel.createMessage('hello, ' + message.author.tag);
   }
 });
 
@@ -54,8 +60,8 @@ client.connect();
 - **Erlpack**: For _very_ fast encoding/decoding of gateway messages. To use
   this feature, install [`erlpack`](https://npm.im/erlpack) as an npm dependency
   and pass `etf: true` to your `Client`'s options.
-  * => If you have your own custom ETF decoder, you can pass that instead to `etf`,
-    but make sure it implements our `Erlpack` interface.
+  - => If you have your own custom ETF decoder, you can pass that instead to
+    `etf`, but make sure it implements our `Erlpack` interface.
 - **Kleur**: For coloured log output. To use this feature, install
   [`kleur`](https://npm.im/kleur) as an npm dependency.
 
