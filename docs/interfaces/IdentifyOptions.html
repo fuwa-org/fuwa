@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>ClientOptions | 不和 (Fuwa)</title>
+	<title>IdentifyOptions | 不和 (Fuwa)</title>
 	<meta name="description" content="Documentation for 不和 (Fuwa)">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -55,10 +55,10 @@
 					<a href="../modules.html">不和 (Fuwa)</a>
 				</li>
 				<li>
-					<a href="ClientOptions.html">ClientOptions</a>
+					<a href="IdentifyOptions.html">IdentifyOptions</a>
 				</li>
 			</ul>
-			<h1>Interface ClientOptions</h1>
+			<h1>Interface IdentifyOptions</h1>
 		</div>
 	</div>
 </header>
@@ -69,7 +69,7 @@
 				<h3>Hierarchy</h3>
 				<ul class="tsd-hierarchy">
 					<li>
-						<span class="target">ClientOptions</span>
+						<span class="target">IdentifyOptions</span>
 					</li>
 				</ul>
 			</section>
@@ -80,7 +80,8 @@
 						<section class="tsd-index-section ">
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="ClientOptions.html#intents" class="tsd-kind-icon">intents</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="IdentifyOptions.html#seq" class="tsd-kind-icon">seq</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="IdentifyOptions.html#session" class="tsd-kind-icon">session</a></li>
 							</ul>
 						</section>
 					</div>
@@ -89,19 +90,24 @@
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Properties</h2>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="intents" class="tsd-anchor"></a>
-					<h3>intents</h3>
-					<div class="tsd-signature tsd-kind-icon">intents<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
+					<a name="seq" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagOptional">Optional</span> seq</h3>
+					<div class="tsd-signature tsd-kind-icon">seq<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/FuwaDiscord/fuwa/blob/c8a638e/src/client.ts#L14">src/client.ts:14</a></li>
+							<li>Defined in <a href="https://github.com/FuwaDiscord/fuwa/blob/c8a638e/src/ws/index.ts#L118">src/ws/index.ts:118</a></li>
 						</ul>
 					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>The <a href="../classes/Intents.html">Intents</a> for this client</p>
-						</div>
-					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="session" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagOptional">Optional</span> session</h3>
+					<div class="tsd-signature tsd-kind-icon">session<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/FuwaDiscord/fuwa/blob/c8a638e/src/ws/index.ts#L119">src/ws/index.ts:119</a></li>
+						</ul>
+					</aside>
 				</section>
 			</section>
 		</div>
@@ -190,24 +196,27 @@
 					<li class=" tsd-kind-interface">
 						<a href="ClientEvents.html" class="tsd-kind-icon">Client<wbr>Events</a>
 					</li>
+					<li class=" tsd-kind-interface">
+						<a href="ClientOptions.html" class="tsd-kind-icon">Client<wbr>Options</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="DeconstructedSnowflake.html" class="tsd-kind-icon">Deconstructed<wbr>Snowflake</a>
+					</li>
 				</ul>
 				<ul class="current">
 					<li class="current tsd-kind-interface">
-						<a href="ClientOptions.html" class="tsd-kind-icon">Client<wbr>Options</a>
+						<a href="IdentifyOptions.html" class="tsd-kind-icon">Identify<wbr>Options</a>
 						<ul>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="ClientOptions.html#intents" class="tsd-kind-icon">intents</a>
+								<a href="IdentifyOptions.html#seq" class="tsd-kind-icon">seq</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="IdentifyOptions.html#session" class="tsd-kind-icon">session</a>
 							</li>
 						</ul>
 					</li>
 				</ul>
 				<ul class="after-current">
-					<li class=" tsd-kind-interface">
-						<a href="DeconstructedSnowflake.html" class="tsd-kind-icon">Deconstructed<wbr>Snowflake</a>
-					</li>
-					<li class=" tsd-kind-interface">
-						<a href="IdentifyOptions.html" class="tsd-kind-icon">Identify<wbr>Options</a>
-					</li>
 					<li class=" tsd-kind-interface">
 						<a href="ImageURLOptions.html" class="tsd-kind-icon">ImageURLOptions</a>
 					</li>

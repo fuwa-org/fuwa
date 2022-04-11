@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>ClientOptions | 不和 (Fuwa)</title>
+	<title>MessageAllowedMentions | 不和 (Fuwa)</title>
 	<meta name="description" content="Documentation for 不和 (Fuwa)">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -55,10 +55,10 @@
 					<a href="../modules.html">不和 (Fuwa)</a>
 				</li>
 				<li>
-					<a href="ClientOptions.html">ClientOptions</a>
+					<a href="MessageAllowedMentions.html">MessageAllowedMentions</a>
 				</li>
 			</ul>
-			<h1>Interface ClientOptions</h1>
+			<h1>Interface MessageAllowedMentions</h1>
 		</div>
 	</div>
 </header>
@@ -69,7 +69,7 @@
 				<h3>Hierarchy</h3>
 				<ul class="tsd-hierarchy">
 					<li>
-						<span class="target">ClientOptions</span>
+						<span class="target">MessageAllowedMentions</span>
 					</li>
 				</ul>
 			</section>
@@ -80,7 +80,10 @@
 						<section class="tsd-index-section ">
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="ClientOptions.html#intents" class="tsd-kind-icon">intents</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="MessageAllowedMentions.html#parse" class="tsd-kind-icon">parse</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="MessageAllowedMentions.html#repliedUser" class="tsd-kind-icon">replied<wbr>User</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="MessageAllowedMentions.html#roles" class="tsd-kind-icon">roles</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="MessageAllowedMentions.html#users" class="tsd-kind-icon">users</a></li>
 							</ul>
 						</section>
 					</div>
@@ -89,19 +92,51 @@
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Properties</h2>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="intents" class="tsd-anchor"></a>
-					<h3>intents</h3>
-					<div class="tsd-signature tsd-kind-icon">intents<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
+					<a name="parse" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagOptional">Optional</span> parse</h3>
+					<div class="tsd-signature tsd-kind-icon">parse<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">(</span><span class="tsd-signature-type">&quot;user&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;role&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;everyone&quot;</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">[]</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/FuwaDiscord/fuwa/blob/c8a638e/src/client.ts#L14">src/client.ts:14</a></li>
+							<li>Defined in <a href="https://github.com/FuwaDiscord/fuwa/blob/c8a638e/src/types.ts#L13">src/types.ts:13</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="repliedUser" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagOptional">Optional</span> replied<wbr>User</h3>
+					<div class="tsd-signature tsd-kind-icon">replied<wbr>User<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/FuwaDiscord/fuwa/blob/c8a638e/src/types.ts#L17">src/types.ts:17</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>The <a href="../classes/Intents.html">Intents</a> for this client</p>
-						</div>
+						<dl class="tsd-comment-tags">
+							<dt>default</dt>
+							<dd><p>true</p>
+							</dd>
+						</dl>
 					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="roles" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagOptional">Optional</span> roles</h3>
+					<div class="tsd-signature tsd-kind-icon">roles<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">`</span><span class="tsd-signature-symbol">${</span><span class="tsd-signature-type">bigint</span><span class="tsd-signature-symbol">}</span><span class="tsd-signature-symbol">`</span><span class="tsd-signature-symbol">[]</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/FuwaDiscord/fuwa/blob/c8a638e/src/types.ts#L15">src/types.ts:15</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="users" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagOptional">Optional</span> users</h3>
+					<div class="tsd-signature tsd-kind-icon">users<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">`</span><span class="tsd-signature-symbol">${</span><span class="tsd-signature-type">bigint</span><span class="tsd-signature-symbol">}</span><span class="tsd-signature-symbol">`</span><span class="tsd-signature-symbol">[]</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/FuwaDiscord/fuwa/blob/c8a638e/src/types.ts#L14">src/types.ts:14</a></li>
+						</ul>
+					</aside>
 				</section>
 			</section>
 		</div>
@@ -190,18 +225,9 @@
 					<li class=" tsd-kind-interface">
 						<a href="ClientEvents.html" class="tsd-kind-icon">Client<wbr>Events</a>
 					</li>
-				</ul>
-				<ul class="current">
-					<li class="current tsd-kind-interface">
+					<li class=" tsd-kind-interface">
 						<a href="ClientOptions.html" class="tsd-kind-icon">Client<wbr>Options</a>
-						<ul>
-							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="ClientOptions.html#intents" class="tsd-kind-icon">intents</a>
-							</li>
-						</ul>
 					</li>
-				</ul>
-				<ul class="after-current">
 					<li class=" tsd-kind-interface">
 						<a href="DeconstructedSnowflake.html" class="tsd-kind-icon">Deconstructed<wbr>Snowflake</a>
 					</li>
@@ -211,9 +237,27 @@
 					<li class=" tsd-kind-interface">
 						<a href="ImageURLOptions.html" class="tsd-kind-icon">ImageURLOptions</a>
 					</li>
-					<li class=" tsd-kind-interface">
+				</ul>
+				<ul class="current">
+					<li class="current tsd-kind-interface">
 						<a href="MessageAllowedMentions.html" class="tsd-kind-icon">Message<wbr>Allowed<wbr>Mentions</a>
+						<ul>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="MessageAllowedMentions.html#parse" class="tsd-kind-icon">parse</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="MessageAllowedMentions.html#repliedUser" class="tsd-kind-icon">replied<wbr>User</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="MessageAllowedMentions.html#roles" class="tsd-kind-icon">roles</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="MessageAllowedMentions.html#users" class="tsd-kind-icon">users</a>
+							</li>
+						</ul>
 					</li>
+				</ul>
+				<ul class="after-current">
 					<li class=" tsd-kind-interface">
 						<a href="MessageOptions.html" class="tsd-kind-icon">Message<wbr>Options</a>
 					</li>

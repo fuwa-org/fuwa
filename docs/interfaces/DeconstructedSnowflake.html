@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>ClientOptions | 不和 (Fuwa)</title>
+	<title>DeconstructedSnowflake | 不和 (Fuwa)</title>
 	<meta name="description" content="Documentation for 不和 (Fuwa)">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -55,10 +55,10 @@
 					<a href="../modules.html">不和 (Fuwa)</a>
 				</li>
 				<li>
-					<a href="ClientOptions.html">ClientOptions</a>
+					<a href="DeconstructedSnowflake.html">DeconstructedSnowflake</a>
 				</li>
 			</ul>
-			<h1>Interface ClientOptions</h1>
+			<h1>Interface DeconstructedSnowflake</h1>
 		</div>
 	</div>
 </header>
@@ -69,7 +69,7 @@
 				<h3>Hierarchy</h3>
 				<ul class="tsd-hierarchy">
 					<li>
-						<span class="target">ClientOptions</span>
+						<span class="target">DeconstructedSnowflake</span>
 					</li>
 				</ul>
 			</section>
@@ -80,7 +80,12 @@
 						<section class="tsd-index-section ">
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="ClientOptions.html#intents" class="tsd-kind-icon">intents</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="DeconstructedSnowflake.html#binary" class="tsd-kind-icon">binary</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="DeconstructedSnowflake.html#date" class="tsd-kind-icon">date</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="DeconstructedSnowflake.html#increment" class="tsd-kind-icon">increment</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="DeconstructedSnowflake.html#processID" class="tsd-kind-icon">processID</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="DeconstructedSnowflake.html#timestamp" class="tsd-kind-icon">timestamp</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="DeconstructedSnowflake.html#workerID" class="tsd-kind-icon">workerID</a></li>
 							</ul>
 						</section>
 					</div>
@@ -89,19 +94,64 @@
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Properties</h2>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="intents" class="tsd-anchor"></a>
-					<h3>intents</h3>
-					<div class="tsd-signature tsd-kind-icon">intents<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
+					<a name="binary" class="tsd-anchor"></a>
+					<h3>binary</h3>
+					<div class="tsd-signature tsd-kind-icon">binary<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/FuwaDiscord/fuwa/blob/c8a638e/src/client.ts#L14">src/client.ts:14</a></li>
+							<li>Defined in <a href="https://github.com/FuwaDiscord/fuwa/blob/c8a638e/src/util/snowflake.ts#L60">src/util/snowflake.ts:60</a></li>
 						</ul>
 					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>The <a href="../classes/Intents.html">Intents</a> for this client</p>
-						</div>
-					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="date" class="tsd-anchor"></a>
+					<h3>date</h3>
+					<div class="tsd-signature tsd-kind-icon">date<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Date</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/FuwaDiscord/fuwa/blob/c8a638e/src/util/snowflake.ts#L56">src/util/snowflake.ts:56</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="increment" class="tsd-anchor"></a>
+					<h3>increment</h3>
+					<div class="tsd-signature tsd-kind-icon">increment<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/FuwaDiscord/fuwa/blob/c8a638e/src/util/snowflake.ts#L59">src/util/snowflake.ts:59</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="processID" class="tsd-anchor"></a>
+					<h3>processID</h3>
+					<div class="tsd-signature tsd-kind-icon">processID<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/FuwaDiscord/fuwa/blob/c8a638e/src/util/snowflake.ts#L58">src/util/snowflake.ts:58</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="timestamp" class="tsd-anchor"></a>
+					<h3>timestamp</h3>
+					<div class="tsd-signature tsd-kind-icon">timestamp<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/FuwaDiscord/fuwa/blob/c8a638e/src/util/snowflake.ts#L55">src/util/snowflake.ts:55</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="workerID" class="tsd-anchor"></a>
+					<h3>workerID</h3>
+					<div class="tsd-signature tsd-kind-icon">workerID<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/FuwaDiscord/fuwa/blob/c8a638e/src/util/snowflake.ts#L57">src/util/snowflake.ts:57</a></li>
+						</ul>
+					</aside>
 				</section>
 			</section>
 		</div>
@@ -190,21 +240,36 @@
 					<li class=" tsd-kind-interface">
 						<a href="ClientEvents.html" class="tsd-kind-icon">Client<wbr>Events</a>
 					</li>
+					<li class=" tsd-kind-interface">
+						<a href="ClientOptions.html" class="tsd-kind-icon">Client<wbr>Options</a>
+					</li>
 				</ul>
 				<ul class="current">
 					<li class="current tsd-kind-interface">
-						<a href="ClientOptions.html" class="tsd-kind-icon">Client<wbr>Options</a>
+						<a href="DeconstructedSnowflake.html" class="tsd-kind-icon">Deconstructed<wbr>Snowflake</a>
 						<ul>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="ClientOptions.html#intents" class="tsd-kind-icon">intents</a>
+								<a href="DeconstructedSnowflake.html#binary" class="tsd-kind-icon">binary</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="DeconstructedSnowflake.html#date" class="tsd-kind-icon">date</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="DeconstructedSnowflake.html#increment" class="tsd-kind-icon">increment</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="DeconstructedSnowflake.html#processID" class="tsd-kind-icon">processID</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="DeconstructedSnowflake.html#timestamp" class="tsd-kind-icon">timestamp</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="DeconstructedSnowflake.html#workerID" class="tsd-kind-icon">workerID</a>
 							</li>
 						</ul>
 					</li>
 				</ul>
 				<ul class="after-current">
-					<li class=" tsd-kind-interface">
-						<a href="DeconstructedSnowflake.html" class="tsd-kind-icon">Deconstructed<wbr>Snowflake</a>
-					</li>
 					<li class=" tsd-kind-interface">
 						<a href="IdentifyOptions.html" class="tsd-kind-icon">Identify<wbr>Options</a>
 					</li>
