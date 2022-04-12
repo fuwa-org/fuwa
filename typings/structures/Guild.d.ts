@@ -48,6 +48,8 @@ export declare class Guild extends BaseStructure<APIGuild | APIUnavailableGuild>
     systemChannelFlags: GuildSystemChannelFlags | null;
     publicUpdatesChannelId: Snowflake | null;
     channels: GuildChannelManager;
+    get shardId(): number;
+    get shard(): import("..").GatewayShard | undefined;
     constructor(client: Client);
     _deserialise(data: APIGuild | APIUnavailableGuild): this;
     fetch(force?: boolean): Promise<Guild>;

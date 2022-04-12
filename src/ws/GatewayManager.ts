@@ -8,7 +8,7 @@ import { Client } from '../client/Client.js';
 import { consumeJSON } from '../rest/RequestManager.js';
 import { Intents } from '../util/bitfields/Intents.js';
 import { GatewayShard } from './GatewayShard.js';
-import WebSocket from 'ws';
+import { setTimeout as sleep } from 'node:timers/promises';
 
 /**
  * The Gateway Manager is responsible for managing the client's {@link GatewayShard}s.
@@ -168,21 +168,70 @@ export class GatewayManager extends EventEmitter {
 
     this.debug('spawning shards:', range.join('..'), '(' + count + ')');
 
-    for (let i = range[0]; i !== range[1]; i++) {
-      const shard = new GatewayShard(this.client, [i, count]);
-      this._registerListeners(shard);
-      try {
-        await shard.connect(
-          this.constructGatewayURL(options.url ?? this.gateway.url),
-        );
-      } catch (e) {
-        this.error('failed to spawn shard', i, e);
-      } finally {
-        this.shards.set(i, shard);
+    if (options.trimExisting) {
+      this.debug('trimming existing shards which do not satisfy the range');
+
+      for (const [id, shard] of this.shards) {
+        if (id < range[0] || id >= range[1]) {
+          this.debug('closing shard', id);
+          shard.close(false);
+          this.shards.delete(id);
+        }
+      }
+
+      this.count = range[1] - range[0];
+    } else {
+      this.count = Math.max(this.count, range[1] - range[0], count);
+    }
+
+    let concurrency = this.gateway.session_start_limit.max_concurrency ?? 1;
+    let reset = Date.now() + 7.5e3;
+
+    const reset_interval = setInterval(() => {
+      reset = Date.now() + 7.5e3;
+      if (concurrency === 0) {
+        concurrency = this.gateway.session_start_limit.max_concurrency ?? 1;
+      }
+    }, 7.5e3);
+
+    async function checkConcurrency(this: GatewayManager, i: number) {
+      if (concurrency === 0) {
+        this.debug('shard', i, 'is waiting for concurrency');
+        await sleep(reset - Date.now());
+        await checkConcurrency.call(this, i);
       }
     }
 
-    this.count = range[1];
+    for (let i = range[0]; i !== range[1]; i++) {
+      if (this.shards.has(i) && options.skipExisting) {
+        this.debug('shard', i, 'already exists, skipping');
+        return;
+      } else if (this.shards.has(i)) {
+        this.debug('shard', i, 'already exists, closing and continuing');
+        this.shards.get(i)!.close(false);
+        this.shards.delete(i);
+      }
+
+      const shard = new GatewayShard(this.client, [i, this.count]);
+      this._registerListeners(shard);
+
+      this.shards.set(i, shard);
+
+      await checkConcurrency.call(this, i);
+
+      concurrency--;
+      shard
+        .connect(this.constructGatewayURL(options.url ?? this.gateway.url))
+        .catch(
+          ((err: any) => {
+            this.debug('shard', i, 'failed to connect', err);
+          }).bind(this),
+        );
+
+      this.debug(`spawned shard ${i}, ${range.indexOf(i)}/${range.length}`);
+    }
+
+    clearInterval(reset_interval);
   }
 
   /**
@@ -195,9 +244,6 @@ export class GatewayManager extends EventEmitter {
 
     if (!shard) return false;
 
-    shard.close(false);
-    shard.reset(true);
-    this.shards.delete(shard.id);
     this.spawn({
       shards: 1,
       id: shard.id,
@@ -205,6 +251,38 @@ export class GatewayManager extends EventEmitter {
       count: this.count,
     });
     return true;
+  }
+
+  /**
+   * Recalculate shard count based on new gateway data (if provided),
+   * and respawn shards.
+   */
+  public async recalculate(amount: number): Promise<void>;
+  public async recalculate(info: APIGatewayBotInfo): Promise<void>;
+  public async recalculate(info: APIGatewayBotInfo | number) {
+    this.debug('recalculating shard count for new statistics: ', info);
+
+    if (typeof info === 'number') {
+      this.gateway = {
+        ...this.gateway,
+        shards: info,
+      };
+    } else {
+      this.gateway = info;
+    }
+
+    if (this.gateway.shards < this.count) {
+      this.debug(
+        'new shard count is less than gateway shard count, clearing shards',
+      );
+      this.reset();
+    }
+
+    await this.spawn({
+      shards: 'auto',
+      url: this.gateway.url,
+      trimExisting: true,
+    });
   }
 
   /** @internal */
@@ -321,4 +399,6 @@ export interface GatewayManagerOptions {
   id?: number;
   count?: number;
   url?: string;
+  skipExisting?: boolean;
+  trimExisting?: boolean;
 }

@@ -169,7 +169,7 @@ export class GatewayShard extends EventEmitter {
       this.emit('close', code, reason);
     });
 
-    await this.awaitPacket(p => p.t === 'READY');
+    await this.awaitPacket(p => p.op === GatewayOpcodes.Hello);
   }
 
   /**

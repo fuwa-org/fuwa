@@ -17,6 +17,8 @@ export declare class GatewayManager extends EventEmitter {
     spawnWithShardingManager(options: GatewayManagerShardingOptions): Promise<void>;
     spawn(options: GatewayManagerOptions): Promise<void>;
     respawn(id: number): Promise<boolean>;
+    recalculate(amount: number): Promise<void>;
+    recalculate(info: APIGatewayBotInfo): Promise<void>;
     private _registerListeners;
     private onClose;
     private fetchGatewayBot;
@@ -39,4 +41,6 @@ export interface GatewayManagerOptions {
     id?: number;
     count?: number;
     url?: string;
+    skipExisting?: boolean;
+    trimExisting?: boolean;
 }

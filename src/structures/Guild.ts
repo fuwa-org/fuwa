@@ -94,6 +94,14 @@ export class Guild extends BaseStructure<APIGuild | APIUnavailableGuild> {
 
   public channels: GuildChannelManager;
 
+  public get shardId() {
+    return Number((BigInt(this.id) >> 22n) % BigInt(this.client.ws.count));
+  }
+
+  public get shard() {
+    return this.client.ws.shards.get(this.shardId);
+  }
+
   constructor(client: Client) {
     super(client);
 
