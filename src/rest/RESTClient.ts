@@ -107,18 +107,19 @@ export class RESTClient {
       }
 
       if (req.body) {
-        if (req.payloadJson) data.append('payload_json', JSON.stringify(req.body), {
-          contentType: 'application/json',
-        });
+        if (req.payloadJson)
+          data.append('payload_json', JSON.stringify(req.body), {
+            contentType: 'application/json',
+          });
         else
-        for (const key in req.body) {
-          if ([null, undefined].includes(req.body[key])) continue; 
+          for (const key in req.body) {
+            if ([null, undefined].includes(req.body[key])) continue;
 
-          if (Array.isArray(req.body[key]))
-            for (let i = 0; i < req.body[key].length; i++)
-              data.append(`${key}[${i}]`, JSON.stringify(req.body[key][i]));
-          else data.append(key, JSON.stringify(req.body[key]));
-        }
+            if (Array.isArray(req.body[key]))
+              for (let i = 0; i < req.body[key].length; i++)
+                data.append(`${key}[${i}]`, JSON.stringify(req.body[key][i]));
+            else data.append(key, JSON.stringify(req.body[key]));
+          }
       }
 
       req.headers = data.getHeaders(req.headers);

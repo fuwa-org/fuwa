@@ -1,5 +1,5 @@
 /// <reference types="node" />
-import { RequestManager } from '../rest/RequestManager.js';
+import { RequestManager, Response } from '../rest/RequestManager.js';
 import { ClientOptions, Snowflake } from './ClientOptions';
 import EventEmitter from 'events';
 import { GuildManager } from '../structures/managers/GuildManager.js';
@@ -56,12 +56,15 @@ export interface ClientEvents {
     'messages.update': [old: Message, new: Message];
 }
 export declare type Awaitable<T> = Promise<T> | T;
-export declare type APIRequestOptions = Omit<APIRequest, 'route'>;
+export declare type APIRequestOptions<D = any> = Omit<APIRequest<D>, 'route'>;
 export declare type APIProxy = {
     [key: string]: APIProxy;
 } & {
-    get<T>(options: APIRequestOptions): Promise<T>;
-    post<T>(options: APIRequestOptions): Promise<T>;
-    put<T>(options: APIRequestOptions): Promise<T>;
-    delete<T>(options: Omit<APIRequestOptions, 'body' | 'files'>): Promise<T>;
+    get: APIProxyExecuteRequest<true>;
+    post: APIProxyExecuteRequest;
+    put: APIProxyExecuteRequest;
+    patch: APIProxyExecuteRequest;
+    delete: APIProxyExecuteRequest<true>;
 } & ((...args: any[]) => APIProxy);
+declare type APIProxyExecuteRequest<O = false> = <T, D = any, Json = true>(options: O extends true ? Omit<APIRequestOptions<D>, 'body' | 'files'> : APIRequestOptions<D>, json?: Json) => Promise<Json extends true ? T : Response<T>>;
+export {};

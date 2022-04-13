@@ -5,8 +5,13 @@ import { User } from './User';
 import { ExtendedUser } from './ExtendedUser';
 import { MessageFlags } from '../util/bitfields/MessageFlags';
 import { TextChannel } from './templates/BaseTextChannel';
-import { DataTransformer } from '../rest/DataTransformer';
-import { consumeJSON } from '../rest/RequestManager';
+import { MessageAttachment } from './MessageAttachment';
+import { FileResolvable } from '../util/resolvables/FileResolvable';
+import {
+  MessagePayload,
+  payload2data,
+} from '../util/resolvables/MessagePayload';
+import { APIRequest } from '../rest/APIRequest';
 
 // TODO: Add support for DM messages
 export class Message<
@@ -47,8 +52,10 @@ export class Message<
     return this.editedTimestamp ? new Date(this.editedTimestamp!) : null;
   }
 
+  public attachments: MessageAttachment[] = [];
+
   _deserialise(data: APIMessage): this {
-    this.id = data.id as Snowflake;
+    if ('id' in data) this.id = data.id as Snowflake;
 
     if ('guild_id' in data) this.guildId = data.guild_id as Snowflake;
     if ('channel_id' in data) this.channelId = data.channel_id as Snowflake;
@@ -75,20 +82,32 @@ export class Message<
       this.editedTimestamp = data.edited_timestamp
         ? new Date(data.edited_timestamp).getTime()
         : null;
-    // TODO: attachments, mentions, applications, webhooks, reactions, references, etc.
+    if ('attachments' in data)
+      this.attachments = data.attachments.map(v =>
+        new MessageAttachment(this.client)._deserialise(v),
+      );
+    // TODO: mentions, applications, webhooks, reactions, references, etc.
 
     return this;
   }
 
-  _modify(data: Partial<APIMessage>) {
-    return this.client.http
-      .queue<APIMessage>({
-        route: Routes.channelMessage(this.channel!.id, this.id),
-        method: 'PATCH',
-        body: DataTransformer.asJSON(data),
-      })
-      .then(consumeJSON)
-      .then((data: any) => this._deserialise(data));
+  _modify(data: Partial<APIMessage> | APIRequest) {
+    const options: APIRequest = {
+      route: Routes.channelMessage(this.channelId, this.id),
+      body: data,
+      method: 'PATCH',
+    };
+
+    if ((data as APIRequest).route) {
+      data = data as APIRequest;
+      options.body = data.body;
+      options.files = data.files;
+    }
+
+    return this.client
+      .rest(options.route)
+      .patch<APIMessage>(options)
+      .then(this._deserialise.bind(this));
   }
 
   public async fetchMember() {
@@ -99,8 +118,10 @@ export class Message<
     );
   }
 
-  public async edit(content: string) {
-    return this._modify({ content });
+  public async edit(content: string | MessagePayload) {
+    return this._modify(
+      await payload2data(MessagePayload.from(content), this.channelId),
+    );
   }
 
   public async delete() {
@@ -129,6 +150,26 @@ export class Message<
     );
   }
 
+  public removeAttachments() {
+    return this._modify({
+      attachments: [],
+    });
+  }
+
+  public async attach(
+    ...files:
+      | (FileResolvable | MessageAttachment)[]
+      | [(FileResolvable | MessageAttachment)[]]
+  ) {
+    if (Array.isArray(files[0])) {
+      files = files[0];
+    }
+
+    return this.edit({
+      attachments: files as FileResolvable[],
+    });
+  }
+
   toJSON(): APIMessage {
     return {
       id: this.id,
@@ -152,5 +193,3 @@ export class Message<
     };
   }
 }
-
-export class MessageAttachment {}

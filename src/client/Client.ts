@@ -1,4 +1,8 @@
-import { consumeJSON, RequestManager } from '../rest/RequestManager.js';
+import {
+  consumeJSON,
+  RequestManager,
+  Response,
+} from '../rest/RequestManager.js';
 import { RESTClient } from '../rest/RESTClient';
 import {
   ClientOptions,
@@ -142,12 +146,10 @@ export class Client extends EventEmitter {
   }
 
   /**
-   * Kept for compatibility with Discord.js
-   * @deprecated Please prefer {@link Client.http}
+   * A much simpler way to use {@link Client.http}
    */
   public get rest(): APIProxy {
-    this.logger.warn('Client.rest is deprecated, please use Client.http');
-    const route: string[] = [''];
+    let route: string[] = [''];
 
     const handler: ProxyHandler<typeof addRoute> = {
       get: function (this: Client, _: any, prop: string, receiver: any) {
@@ -157,15 +159,16 @@ export class Client extends EventEmitter {
           case 'get':
           case 'post':
           case 'put':
+          case 'patch':
           case 'delete':
-            return <T>(options: APIRequestOptions): Promise<T> => {
+            return (options: APIRequestOptions, json = true) => {
               return this.http
-                .queue<T>({
+                .queue({
                   route: route.join('/'),
                   method: prop.toUpperCase() as HttpMethod,
                   ...options,
                 })
-                .then(consumeJSON);
+                .then(d => (json ? consumeJSON : d)) as any;
             };
           default: {
             if (typeof prop === 'symbol') return () => route.join('/');
@@ -177,7 +180,8 @@ export class Client extends EventEmitter {
     };
 
     function addRoute(...fragments: string[]) {
-      route.push(...fragments);
+      if (route.length > 1) route.push(...fragments);
+      else route = fragments;
       return new Proxy(addRoute, handler);
     }
 
@@ -215,13 +219,21 @@ export interface ClientEvents {
 
 export type Awaitable<T> = Promise<T> | T;
 
-export type APIRequestOptions = Omit<APIRequest, 'route'>;
+export type APIRequestOptions<D = any> = Omit<APIRequest<D>, 'route'>;
 
 export type APIProxy = {
   [key: string]: APIProxy;
 } & {
-  get<T>(options: APIRequestOptions): Promise<T>;
-  post<T>(options: APIRequestOptions): Promise<T>;
-  put<T>(options: APIRequestOptions): Promise<T>;
-  delete<T>(options: Omit<APIRequestOptions, 'body' | 'files'>): Promise<T>;
+  get: APIProxyExecuteRequest<true>;
+  post: APIProxyExecuteRequest;
+  put: APIProxyExecuteRequest;
+  patch: APIProxyExecuteRequest;
+  delete: APIProxyExecuteRequest<true>;
 } & ((...args: any[]) => APIProxy);
+
+type APIProxyExecuteRequest<O = false> = <T, D = any, Json = true>(
+  options: O extends true
+    ? Omit<APIRequestOptions<D>, 'body' | 'files'>
+    : APIRequestOptions<D>,
+  json?: Json,
+) => Promise<Json extends true ? T : Response<T>>;

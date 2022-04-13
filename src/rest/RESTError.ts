@@ -63,7 +63,7 @@ function traverse(obj: any, keyPrefix = '', prev: Record<string, any> = {}) {
       for (let i = 0; i < obj[key].length; i++) {
         const err = obj[key][i];
 
-        prev[keyPrefix.slice(1) || "[root]"] = `${err.code}: ${err.message}`;
+        prev[keyPrefix.slice(1) || '[root]'] = `${err.code}: ${err.message}`;
       }
     } else
       prev = traverse(

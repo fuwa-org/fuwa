@@ -9,10 +9,10 @@ import { basename } from 'path';
 import { Snowflake } from '../../client/ClientOptions';
 import { APIRequest } from '../../rest/APIRequest';
 import { MessageFlags } from '../bitfields/MessageFlags';
+import { FuwaError } from '../errors';
 import {
   FileResolvable,
   mimeTypeFromExtension,
-  ResolvedFile,
   resolveFile,
 } from './FileResolvable';
 
@@ -33,7 +33,12 @@ export class MessagePayload {
     else if (typeof value === 'string')
       return new MessagePayload({ content: value });
     else if (typeof value === 'object') return new MessagePayload(value);
-    else throw new TypeError('Expected MessagePayload, string, or object');
+    else
+      throw new FuwaError(
+        'INVALID_PARAMETER',
+        'content',
+        'string or MessagePayload',
+      );
   }
 
   constructor(data: MessagePayload | Record<keyof MessagePayload, any>) {
@@ -61,7 +66,7 @@ export class MessagePayloadAttachment {
       description?: string;
     } = {},
   ) {
-      if (options.description) this.description = options.description;
+    if (options.description) this.description = options.description;
   }
 
   public async resolve() {
@@ -73,12 +78,12 @@ export class MessagePayloadAttachment {
       this.contentType = file.mimeType;
     });
 
-    if (this.contentType === 'application/octet-stream') {
-      this.contentType = mimeTypeFromExtension(this.name.split('.').pop()!);
-    }
-
     if (!this.name && this.options?.url) {
       this.name = basename(this.options.url);
+    }
+
+    if (this.contentType === 'application/octet-stream') {
+      this.contentType = mimeTypeFromExtension(this.name.split('.').pop()!);
     }
 
     return this;
@@ -93,12 +98,13 @@ export async function payload2data(
     content: payload.content,
     tts: payload.tts,
     nonce: payload.nonce,
-    attachments: [],
-  }
+  };
 
-  const files: APIRequest["files"] = [];
+  const files: APIRequest['files'] = [];
 
   if (payload.attachments) {
+    body.attachments ??= [];
+
     for (let i = 0; i < payload.attachments.length; i++) {
       const attachment = payload.attachments[i];
 
@@ -110,13 +116,13 @@ export async function payload2data(
             id: i.toString(),
             filename: file.name,
             description: attachment.description,
-          }); 
+          });
         }
 
         files.push({
           filename: file.name,
           data: file.data,
-          contentType: file.contentType, 
+          contentType: file.contentType,
         });
       } else {
         const file = await resolveFile(attachment);
@@ -128,7 +134,7 @@ export async function payload2data(
         });
       }
     }
-  } 
+  }
 
   if (payload.flags) {
     if (payload.flags instanceof MessageFlags) {
@@ -144,5 +150,5 @@ export async function payload2data(
     files,
     method: 'POST',
     payloadJson: true,
-  }
+  };
 }

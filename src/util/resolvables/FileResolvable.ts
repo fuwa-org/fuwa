@@ -6,9 +6,7 @@ import { FuwaError } from '../errors';
 
 export type FileResolvable = string | Buffer;
 
-export async function resolveFile(
-  file: FileResolvable,
-): Promise<ResolvedFile> {
+export async function resolveFile(file: FileResolvable): Promise<ResolvedFile> {
   if (file instanceof Buffer) return { data: file, mimeType: 'image/png' };
   if (typeof file !== 'string')
     throw new TypeError('Expected a string or Buffer');

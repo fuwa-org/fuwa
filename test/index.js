@@ -54,13 +54,19 @@ client.on('messages.create', async m => {
           .slice(0, 1990)}\n\`\`\``,
       );
     }
-  } else if (m.content === 'j' && !m.author.bot) {
-    m.channel.createMessage({
-      content: 'j',
-      tts: false,
-      nonce: Date.now(),
-    });
-  } else {
+  }
+
+  if (m.attachments.length > 0) {
+    if (Math.random() < 0.8) {
+      /** @type {Fuwa.Types.RESTPostAPIChannelMessageJSONBody} */
+      const body = {
+        content: 'wow so cool',
+      };
+
+      m.client.rest.channels(m.channel.id).messages.post({
+        body,
+      });
+    }
   }
 });
 
