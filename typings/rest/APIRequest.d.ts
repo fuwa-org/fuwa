@@ -1,12 +1,12 @@
 /// <reference types="node" />
 import { HttpMethod } from 'undici/types/dispatcher';
 import { URLSearchParams } from 'url';
-export interface APIRequest {
+export interface APIRequest<T = any> {
     route: string;
     auth?: boolean;
     versioned?: boolean;
     query?: URLSearchParams | string | null;
-    body?: any | null;
+    body?: T | null;
     files?: File[] | null;
     method?: HttpMethod;
     headers?: Record<string, string>;
@@ -15,6 +15,7 @@ export interface APIRequest {
     useBaseUrl?: boolean;
     allowedRetries?: number;
     retries?: number;
+    payloadJson?: boolean;
 }
 export interface File {
     key?: string;

@@ -1,5 +1,5 @@
 /// <reference types="node" />
-import { MessageFlags as APIMessageFlags } from 'discord-api-types/v10';
+import { RESTPostAPIChannelMessageJSONBody, MessageFlags as APIMessageFlags } from 'discord-api-types/v10';
 import { Snowflake } from '../../client/ClientOptions';
 import { APIRequest } from '../../rest/APIRequest';
 import { MessageFlags } from '../bitfields/MessageFlags';
@@ -21,29 +21,19 @@ export declare class MessagePayloadAttachment {
         url?: string;
         data?: Buffer | string;
         contentType?: string;
+        description?: string;
     };
     name: string;
     data: Buffer;
     contentType: string;
+    description?: string;
     constructor(options?: {
         name?: string;
         url?: string;
         data?: Buffer | string;
         contentType?: string;
+        description?: string;
     });
     resolve(): Promise<this>;
 }
-export declare function payload2data(payload: MessagePayload, channel: Snowflake): Promise<APIRequest & {
-    body?: Partial<Omit<import("discord-api-types/utils/internals").AddUndefinedToPossiblyUndefinedPropertiesOfInterface<{
-        content?: string | undefined;
-        nonce?: string | number | undefined;
-        tts?: boolean | undefined;
-        embeds?: import("discord-api-types/v10").APIEmbed[] | undefined;
-        allowed_mentions?: import("discord-api-types/v10").APIAllowedMentions | undefined;
-        message_reference?: import("discord-api-types/v10").APIMessageReferenceSend | undefined;
-        components?: import("discord-api-types/v10").APIActionRowComponent<import("discord-api-types/v10").APIMessageActionRowComponent>[] | undefined;
-        sticker_ids?: [string] | [string, string] | [string, string, string] | undefined;
-        attachments?: (Pick<import("discord-api-types/v10").APIAttachment, "id" | "description"> & Partial<Pick<import("discord-api-types/v10").APIAttachment, "filename">>)[] | undefined;
-        flags?: APIMessageFlags | undefined;
-    }>, "attachments">> | undefined;
-}>;
+export declare function payload2data(payload: MessagePayload, channel: Snowflake): Promise<APIRequest<RESTPostAPIChannelMessageJSONBody>>;

@@ -1,12 +1,12 @@
 import { HttpMethod } from 'undici/types/dispatcher';
 import { URLSearchParams } from 'url';
 
-export interface APIRequest {
+export interface APIRequest<T = any> {
   route: string;
   auth?: boolean;
   versioned?: boolean;
   query?: URLSearchParams | string | null;
-  body?: any | null;
+  body?: T | null;
   files?: File[] | null;
   method?: HttpMethod;
   headers?: Record<string, string>;
@@ -16,6 +16,8 @@ export interface APIRequest {
 
   allowedRetries?: number;
   retries?: number;
+
+  payloadJson?: boolean;
 }
 
 export interface File {
@@ -30,8 +32,8 @@ export function resolveRequest(req: APIRequest): Required<APIRequest> {
     auth: true,
     versioned: true,
     query: null,
-    body: null,
     files: null,
+    body: null,
     method: 'GET',
     allowedRetries: 5,
     retries: 0,
@@ -39,6 +41,7 @@ export function resolveRequest(req: APIRequest): Required<APIRequest> {
     reason: null,
     useRateLimits: true,
     useBaseUrl: true,
+    payloadJson: false,
     ...req,
   };
 }

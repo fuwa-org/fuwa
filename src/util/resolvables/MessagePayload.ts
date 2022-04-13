@@ -12,6 +12,7 @@ import { MessageFlags } from '../bitfields/MessageFlags';
 import {
   FileResolvable,
   mimeTypeFromExtension,
+  ResolvedFile,
   resolveFile,
 } from './FileResolvable';
 
@@ -36,7 +37,12 @@ export class MessagePayload {
   }
 
   constructor(data: MessagePayload | Record<keyof MessagePayload, any>) {
-    Object.assign(this, Object.assign(DEFAULT, data));
+    this.content = data.content;
+    this.flags = data.flags;
+    this.tts = data.tts;
+    this.nonce = data.nonce;
+    this.attachments = data.attachments;
+    // this.embeds = data.embeds;
   }
 }
 
@@ -44,6 +50,7 @@ export class MessagePayloadAttachment {
   name!: string;
   data!: Buffer;
   contentType!: string;
+  description?: string;
 
   constructor(
     public options: {
@@ -51,8 +58,11 @@ export class MessagePayloadAttachment {
       url?: string;
       data?: Buffer | string;
       contentType?: string;
+      description?: string;
     } = {},
-  ) {}
+  ) {
+      if (options.description) this.description = options.description;
+  }
 
   public async resolve() {
     await resolveFile(
@@ -78,55 +88,61 @@ export class MessagePayloadAttachment {
 export async function payload2data(
   payload: MessagePayload,
   channel: Snowflake,
-) {
-  // FIXME: #55 this is where the data gets squashed
-
-  const data: APIRequest & {
-    body?: Partial<Omit<RESTPostAPIChannelMessageJSONBody, 'attachments'>>;
-  } = {
-    route: Routes.channelMessages(channel),
-    method: 'POST',
-  };
-
-  const body: typeof data['body'] = DEFAULT;
-
-  if (payload.content) body.content = payload.content ?? null;
-  if (payload.flags)
-    body.flags =
-      payload.flags instanceof MessageFlags
-        ? payload.flags.bits
-        : payload.flags;
-  if (payload.tts) body.tts = payload.tts;
-  if (payload.nonce) body.nonce = payload.nonce;
-
-  if (payload.attachments) {
-    data.files = await Promise.all(
-      payload.attachments.map(async attachment => {
-        if (attachment instanceof MessagePayloadAttachment) {
-          const file = await attachment.resolve();
-
-          return {
-            filename: file.name,
-            ...file,
-          };
-        } else {
-          return resolveFile(attachment);
-        }
-      }),
-    );
+): Promise<APIRequest<RESTPostAPIChannelMessageJSONBody>> {
+  const body: RESTPostAPIChannelMessageJSONBody = {
+    content: payload.content,
+    tts: payload.tts,
+    nonce: payload.nonce,
+    attachments: [],
   }
 
-  data.body = body;
-  data.body.attachments = null;
+  const files: APIRequest["files"] = [];
 
-  return data;
+  if (payload.attachments) {
+    for (let i = 0; i < payload.attachments.length; i++) {
+      const attachment = payload.attachments[i];
+
+      if (attachment instanceof MessagePayloadAttachment) {
+        const file = await attachment.resolve();
+
+        if (attachment.description) {
+          body.attachments!.push({
+            id: i.toString(),
+            filename: file.name,
+            description: attachment.description,
+          }); 
+        }
+
+        files.push({
+          filename: file.name,
+          data: file.data,
+          contentType: file.contentType, 
+        });
+      } else {
+        const file = await resolveFile(attachment);
+
+        files.push({
+          filename: file.filename,
+          data: file.data,
+          contentType: file.mimeType,
+        });
+      }
+    }
+  } 
+
+  if (payload.flags) {
+    if (payload.flags instanceof MessageFlags) {
+      body.flags = payload.flags.bits;
+    } else {
+      body.flags = payload.flags;
+    }
+  }
+
+  return {
+    route: Routes.channelMessages(channel),
+    body,
+    files,
+    method: 'POST',
+    payloadJson: true,
+  }
 }
-
-const DEFAULT = {
-  content: '',
-  flags: 0,
-  tts: false,
-  nonce: null,
-  embeds: null,
-  attachments: null,
-};

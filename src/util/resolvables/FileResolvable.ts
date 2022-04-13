@@ -2,27 +2,19 @@ import undici from 'undici';
 import fs from 'fs/promises';
 import { File } from '../../rest/APIRequest';
 import { basename } from 'path';
-import { RequestManager } from '../../rest/RequestManager';
 import { FuwaError } from '../errors';
 
 export type FileResolvable = string | Buffer;
 
 export async function resolveFile(
   file: FileResolvable,
-  reqMan?: RequestManager,
 ): Promise<ResolvedFile> {
   if (file instanceof Buffer) return { data: file, mimeType: 'image/png' };
   if (typeof file !== 'string')
     throw new TypeError('Expected a string or Buffer');
 
   if (/^http(s):/.test(file)) {
-    const res = reqMan
-      ? await reqMan.queue({
-          route: file,
-          useRateLimits: false,
-          useBaseUrl: false,
-        })
-      : await undici.request(file);
+    const res = await undici.request(file);
 
     if (res.statusCode !== 200)
       throw new FuwaError('FILE_RESOLVE_ERROR', file, res.statusCode);

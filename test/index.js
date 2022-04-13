@@ -22,6 +22,7 @@ client.on('messages.create', async m => {
         new Fuwa.MessagePayloadAttachment({
           data: '{ "content": "pong" }',
           name: 'ping.json',
+          description: 'pong',
         }),
       ],
       tts: false,
