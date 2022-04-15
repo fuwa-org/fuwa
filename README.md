@@ -39,7 +39,7 @@ libraries like Discord.js. A simple bot would be programmed along the lines of:
 ```js
 import Fuwa from 'fuwa';
 
-const client = new Client('my token', {
+const client = new Fuwa.Client('my token', {
   intents: [
     ...Fuwa.DefaultClientOptions.intents,
     Fuwa.Intents.Bits.MessageContent,
