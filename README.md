@@ -1,13 +1,9 @@
-<center>
-  <img src="https://avatars.githubusercontent.com/u/100430266?v=4&s=1024" />
-</center>
-
 # 不和 (fuwa)
 
 不和 is a simple, small and easy-to-use library for use in
 [Node.js](https://nodejs.org) to interact with the popular text and VoIP instant
 messaging application [Discord](https://discord.com) using its
-[public API](https://discord.com/developers).
+[official API](https://discord.com/developers/docs).
 
 **Note**: this package is currently maintained in 0ver, which means breaking
 changes may occur at our discretion in compliance with SemVer.
