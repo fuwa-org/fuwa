@@ -16,6 +16,8 @@ export interface APIRequest<T = any> {
     allowedRetries?: number;
     retries?: number;
     payloadJson?: boolean;
+    startTime?: number;
+    httpStartTime?: number;
 }
 export interface File {
     key?: string;

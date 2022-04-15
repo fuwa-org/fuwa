@@ -11,11 +11,12 @@ export declare class RequestManager {
     buckets: Map<string, BucketQueueManager>;
     remaining: number;
     reset: number;
+    timings: boolean;
     constructor(client: RESTClient, _client?: any);
     get durUntilReset(): number;
     getBucket(route: RouteLike): string[];
     get globalLimited(): boolean;
-    makeRequest(bucket: BucketQueueManager, requestData: APIRequest): Promise<ResponseData>;
+    makeRequest(bucket: BucketQueueManager, req: Required<APIRequest>): Promise<ResponseData>;
     queue<T>(route: RouteLike, options?: Omit<APIRequest, 'route'>): Promise<Response<T>>;
     queue<T>(req: APIRequest): Promise<Response<T>>;
     private updateOffset;

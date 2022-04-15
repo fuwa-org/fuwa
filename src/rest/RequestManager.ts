@@ -28,7 +28,12 @@ export class RequestManager {
   /** When the global rate limit will reset. */
   public reset = Date.now() + 1e3;
 
-  constructor(public client: RESTClient, public _client?: any) {}
+  /** Whether to measure the timing of HTTP requests */
+  public timings = false;
+
+  constructor(public client: RESTClient, public _client?: any) {
+    if (_client?.options?.httpTimings) this.timings = true;
+  }
 
   public get durUntilReset() {
     return this.reset + this.offset - Date.now();
@@ -53,17 +58,26 @@ export class RequestManager {
 
   public async makeRequest(
     bucket: BucketQueueManager,
-    requestData: APIRequest,
+    req: Required<APIRequest>,
   ): Promise<ResponseData> {
-    const req = resolveRequest(requestData);
+    if (this.timings) req.httpStartTime = Date.now();
 
-    const res = await this.client.execute(req, this.trace.bind(this));
+    const res = await this.client.execute(req, this.trace.bind(this)),
+      now = Date.now();
 
     if (req.useBaseUrl) this.updateOffset(res);
 
     this.debug(
       `${req.method.toUpperCase()} ${req.route} -> ${res.statusCode} ${
         STATUS_CODES[res.statusCode]
+      }${
+        this.timings
+          ? ` (${now - req.startTime}ms${
+              now - req.httpStartTime !== now - req.startTime
+                ? ` full; ${now - req.httpStartTime}ms http`
+                : ''
+            })`
+          : ''
       }`,
     );
 
@@ -130,8 +144,13 @@ export class RequestManager {
       req = resolveRequest({ route: req, ...options });
     } else req = resolveRequest(req);
 
+    if (this.timings) req.startTime = Date.now();
+
     if (!req.useRateLimits)
-      return this.makeRequest(null as unknown as BucketQueueManager, req);
+      return this.makeRequest(
+        null as unknown as BucketQueueManager,
+        req as Required<APIRequest>,
+      );
 
     const [endpoint, majorId] = this.getBucket(req.route as RouteLike);
 

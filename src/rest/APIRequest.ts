@@ -18,6 +18,10 @@ export interface APIRequest<T = any> {
   retries?: number;
 
   payloadJson?: boolean;
+
+  // timings
+  startTime?: number;
+  httpStartTime?: number;
 }
 
 export interface File {
@@ -42,6 +46,8 @@ export function resolveRequest(req: APIRequest): Required<APIRequest> {
     useRateLimits: true,
     useBaseUrl: true,
     payloadJson: false,
+    startTime: -1,
+    httpStartTime: -1,
     ...req,
   };
 }

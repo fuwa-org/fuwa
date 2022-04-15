@@ -168,7 +168,7 @@ export class Client extends EventEmitter {
                   method: prop.toUpperCase() as HttpMethod,
                   ...options,
                 })
-                .then(d => (json ? consumeJSON : d)) as any;
+                .then(d => (json ? consumeJSON(d) : d)) as any;
             };
           default: {
             if (typeof prop === 'symbol') return () => route.join('/');

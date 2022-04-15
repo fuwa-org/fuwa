@@ -67,7 +67,10 @@ export class BucketQueueManager {
     }
 
     try {
-      const res = await this.manager.makeRequest(this, req);
+      const res = await this.manager.makeRequest(
+        this,
+        req as Required<APIRequest>,
+      );
 
       this.applyRateLimitInfo(res);
 

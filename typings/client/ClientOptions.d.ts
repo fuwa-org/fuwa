@@ -9,6 +9,7 @@ export interface ClientOptions {
     apiVersion?: number;
     httpBaseUrl?: string;
     httpUserAgent?: string;
+    httpTimings?: boolean;
     wsBrowser?: string;
     wsDevice?: string;
     wsOS?: string;

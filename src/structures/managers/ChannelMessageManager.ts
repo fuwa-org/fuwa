@@ -23,6 +23,8 @@ export class ChannelMessageManager extends BaseManager<Message<TextChannel>> {
       .rest(Routes.channelMessages(this.channel.id))
       .post<APIMessage>({ ...(await payload.json()) })
       .then(data => {
+        data.channel_id = this.channel.id;
+
         if (cache) {
           return this.resolve(data)!;
         } else {

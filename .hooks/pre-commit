@@ -2,8 +2,10 @@
 set -e
 
 if git status | grep -q "\\.ts"; then 
-node scripts/prettify_changed.js
-yarn build --noEmit 
-yarn lint
+  if [ -x "$(command -v prettier)" ]; then
+    node scripts/prettify_changed.js
+  fi
+
+  yarn build --noEmit 
+  yarn lint
 fi
-# yarn test

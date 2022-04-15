@@ -13,10 +13,17 @@ export const pkg = JSON.parse(
 export interface ClientOptions {
   /**
    * The [Gateway Intents](https://discord.com/developers/docs/topics/gateway#list-of-intents) to use for this client.
-   * @default {@link Intents.DEFAULT}
+   * @default DefaultClientOptions.intents
    */
   intents?: ClientOptionsIntents;
 
+  /**
+   * Logger to use for this client. If a boolean, initiates with {@link DefaultLoggerOptions}.
+   *
+   * You can also supply your own logger, see {@link ILogger} for more information.
+   *
+   * @default DefaultClientOptions.logger
+   */
   logger?: boolean | ILogger | LoggerOptions;
 
   /**
@@ -27,10 +34,19 @@ export interface ClientOptions {
 
   /**
    * Base URL for connecting to the Discord REST API. **DO NOT SPECIFY THE API VERSION IN THIS**
-   * @default https://discord.com/api
+   * @default "https://discord.com/api"
    */
   httpBaseUrl?: string;
+  /**
+   * User agent for the Discord REST API.
+   * @default "Discordbot (https://github.com/fuwadiscord/fuwa, v{{package_version}})"
+   */
   httpUserAgent?: string;
+  /**
+   * Whether to time requests and print them to the debug output.
+   * @default false
+   */
+  httpTimings?: boolean;
 
   wsBrowser?: string;
   wsDevice?: string;
@@ -72,12 +88,15 @@ export const DefaultClientOptions: ClientOptions = {
   apiVersion: 10,
   httpBaseUrl: 'https://discord.com/api',
   httpUserAgent: `DiscordBot (${pkg.homepage}; ${pkg.version}) Node.js/${process.version}`,
+  httpTimings: false,
   wsBrowser: 'fuwa',
   wsDevice: 'fuwa',
   wsOS: os.platform(),
   compress: false,
   etf: false,
-  logger: true,
+  logger: {
+    level: 'error',
+  },
 };
 
 export type Snowflake = `${bigint}`;
