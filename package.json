@@ -11,7 +11,6 @@
     "docs:build": "typedoc --options typedoc.json",
     "docs:serve": "cd docs; python3 -m http.server",
     "docs": "yarn docs:build && yarn docs:serve",
-    "prepare": "git config --local core.hooksPath .hooks/",
     "prettify": "prettier -w .",
     "release": "standard-version"
   },
