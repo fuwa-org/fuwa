@@ -2,7 +2,7 @@
 set -e
 
 if git status | grep -q "\\.ts"; then 
-node scripts/prettifyChanged.js
+node scripts/prettify_changed.js
 yarn build --noEmit 
 yarn lint
 fi

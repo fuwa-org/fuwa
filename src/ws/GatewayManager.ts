@@ -228,7 +228,7 @@ export class GatewayManager extends EventEmitter {
           }).bind(this),
         );
 
-      this.debug(`spawned shard ${i}, ${range.indexOf(i)}/${range.length}`);
+      this.debug('spawned shard', i);
     }
 
     clearInterval(reset_interval);

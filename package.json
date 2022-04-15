@@ -11,8 +11,7 @@
     "docs:build": "typedoc --options typedoc.json",
     "docs:serve": "cd docs; python3 -m http.server",
     "docs": "yarn docs:build && yarn docs:serve",
-    "prettify": "prettier -w .",
-    "release": "standard-version"
+    "prettify": "prettier -w ."
   },
   "repository": "https://github.com/FuwaDiscord/fuwa.git",
   "keywords": [],
