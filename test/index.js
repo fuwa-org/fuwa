@@ -14,22 +14,11 @@ const client = new Fuwa.Client(process.env.DISCORD_TOKEN, {
 });
 
 client.on('messages.create', async m => {
-  console.log(`${m.author.tag} said: ${m.content}`);
+  if (m.author.bot) return;
 
   if (m.content.startsWith('!ping')) {
     m.channel.createMessage({
-      attachments: [
-        new Fuwa.MessagePayloadAttachment({
-          data: '{ "content": "pong" }',
-          name: 'ping.json',
-          description: 'pong',
-        }),
-      ],
-      tts: false,
-      nonce: Date.now(),
-    });
-    m.channel.createMessage({
-      content: 'pong',
+      content: 'ping pong latency is ' + m.guild.shard.ping + 'ms',
       tts: false,
       nonce: Date.now(),
     });
@@ -57,7 +46,7 @@ client.on('messages.create', async m => {
   }
 
   if (m.attachments.length > 0) {
-    if (Math.random() < 0.8) {
+    if (Math.random() < 0.6) {
       /** @type {Fuwa.Types.RESTPostAPIChannelMessageJSONBody} */
       const body = {
         content: 'wow so cool',

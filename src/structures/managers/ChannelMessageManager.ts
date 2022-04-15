@@ -1,9 +1,8 @@
-import { Routes } from 'discord-api-types/v10';
+import { APIMessage, Routes } from 'discord-api-types/v10';
 import { Snowflake } from '../../client/ClientOptions';
-import { consumeJSON } from '../../rest/RequestManager';
 import {
   MessagePayload,
-  payload2data,
+  MessagePayloadData,
 } from '../../util/resolvables/MessagePayload';
 import { Message } from '../Message';
 import { TextChannel } from '../templates/BaseTextChannel';
@@ -15,23 +14,27 @@ export class ChannelMessageManager extends BaseManager<Message<TextChannel>> {
   }
 
   public async create(
-    data: MessagePayload | string,
+    data: MessagePayload | MessagePayloadData | string,
+    cache = false,
   ): Promise<Message<TextChannel>> {
-    data = MessagePayload.from(data);
+    const payload = MessagePayload.from(data);
 
-    const message = new Message(this.client)._deserialise(
-      await this.client.http
-        .queue(await payload2data(data, this.channel.id))
-        .then(async d => d.body.json()),
-    );
-
-    return message;
+    return this.client
+      .rest(Routes.channelMessages(this.channel.id))
+      .post<APIMessage>({ body: payload })
+      .then(data => {
+        if (cache) {
+          return this.resolve(data)!;
+        } else {
+          return new Message(this.client)._deserialise(data);
+        }
+      });
   }
 
   public async fetch(id: Snowflake, cache = false) {
-    return this.client.http
-      .queue(Routes.channelMessage(this.channel.id, id))
-      .then(d => consumeJSON<any>(d))
+    return this.client
+      .rest(Routes.channelMessage(this.channel.id, id))
+      .get<APIMessage>()
       .then(data => {
         if (cache) {
           return this.resolve(data)!;
@@ -42,12 +45,9 @@ export class ChannelMessageManager extends BaseManager<Message<TextChannel>> {
   }
 
   public async delete(id: Snowflake, reason?: string) {
-    return this.client.http
-      .queue({
-        route: Routes.channelMessage(this.channel.id, id),
-        method: 'DELETE',
-        reason,
-      })
-      .then(d => consumeJSON<any>(d));
+    return this.client
+      .rest(Routes.channelMessage(this.channel.id, id))
+      .delete<void>({ reason })
+      .then(() => this.cache.delete(id));
   }
 }

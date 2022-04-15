@@ -9,7 +9,8 @@ import { MessageAttachment } from './MessageAttachment';
 import { FileResolvable } from '../util/resolvables/FileResolvable';
 import {
   MessagePayload,
-  payload2data,
+  MessagePayloadAttachment,
+  MessagePayloadData,
 } from '../util/resolvables/MessagePayload';
 import { APIRequest } from '../rest/APIRequest';
 
@@ -91,18 +92,12 @@ export class Message<
     return this;
   }
 
-  _modify(data: Partial<APIMessage> | APIRequest) {
+  _modify(data: Partial<APIMessage>) {
     const options: APIRequest = {
       route: Routes.channelMessage(this.channelId, this.id),
       body: data,
       method: 'PATCH',
     };
-
-    if ((data as APIRequest).route) {
-      data = data as APIRequest;
-      options.body = data.body;
-      options.files = data.files;
-    }
 
     return this.client
       .rest(options.route)
@@ -118,10 +113,10 @@ export class Message<
     );
   }
 
-  public async edit(content: string | MessagePayload) {
-    return this._modify(
-      await payload2data(MessagePayload.from(content), this.channelId),
-    );
+  public async edit(content: string | MessagePayload | MessagePayloadData) {
+    const payload = MessagePayload.from(content);
+
+    this._modify(await payload.json());
   }
 
   public async delete() {
@@ -156,17 +151,13 @@ export class Message<
     });
   }
 
-  public async attach(
-    ...files:
-      | (FileResolvable | MessageAttachment)[]
-      | [(FileResolvable | MessageAttachment)[]]
-  ) {
+  public async attach(...files: (FileResolvable | MessagePayloadAttachment)[]) {
     if (Array.isArray(files[0])) {
       files = files[0];
     }
 
     return this.edit({
-      attachments: files as FileResolvable[],
+      attachments: files,
     });
   }
 

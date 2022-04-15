@@ -232,7 +232,7 @@ export type APIProxy = {
 } & ((...args: any[]) => APIProxy);
 
 type APIProxyExecuteRequest<O = false> = <T, D = any, Json = true>(
-  options: O extends true
+  options?: O extends true
     ? Omit<APIRequestOptions<D>, 'body' | 'files'>
     : APIRequestOptions<D>,
   json?: Json,

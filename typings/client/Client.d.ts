@@ -66,5 +66,5 @@ export declare type APIProxy = {
     patch: APIProxyExecuteRequest;
     delete: APIProxyExecuteRequest<true>;
 } & ((...args: any[]) => APIProxy);
-declare type APIProxyExecuteRequest<O = false> = <T, D = any, Json = true>(options: O extends true ? Omit<APIRequestOptions<D>, 'body' | 'files'> : APIRequestOptions<D>, json?: Json) => Promise<Json extends true ? T : Response<T>>;
+declare type APIProxyExecuteRequest<O = false> = <T, D = any, Json = true>(options?: O extends true ? Omit<APIRequestOptions<D>, 'body' | 'files'> : APIRequestOptions<D>, json?: Json) => Promise<Json extends true ? T : Response<T>>;
 export {};

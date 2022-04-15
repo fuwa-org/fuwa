@@ -1,19 +1,20 @@
 /// <reference types="node" />
-import { RESTPostAPIChannelMessageJSONBody, MessageFlags as APIMessageFlags } from 'discord-api-types/v10';
-import { Snowflake } from '../../client/ClientOptions';
-import { APIRequest } from '../../rest/APIRequest';
+import { MessageFlags as APIMessageFlags, APIMessage } from 'discord-api-types/v10';
 import { MessageFlags } from '../bitfields/MessageFlags';
 import { FileResolvable } from './FileResolvable';
-export interface MessagePayload {
+export interface MessagePayloadData {
     content?: string;
     flags?: MessageFlags | APIMessageFlags;
     tts?: boolean;
     nonce?: string;
-    attachments?: FileResolvable[] | MessagePayloadAttachment[];
+    attachments?: (FileResolvable | MessagePayloadAttachment)[];
+}
+export interface MessagePayload extends MessagePayloadData {
 }
 export declare class MessagePayload {
-    static from(value: MessagePayload | string): MessagePayload;
-    constructor(data: MessagePayload | Record<keyof MessagePayload, any>);
+    static from(value: MessagePayload | string | MessagePayloadData): MessagePayload;
+    constructor(data: MessagePayload | MessagePayloadData);
+    json(): Promise<Partial<APIMessage>>;
 }
 export declare class MessagePayloadAttachment {
     options: {
@@ -36,4 +37,3 @@ export declare class MessagePayloadAttachment {
     });
     resolve(): Promise<this>;
 }
-export declare function payload2data(payload: MessagePayload, channel: Snowflake): Promise<APIRequest<RESTPostAPIChannelMessageJSONBody>>;
