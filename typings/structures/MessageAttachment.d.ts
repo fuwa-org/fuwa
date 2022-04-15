@@ -8,7 +8,7 @@ export declare class MessageAttachment extends BaseStructure<APIAttachment> {
     size: number;
     width: number | null;
     height: number | null;
-    ephemeral: true | null;
+    ephemeral: boolean | null;
     contentType: string | null;
     _deserialise(data: APIAttachment): this;
     toJSON(): APIAttachment;

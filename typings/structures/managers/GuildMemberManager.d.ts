@@ -1,6 +1,5 @@
-import { RESTPutAPIGuildMemberJSONBody } from 'discord-api-types/v10';
+import { RESTPutAPIGuildMemberJSONBody, Snowflake } from 'discord-api-types/v10';
 import { Client } from '../../client/Client';
-import { Snowflake } from '../../client/ClientOptions';
 import { GuildMember } from '../GuildMember';
 import { BaseManager } from './BaseManager';
 export declare class GuildMemberManager extends BaseManager<GuildMember> {

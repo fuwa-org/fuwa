@@ -1,4 +1,4 @@
-import { ArgumentType } from './util';
+import type { ArgumentType } from './util';
 export declare class FuwaError<T extends keyof typeof messages> extends Error {
     constructor(key: T, ...args: ArgumentType<typeof messages[T]>);
 }

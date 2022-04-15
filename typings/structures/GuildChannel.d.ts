@@ -1,6 +1,5 @@
-import { APIGuildChannel, GuildChannelType } from 'discord-api-types/v10';
+import { APIGuildChannel, GuildChannelType, Snowflake } from 'discord-api-types/v10';
 import { Client } from '../client/Client.js';
-import { Snowflake } from '../client/ClientOptions';
 import { Channel } from './Channel';
 import { Guild } from './Guild';
 export declare class GuildChannel<T extends APIGuildChannel<GuildChannelType> = APIGuildChannel<GuildChannelType>> extends Channel<T> {

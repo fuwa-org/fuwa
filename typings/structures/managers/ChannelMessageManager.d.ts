@@ -1,4 +1,4 @@
-import { Snowflake } from '../../client/ClientOptions';
+import { Snowflake } from 'discord-api-types/v10';
 import { MessagePayload, MessagePayloadData } from '../../util/resolvables/MessagePayload';
 import { Message } from '../Message';
 import { TextChannel } from '../templates/BaseTextChannel';

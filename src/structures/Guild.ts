@@ -11,8 +11,8 @@ import {
   GuildPremiumTier,
   GuildVerificationLevel,
   Routes,
+  Snowflake,
 } from 'discord-api-types/v10';
-import { Snowflake } from '../client/ClientOptions';
 import { DataTransformer } from '../rest/DataTransformer.js';
 import { GuildSystemChannelFlags } from '../util/bitfields/GuildSystemChannelFlags';
 import {

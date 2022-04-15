@@ -1,5 +1,5 @@
+import { Snowflake } from 'discord-api-types/v10';
 import { Client } from '../client/Client';
-import { Snowflake } from '../client/ClientOptions';
 export declare function validate(token: string): {
     header: string;
     payload: string;

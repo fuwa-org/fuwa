@@ -1,7 +1,7 @@
 import undici from 'undici';
 import fs from 'fs/promises';
-import { File } from '../../rest/APIRequest';
 import { basename } from 'path';
+import { File } from '../../rest/APIRequest';
 import { FuwaError } from '../errors';
 
 export type FileResolvable = string | Buffer;

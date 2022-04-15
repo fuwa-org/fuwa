@@ -1,3 +1,5 @@
+import { Snowflake } from 'discord-api-types/globals';
+
 function deconstruct(id: Snowflake) {
   const num = BigInt(id);
 
@@ -41,5 +43,4 @@ export class SnowflakeInfo {
   }
 }
 
-export type Snowflake = string;
 export const EPOCH = 1420070400000n;

@@ -1,11 +1,11 @@
-import { APIGuildMember, Routes } from 'discord-api-types/v10';
+import { APIGuildMember, Routes, Snowflake } from 'discord-api-types/v10';
 import { Client } from '../client/Client.js';
-import { Snowflake } from '../client/ClientOptions.js';
 import { DataTransformer } from '../rest/DataTransformer.js';
 import { Guild } from './Guild.js';
 import { BanGuildMemberOptions } from './managers/GuildMemberManager.js';
 import { BaseStructure } from './templates/BaseStructure.js';
 import { User } from './User.js';
+import { GuildMemberFlags } from '../util/bitfields/GuildMemberFlags.js';
 
 export class GuildMember extends BaseStructure<APIGuildMember> {
   /**
@@ -30,6 +30,7 @@ export class GuildMember extends BaseStructure<APIGuildMember> {
   }
   public nickname: string | null = null;
   public avatar: string | null = null;
+  public flags = new GuildMemberFlags(0);
 
   public pending = false;
   public communicationDisabledUntil: Date | null = null;
@@ -81,6 +82,9 @@ export class GuildMember extends BaseStructure<APIGuildMember> {
         : null;
     if ('deaf' in data) this.deaf = data.deaf!;
     if ('mute' in data) this.mute = data.mute!;
+    // this is undocumented, but used in the client for the new member badge
+    if ('flags' in data)
+      this.flags = new GuildMemberFlags((data as any).flags as number);
 
     return this;
   }

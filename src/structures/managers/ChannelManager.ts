@@ -1,6 +1,6 @@
 import { Channel, Channels } from '../Channel.js';
 import { Client } from '../../client/Client.js';
-import { Snowflake } from '../../client/ClientOptions.js';
+import { Snowflake } from 'discord-api-types/globals';
 import { BaseManager } from './BaseManager.js';
 import { ChannelType, Routes } from 'discord-api-types/v10';
 import { consumeJSON } from '../../rest/RequestManager.js';

@@ -1,5 +1,5 @@
+import { Snowflake } from 'discord-api-types/v10';
 import { Client } from '../../client/Client.js';
-import { Snowflake } from '../../client/ClientOptions.js';
 import { ExtendedUser } from '../ExtendedUser.js';
 import { User } from '../User.js';
 import { BaseManager } from './BaseManager.js';

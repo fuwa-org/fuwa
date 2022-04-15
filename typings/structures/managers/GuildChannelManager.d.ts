@@ -1,5 +1,4 @@
-import { GuildChannelType, RESTPostAPIGuildChannelJSONBody } from 'discord-api-types/v10';
-import { Snowflake } from '../../client/ClientOptions';
+import { GuildChannelType, RESTPostAPIGuildChannelJSONBody, Snowflake } from 'discord-api-types/v10';
 import { CreateEntityOptions } from '../../util/util';
 import { Guild } from '../Guild';
 import { GuildChannels } from '../GuildChannel';

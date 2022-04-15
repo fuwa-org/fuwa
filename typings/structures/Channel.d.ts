@@ -1,6 +1,5 @@
-import { APIChannel, APIChannelBase, ChannelType } from 'discord-api-types/v10';
+import { APIChannel, APIChannelBase, ChannelType, Snowflake } from 'discord-api-types/v10';
 import { Client } from '../client/Client.js';
-import { Snowflake } from '../client/ClientOptions';
 import type { DMChannel } from './DMChannel.js';
 import { Guild } from './Guild';
 import { GuildChannels } from './GuildChannel.js';

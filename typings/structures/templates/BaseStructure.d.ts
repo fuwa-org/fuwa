@@ -1,5 +1,5 @@
 import { Client } from '../../client/Client';
-import { Snowflake } from '../../client/ClientOptions.js';
+import { Snowflake } from 'discord-api-types/v10';
 export declare abstract class BaseStructure<T> {
     client: Client;
     id: Snowflake;

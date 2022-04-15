@@ -3,8 +3,8 @@ import {
   GuildChannelType,
   RESTPostAPIGuildChannelJSONBody,
   Routes,
+  Snowflake,
 } from 'discord-api-types/v10';
-import { Snowflake } from '../../client/ClientOptions';
 import { consumeJSON } from '../../rest/RequestManager';
 import { DataResolver } from '../../util/DataResolver';
 import { FuwaError } from '../../util/errors';

@@ -1,5 +1,5 @@
 import { Client } from '../../client/Client';
-import { Snowflake } from '../../client/ClientOptions';
+import { Snowflake } from 'discord-api-types/globals';
 
 export abstract class BaseManager<
   T extends { id: Snowflake; _deserialise(data: any): T },

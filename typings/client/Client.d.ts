@@ -1,6 +1,6 @@
 /// <reference types="node" />
 import { RequestManager, Response } from '../rest/RequestManager.js';
-import { ClientOptions, Snowflake } from './ClientOptions';
+import { ClientOptions } from './ClientOptions';
 import EventEmitter from 'events';
 import { GuildManager } from '../structures/managers/GuildManager.js';
 import { ILogger } from '../logging/ILogger.js';
@@ -13,6 +13,7 @@ import { Guild } from '../structures/Guild.js';
 import { TextChannel } from '../structures/templates/BaseTextChannel.js';
 import { GatewayManager } from '../ws/GatewayManager.js';
 import { APIRequest } from '../rest/APIRequest.js';
+import { Snowflake } from 'discord-api-types/globals';
 export declare class Client extends EventEmitter {
     #private;
     http: RequestManager;

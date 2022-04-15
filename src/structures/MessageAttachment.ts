@@ -1,5 +1,4 @@
-import { APIAttachment } from 'discord-api-types/v10';
-import { Snowflake } from '../client/ClientOptions';
+import { APIAttachment, Snowflake } from 'discord-api-types/v10';
 import { BaseStructure } from './templates/BaseStructure';
 
 export class MessageAttachment extends BaseStructure<APIAttachment> {
@@ -11,21 +10,20 @@ export class MessageAttachment extends BaseStructure<APIAttachment> {
   public width: number | null = null;
   public height: number | null = null;
 
-  public ephemeral: true | null = null;
+  public ephemeral: boolean | null = null;
   public contentType: string | null = null;
 
   _deserialise(data: APIAttachment): this {
-    this.id = data.id as Snowflake;
-
-    if (data.url) this.url = data.url;
-    if (data.size) this.size = data.size;
-    if (data.width) this.width = data.width;
-    if (data.height) this.height = data.height;
-    if (data.filename) this.filename = data.filename;
-    if (data.proxy_url) this.proxyURL = data.proxy_url;
-    if (data.description) this.description = data.description;
-    if (data.ephemeral) this.ephemeral = data.ephemeral;
-    if (data.content_type) this.contentType = data.content_type;
+    if ('id' in data) this.id = data.id as Snowflake;
+    if ('url' in data) this.url = data.url;
+    if ('size' in data) this.size = data.size;
+    if ('width' in data) this.width = data.width ?? null;
+    if ('height' in data) this.height = data.height ?? null;
+    if ('filename' in data) this.filename = data.filename ?? null;
+    if ('proxy_url' in data) this.proxyURL = data.proxy_url ?? null;
+    if ('description' in data) this.description = data.description ?? null;
+    if ('ephemeral' in data) this.ephemeral = data.ephemeral ?? null;
+    if ('content_type' in data) this.contentType = data.content_type ?? null;
 
     return this;
   }

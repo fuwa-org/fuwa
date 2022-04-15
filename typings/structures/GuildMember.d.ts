@@ -1,10 +1,10 @@
-import { APIGuildMember } from 'discord-api-types/v10';
+import { APIGuildMember, Snowflake } from 'discord-api-types/v10';
 import { Client } from '../client/Client.js';
-import { Snowflake } from '../client/ClientOptions.js';
 import { Guild } from './Guild.js';
 import { BanGuildMemberOptions } from './managers/GuildMemberManager.js';
 import { BaseStructure } from './templates/BaseStructure.js';
 import { User } from './User.js';
+import { GuildMemberFlags } from '../util/bitfields/GuildMemberFlags.js';
 export declare class GuildMember extends BaseStructure<APIGuildMember> {
     guildId: Snowflake;
     get createdAt(): Date;
@@ -14,6 +14,7 @@ export declare class GuildMember extends BaseStructure<APIGuildMember> {
     get user(): User | null;
     nickname: string | null;
     avatar: string | null;
+    flags: GuildMemberFlags;
     pending: boolean;
     communicationDisabledUntil: Date | null;
     get communicationDisabledUntilTimestamp(): number | null;

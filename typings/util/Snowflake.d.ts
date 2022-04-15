@@ -1,3 +1,4 @@
+import { Snowflake } from 'discord-api-types/globals';
 export declare class SnowflakeInfo {
     id: BigInt;
     timestamp: number;
@@ -8,5 +9,4 @@ export declare class SnowflakeInfo {
     constructor(id: Snowflake);
     toString(): string;
 }
-export declare type Snowflake = string;
 export declare const EPOCH = 1420070400000n;

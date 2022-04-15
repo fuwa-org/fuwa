@@ -1,6 +1,9 @@
-import { RESTPostAPIGuildsJSONBody, Routes } from 'discord-api-types/v10';
+import {
+  RESTPostAPIGuildsJSONBody,
+  Routes,
+  Snowflake,
+} from 'discord-api-types/v10';
 import { Client } from '../../client/Client';
-import { Snowflake } from '../../client/ClientOptions';
 import { consumeJSON } from '../../rest/RequestManager';
 import { CreateEntityOptions } from '../../util/util';
 import { Guild } from '../Guild';

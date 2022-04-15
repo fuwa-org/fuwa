@@ -8,7 +8,6 @@ import {
   ClientOptions,
   DefaultClientOptions,
   resolveIntents,
-  Snowflake,
 } from './ClientOptions';
 import EventEmitter from 'events';
 import { GuildManager } from '../structures/managers/GuildManager.js';
@@ -32,6 +31,7 @@ import { workerData } from 'worker_threads';
 import { APIRequest } from '../rest/APIRequest.js';
 import { HttpMethod } from 'undici/types/dispatcher';
 import { FuwaError } from '../util/errors.js';
+import { Snowflake } from 'discord-api-types/globals';
 
 export class Client extends EventEmitter {
   #token: string;

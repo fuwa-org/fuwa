@@ -2,9 +2,9 @@ import {
   RESTPutAPIGuildMemberJSONBody,
   RESTPutAPIGuildMemberResult,
   Routes,
+  Snowflake,
 } from 'discord-api-types/v10';
 import { Client } from '../../client/Client';
-import { Snowflake } from '../../client/ClientOptions';
 import { consumeJSON } from '../../rest/RequestManager';
 import { GuildMember } from '../GuildMember';
 import { BaseManager } from './BaseManager';

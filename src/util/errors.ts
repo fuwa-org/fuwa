@@ -1,5 +1,5 @@
 import { STATUS_CODES } from 'http';
-import { ArgumentType } from './util';
+import type { ArgumentType } from './util';
 
 export class FuwaError<T extends keyof typeof messages> extends Error {
   constructor(key: T, ...args: ArgumentType<typeof messages[T]>) {

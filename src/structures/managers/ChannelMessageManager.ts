@@ -1,5 +1,4 @@
-import { APIMessage, Routes } from 'discord-api-types/v10';
-import { Snowflake } from '../../client/ClientOptions';
+import { APIMessage, Routes, Snowflake } from 'discord-api-types/v10';
 import {
   MessagePayload,
   MessagePayloadData,

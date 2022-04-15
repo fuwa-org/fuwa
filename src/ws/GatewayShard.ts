@@ -2,6 +2,7 @@ import { AsyncQueue } from '@sapphire/async-queue';
 import {
   APIGuildMember,
   APIMessage,
+  Snowflake,
   GatewayDispatchEvents,
   GatewayDispatchPayload,
   GatewayGuildCreateDispatchData,
@@ -24,7 +25,6 @@ import {
 } from 'discord-api-types/v10';
 import WebSocket from 'ws';
 import { Client } from '../client/Client';
-import { Snowflake } from '../client/ClientOptions';
 import { Guild } from '../structures/Guild';
 import { ExtendedUser } from '../structures/ExtendedUser';
 import { Intents } from '../util/bitfields/Intents';

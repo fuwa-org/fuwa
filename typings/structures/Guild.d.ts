@@ -1,5 +1,4 @@
-import { APIGuild, APIUnavailableGuild, GuildChannelType, GuildDefaultMessageNotifications, GuildExplicitContentFilter, GuildFeature, GuildMFALevel, GuildNSFWLevel, GuildPremiumTier, GuildVerificationLevel } from 'discord-api-types/v10';
-import { Snowflake } from '../client/ClientOptions';
+import { APIGuild, APIUnavailableGuild, GuildChannelType, GuildDefaultMessageNotifications, GuildExplicitContentFilter, GuildFeature, GuildMFALevel, GuildNSFWLevel, GuildPremiumTier, GuildVerificationLevel, Snowflake } from 'discord-api-types/v10';
 import { GuildSystemChannelFlags } from '../util/bitfields/GuildSystemChannelFlags';
 import { FileResolvable } from '../util/resolvables/FileResolvable.js';
 import { GuildChannelManager } from './managers/GuildChannelManager';
@@ -11,7 +10,7 @@ export declare class Guild extends BaseStructure<APIGuild | APIUnavailableGuild>
     name: string | null;
     description: string | null;
     ownerId: Snowflake;
-    get owner(): import("./ExtendedUser").ExtendedUser | import("./User").User | undefined;
+    get owner(): import("./ExtendedUser.js").ExtendedUser | import("./User.js").User | undefined;
     applicationId: Snowflake | null;
     preferredLocale: string;
     features: GuildFeature[];
@@ -49,7 +48,7 @@ export declare class Guild extends BaseStructure<APIGuild | APIUnavailableGuild>
     publicUpdatesChannelId: Snowflake | null;
     channels: GuildChannelManager;
     get shardId(): number;
-    get shard(): import("..").GatewayShard | undefined;
+    get shard(): import("../index.js").GatewayShard | undefined;
     constructor(client: Client);
     _deserialise(data: APIGuild | APIUnavailableGuild): this;
     fetch(force?: boolean): Promise<Guild>;

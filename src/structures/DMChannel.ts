@@ -1,5 +1,4 @@
-import { APIDMChannel } from 'discord-api-types/v10';
-import { Snowflake } from '../client/ClientOptions.js';
+import { APIDMChannel, Snowflake } from 'discord-api-types/v10';
 import { BaseTextChannel } from './templates/BaseTextChannel.js';
 import { User } from './User.js';
 

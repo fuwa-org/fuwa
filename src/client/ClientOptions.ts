@@ -98,5 +98,3 @@ export const DefaultClientOptions: ClientOptions = {
     level: 'error',
   },
 };
-
-export type Snowflake = `${bigint}`;

@@ -1,5 +1,5 @@
 import { Client } from '../../client/Client';
-import { Snowflake } from '../../client/ClientOptions.js';
+import { Snowflake } from 'discord-api-types/v10';
 import { DataTransformer } from '../../rest/DataTransformer';
 import { SnowflakeInfo } from '../../util/Snowflake';
 

@@ -1,6 +1,6 @@
 import { Channels } from '../Channel.js';
 import { Client } from '../../client/Client.js';
-import { Snowflake } from '../../client/ClientOptions.js';
+import { Snowflake } from 'discord-api-types/globals';
 import { BaseManager } from './BaseManager.js';
 import { DMChannel } from '../DMChannel.js';
 export declare class ChannelManager<T extends {

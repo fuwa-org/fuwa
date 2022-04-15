@@ -1,5 +1,4 @@
-import { APIUser } from 'discord-api-types/v10';
-import { Snowflake } from '../client/ClientOptions.js';
+import { APIUser, Snowflake } from 'discord-api-types/v10';
 import { UserFlags } from '../util/bitfields/UserFlags.js';
 import { MessagePayload } from '../util/resolvables/MessagePayload.js';
 import { DMChannel } from './DMChannel.js';
@@ -44,7 +43,7 @@ export class User extends BaseStructure<APIUser> {
   }
 
   public async createDM(cache = false) {
-    return (this.dm = await this.client.channels.createDM(this.id, cache));
+    return (this.dm ??= await this.client.channels.createDM(this.id, cache));
   }
 
   public async send(content: MessagePayload | string) {

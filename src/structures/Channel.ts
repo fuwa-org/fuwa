@@ -5,9 +5,9 @@ import {
   ChannelType,
   GuildChannelType,
   Routes,
+  Snowflake,
 } from 'discord-api-types/v10';
 import { Client } from '../client/Client.js';
-import { Snowflake } from '../client/ClientOptions';
 import { DataTransformer } from '../rest/DataTransformer';
 import { consumeJSON } from '../rest/RequestManager.js';
 import type { DMChannel } from './DMChannel.js';

@@ -1,6 +1,9 @@
-import { APITextBasedChannel, TextChannelType } from 'discord-api-types/v10';
+import {
+  APITextBasedChannel,
+  TextChannelType,
+  Snowflake,
+} from 'discord-api-types/v10';
 import { Client } from '../../client/Client';
-import { Snowflake } from '../../client/ClientOptions';
 import { MessagePayload } from '../../util/resolvables/MessagePayload';
 import { Channel } from '../Channel.js';
 import { DMChannel } from '../DMChannel';
