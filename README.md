@@ -27,6 +27,10 @@ npm install --save fuwadiscord/fuwa
 
 # with yarn
 yarn add github:fuwadiscord/fuwa
+
+# then, compile the code (if you're installing from GitHub)
+cd node_modules/fuwa
+tsc
 ```
 
 **Note**: pin to a commit you like to avoid breaking changes

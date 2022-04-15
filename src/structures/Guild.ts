@@ -401,6 +401,7 @@ export class Guild extends BaseStructure<APIGuild | APIUnavailableGuild> {
       emojis: [], // TODO
       stickers: [], // TODO
       premium_progress_bar_enabled: this.premiumProgressBarEnabled,
+      hub_type: null, // TODO: discord-api-types quick workaround
     };
   }
 

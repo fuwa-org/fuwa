@@ -59,7 +59,7 @@ export class Channel<
           client.logger.warn(
             `Unknown channel type: ${data.type} (${ChannelType[data.type]})`,
           );
-          return new Channel(client)._deserialise(data);
+          return new Channel(client)._deserialise(data as any);
       }
   }
 
