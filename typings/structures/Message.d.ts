@@ -8,6 +8,7 @@ import { TextChannel } from './templates/BaseTextChannel';
 import { MessageAttachment } from './MessageAttachment';
 import { FileResolvable } from '../util/resolvables/FileResolvable';
 import { MessagePayload, MessagePayloadAttachment, MessagePayloadData } from '../util/resolvables/MessagePayload';
+import { File } from '../rest/APIRequest';
 export declare class Message<ChannelType extends TextChannel = TextChannel> extends BaseStructure<APIMessage> {
     nonce: string | number | null;
     guildId: Snowflake | null;
@@ -28,13 +29,13 @@ export declare class Message<ChannelType extends TextChannel = TextChannel> exte
     get editedAt(): Date | null;
     attachments: MessageAttachment[];
     _deserialise(data: APIMessage): this;
-    _modify(data: Partial<APIMessage>): Promise<this>;
-    fetchMember(): Promise<import("./GuildMember").GuildMember | null>;
-    edit(content: string | MessagePayload | MessagePayloadData): Promise<void>;
+    _modify(data: Partial<APIMessage>, files?: File[]): Promise<this>;
+    fetchMember(): Promise<import("./GuildMember").GuildMember> | Promise<null>;
+    edit(content: string | MessagePayload | MessagePayloadData): Promise<this>;
     delete(): Promise<void>;
     setFlags(flags: MessageFlags | number): Promise<this>;
     suppressEmbeds(suppress: boolean): Promise<this>;
     removeAttachments(): Promise<this>;
-    attach(...files: (FileResolvable | MessagePayloadAttachment)[]): Promise<void>;
+    attach(...files: (FileResolvable | MessagePayloadAttachment)[]): Promise<this>;
     toJSON(): APIMessage;
 }

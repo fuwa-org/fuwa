@@ -12,7 +12,7 @@ import {
   MessagePayloadAttachment,
   MessagePayloadData,
 } from '../util/resolvables/MessagePayload';
-import { APIRequest } from '../rest/APIRequest';
+import { APIRequest, File } from '../rest/APIRequest';
 
 // TODO: Add support for DM messages
 export class Message<
@@ -92,44 +92,32 @@ export class Message<
     return this;
   }
 
-  _modify(data: Partial<APIMessage>) {
-    const options: APIRequest = {
-      route: Routes.channelMessage(this.channelId, this.id),
-      body: data,
-      method: 'PATCH',
-    };
-
+  _modify(data: Partial<APIMessage>, files?: File[]) {
     return this.client
-      .rest(options.route)
-      .patch<APIMessage>(options)
+      .rest(Routes.channelMessage(this.channelId, this.id))
+      .patch<APIMessage>({ files, body: data })
       .then(this._deserialise.bind(this));
   }
 
-  public async fetchMember() {
-    return (
-      this.guild?.members.add(
-        await this.guild?.members.fetch(this.author.id),
-      ) ?? null
-    );
+  public fetchMember() {
+    return this.guild?.members.fetch(this.author.id) ?? Promise.resolve(null);
   }
 
   public async edit(content: string | MessagePayload | MessagePayloadData) {
-    const payload = MessagePayload.from(content);
+    const payload = await MessagePayload.from(content).json();
 
-    this._modify(await payload.json());
+    return this._modify(payload.body, payload.files);
   }
 
   public async delete() {
-    await this.client.http
-      .queue<APIMessage>({
-        route: Routes.channelMessage(this.channel!.id, this.id),
-        method: 'DELETE',
-      })
+    await this.client
+      .rest(Routes.channelMessage(this.channelId, this.id))
+      .delete({}, false)
       .then(() => this.channel!.messages.remove(this.id));
   }
 
   public setFlags(flags: MessageFlags | number) {
-    return this._modify({
+    return this.edit({
       flags: flags instanceof MessageFlags ? flags.bits : flags,
     });
   }

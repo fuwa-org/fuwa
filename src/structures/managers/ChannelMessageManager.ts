@@ -21,7 +21,7 @@ export class ChannelMessageManager extends BaseManager<Message<TextChannel>> {
 
     return this.client
       .rest(Routes.channelMessages(this.channel.id))
-      .post<APIMessage>({ body: payload })
+      .post<APIMessage>({ ...(await payload.json()) })
       .then(data => {
         if (cache) {
           return this.resolve(data)!;

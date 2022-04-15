@@ -6,7 +6,7 @@ import {
   APIMessage,
 } from 'discord-api-types/v10';
 import { basename } from 'path';
-import { APIRequest } from '../../rest/APIRequest';
+import { APIRequest, File } from '../../rest/APIRequest';
 import { MessageFlags } from '../bitfields/MessageFlags';
 import { FuwaError } from '../errors';
 import { FirstArrayValue } from '../util';
@@ -55,7 +55,7 @@ export class MessagePayload {
     // this.embeds = data.embeds;
   }
 
-  async json(): Promise<Partial<APIMessage>> {
+  async json(): Promise<{ body: Partial<APIMessage>; files: File[] }> {
     const body: Partial<APIMessage> = {
       content: this.content,
       tts: this.tts,
@@ -108,7 +108,7 @@ export class MessagePayload {
       }
     }
 
-    return body;
+    return { body, files };
   }
 }
 
