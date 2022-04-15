@@ -2,7 +2,7 @@ pull_request_rules:
   - name: Merge non-breaking dependencies
     conditions:
       - author~=^dependabot(|-preview)\[bot\]$
-      - "name~=chore(deps): .+ from (?P<major>\\d+).\\d+.\\d+.* to
+      - "title~=.+ from (?P<major>\\d+).\\d+.\\d+.* to
         (?P=major).\\d.\\d.*"
     actions:
       merge:
