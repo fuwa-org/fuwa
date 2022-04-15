@@ -14,12 +14,13 @@ import { TextChannel } from '../structures/templates/BaseTextChannel.js';
 import { GatewayManager } from '../ws/GatewayManager.js';
 import { APIRequest } from '../rest/APIRequest.js';
 import { Snowflake } from 'discord-api-types/globals';
+import { DMChannel } from '../structures/DMChannel.js';
 export declare class Client extends EventEmitter {
     #private;
-    http: RequestManager;
     options: Required<ClientOptions>;
     logger: ILogger;
     ws: GatewayManager;
+    http: RequestManager;
     guilds: GuildManager;
     users: UserManager;
     channels: ChannelManager;
@@ -34,7 +35,7 @@ export declare class Client extends EventEmitter {
     event(name: string): Events.SubscriptionBuilder<string, any[]>;
     reset(): void;
     get rest(): APIProxy;
-    createDM(recipient: Snowflake, cache?: boolean): Promise<import("../index.js").DMChannel>;
+    createDM(recipient: Snowflake, cache?: boolean): Promise<DMChannel>;
 }
 export interface Client {
     on<K extends keyof ClientEvents>(event: K, listener: (...args: ClientEvents[K]) => void): this;
@@ -56,7 +57,6 @@ export interface ClientEvents {
     ];
     'messages.update': [old: Message, new: Message];
 }
-export declare type Awaitable<T> = Promise<T> | T;
 export declare type APIRequestOptions<D = any> = Omit<APIRequest<D>, 'route'>;
 export declare type APIProxy = {
     [key: string]: APIProxy;
