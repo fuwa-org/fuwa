@@ -32,6 +32,12 @@ export class GatewayManager extends EventEmitter {
     return val / this.shards.size;
   }
 
+  // Ratelimit data
+  private concurrency = 0;
+  private _lastIdentify = -1;
+
+  private lock = false;
+
   constructor(public client: Client) {
     super();
 
@@ -39,6 +45,11 @@ export class GatewayManager extends EventEmitter {
       value: this.client,
       enumerable: false,
     });
+
+    // FIXME: find a better way to do this
+    setInterval(() => {
+      this.concurrency = this.gateway.session_start_limit.max_concurrency;
+    }, 7e3);
   }
 
   #__log_header() {
@@ -53,6 +64,10 @@ export class GatewayManager extends EventEmitter {
 
   error(...args: any[]) {
     this.client.logger.error(this.#__log_header(), ...args);
+  }
+
+  trace(...args: any[]) {
+    this.client.logger.trace(this.#__log_header(), ...args);
   }
 
   /**
@@ -151,9 +166,12 @@ export class GatewayManager extends EventEmitter {
   public async spawn(options: GatewayManagerOptions) {
     let range = [0, 1];
     let count = options.count ?? null;
-    const gateway = (this.gateway =
-      this.gateway ?? (await this.fetchGatewayBot()));
-    count = count ?? gateway.shards;
+    const gateway = (this.gateway ??= await this.fetchGatewayBot());
+    count ??= gateway.shards;
+
+    if (this.concurrency !== gateway.session_start_limit.max_concurrency) {
+      this.concurrency = this.gateway.session_start_limit.max_concurrency ?? 1;
+    }
 
     if (options.shards === 'auto') {
       this.debug('automatically assuming shard count:', gateway.shards);
@@ -184,54 +202,74 @@ export class GatewayManager extends EventEmitter {
       this.count = Math.max(this.count, range[1] - range[0], count);
     }
 
-    let concurrency = this.gateway.session_start_limit.max_concurrency ?? 1;
-    let reset = Date.now() + 7.5e3;
-
-    const reset_interval = setInterval(() => {
-      reset = Date.now() + 7.5e3;
-      if (concurrency === 0) {
-        concurrency = this.gateway.session_start_limit.max_concurrency ?? 1;
-      }
-    }, 7.5e3);
-
-    async function checkConcurrency(this: GatewayManager, i: number) {
-      if (concurrency === 0) {
-        this.debug('shard', i, 'is waiting for concurrency');
-        await sleep(reset - Date.now());
-        await checkConcurrency.call(this, i);
+    async function concurrencyCheck(this: GatewayManager, id: number) {
+      if (this.lock) {
+        this.trace(
+          'concurrency check for shard',
+          id,
+          ': lock aquired by other shard',
+        );
+        await sleep(1e3);
+        await concurrencyCheck.call(this, id);
+      } else if (this.concurrency === 0) {
+        this.trace('concurrency check for shard', id, ': concurrency drained');
+        await sleep(7e3 - (Date.now() - this._lastIdentify) + 1e3);
+        await concurrencyCheck.call(this, id);
       }
     }
 
-    for (let i = range[0]; i !== range[1]; i++) {
-      if (this.shards.has(i) && options.skipExisting) {
-        this.debug('shard', i, 'already exists, skipping');
-        return;
-      } else if (this.shards.has(i)) {
-        this.debug('shard', i, 'already exists, closing and continuing');
-        this.shards.get(i)!.close(false);
-        this.shards.delete(i);
+    for (let i = range[0]; i < range[1]; i++) {
+      if (options.skipExisting && this.shards.has(i)) {
+        this.debug('skipping existing shard', i);
+        continue;
       }
+
+      await concurrencyCheck.call(this, i);
+
+      this.debug('spawning shard', i);
+      this.lock = true;
+      this.trace('spawning shard', i, ': lock aquired');
+      this._lastIdentify = Date.now();
+      this.concurrency--;
 
       const shard = new GatewayShard(this.client, [i, this.count]);
-      this._registerListeners(shard);
+      this._registerListeners(shard, false);
 
-      this.shards.set(i, shard);
+      try {
+        await shard.connect().then(() => {
+          return new Promise((resolve, reject) => {
+            shard.on('READY', resolve);
+            shard.on('close', (...args: [number, string]) => {
+              reject(args);
+              this.onClose(shard, ...args);
+            });
+            shard.on('invalidSession', () => reject('invalid session'));
+          });
+        });
 
-      await checkConcurrency.call(this, i);
+        this._registerListeners(shard, true);
 
-      concurrency--;
-      shard
-        .connect(this.constructGatewayURL(options.url ?? this.gateway.url))
-        .catch(
-          ((err: any) => {
-            this.debug('shard', i, 'failed to connect', err);
-          }).bind(this),
-        );
+        if (this.shards.has(i)) {
+          const existing = this.shards.get(i)!;
+          existing.close(false);
+          existing.reset(true);
+          this.shards.delete(i);
+        }
 
-      this.debug('spawned shard', i);
+        this.shards.set(i, shard);
+
+        this.debug('shard', i, 'is ready');
+
+        this.lock = false;
+      } catch (e) {
+        this.debug('failed to spawn shard', i, ':', e);
+        shard.close(false);
+        this.lock = false;
+        this.respawn(i);
+      }
+
+      this.trace('spawning shard', i, ': lock released');
     }
-
-    clearInterval(reset_interval);
   }
 
   /**
@@ -271,12 +309,7 @@ export class GatewayManager extends EventEmitter {
       this.gateway = info;
     }
 
-    if (this.gateway.shards < this.count) {
-      this.debug(
-        'new shard count is less than gateway shard count, clearing shards',
-      );
-      this.reset();
-    }
+    this.reset();
 
     await this.spawn({
       shards: 'auto',
@@ -286,22 +319,27 @@ export class GatewayManager extends EventEmitter {
   }
 
   /** @internal */
-  private _registerListeners(shard: GatewayShard) {
-    shard
-      .on('_refresh', () => {
+  private _registerListeners(shard: GatewayShard, runtime: boolean) {
+    if (runtime)
+      shard.on('_refresh', () => {
         this.debug('refreshing shard', shard.id);
         this.respawn(shard.id);
-      })
+      });
+    shard
       .on('_throw', e => {
         throw new Error(`Shard ${shard.id}: ${e}`);
       })
       .on('packet', p => {
         this.emit('packet', p, shard);
+        if (p.op === 0) {
+          this.emit(p.t, p.d, shard);
+        }
       })
       .on('dispatch', d => {
         this.emit('dispatch', d, shard);
-      })
-      .on('close', (code, reason) => {
+      });
+    if (runtime)
+      shard.on('close', (code, reason) => {
         this.onClose(shard, code, reason.toString());
       });
     return shard;
@@ -338,7 +376,6 @@ export class GatewayManager extends EventEmitter {
       case GatewayCloseCodes.SessionTimedOut:
         shard.emit('_refresh');
         break;
-      // eslint-disable-next-line no-fallthrough
       default:
         this.debug('Socket closed, reconnecting...');
         shard.reconnect();

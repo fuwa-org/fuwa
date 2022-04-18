@@ -152,7 +152,7 @@ export class GatewayShard extends EventEmitter {
   }
 
   /** Open a connection to Discord, using the custom URL if specified. */
-  public async connect(url = this.url) {
+  public connect(url = this.url) {
     this.url = url;
 
     Object.defineProperty(this, '_socket', {
@@ -169,7 +169,13 @@ export class GatewayShard extends EventEmitter {
       this.emit('close', code, reason);
     });
 
-    await this.awaitPacket(p => p.op === GatewayOpcodes.Hello);
+    return new Promise((res, rej) => {
+      this.awaitPacket(p => p.op === GatewayOpcodes.Hello).then(res);
+      this.on('close', (code, reason) =>
+        rej(new Error(`WebSocket closed: ${code}, ${reason}`)),
+      );
+      this.on('_refresh', () => rej(new Error('Refreshing')));
+    });
   }
 
   /**
@@ -256,7 +262,7 @@ export class GatewayShard extends EventEmitter {
     switch (data.op) {
       case GatewayOpcodes.Hello: {
         this.heartbeat_interval = payload.heartbeat_interval;
-        this.debug(
+        this.trace(
           'commencing heartbeating with interval of',
           this.heartbeat_interval,
         );
@@ -273,7 +279,7 @@ export class GatewayShard extends EventEmitter {
         this.heartbeat_acked = true;
         this.ping = Date.now() - this.heartbeat_at;
 
-        this.debug('heartbeat acked with ping of ' + this.ping + 'ms');
+        this.trace('heartbeat acked with ping of ' + this.ping + 'ms');
 
         break;
       }
@@ -285,13 +291,14 @@ export class GatewayShard extends EventEmitter {
       case GatewayOpcodes.InvalidSession: {
         this.debug('invalid session passed');
         this.emit('_refresh');
+        this.emit('invalidSession');
 
         break;
       }
       case GatewayOpcodes.Dispatch: {
         let event = payload as GatewayDispatchPayload['d'];
 
-        this.debug('received dispatch', data.t);
+        this.trace('received dispatch', data.t);
 
         this.emit(data.t, data.d);
 
@@ -590,7 +597,7 @@ export class GatewayShard extends EventEmitter {
 
     this.heartbeat_acked = false;
 
-    this.debug('sent heartbeat, seq ' + this.s);
+    this.trace('sent heartbeat, seq ' + this.s);
 
     this.#timeouts.push(
       setTimeout(() => {

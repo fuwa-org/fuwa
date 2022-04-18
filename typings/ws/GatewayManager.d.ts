@@ -10,9 +10,13 @@ export declare class GatewayManager extends EventEmitter {
     count: number;
     gateway: APIGatewayBotInfo;
     get ping(): number;
+    private concurrency;
+    private _lastIdentify;
+    private lock;
     constructor(client: Client);
     debug(...args: any[]): void;
     error(...args: any[]): void;
+    trace(...args: any[]): void;
     shard(id: number): GatewayShard | undefined;
     spawnWithShardingManager(options: GatewayManagerShardingOptions): Promise<void>;
     spawn(options: GatewayManagerOptions): Promise<void>;
