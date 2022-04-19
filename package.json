@@ -31,7 +31,7 @@
   },
   "devDependencies": {
     "@splatterxl/tsconfig": "1.1.1",
-    "@types/node": "17.0.24",
+    "@types/node": "17.0.25",
     "@typescript-eslint/eslint-plugin": "5.19.0",
     "@typescript-eslint/parser": "5.19.0",
     "cz-conventional-changelog": "3.3.0",
