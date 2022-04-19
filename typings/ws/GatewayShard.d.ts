@@ -23,7 +23,7 @@ export declare class GatewayShard extends EventEmitter {
     private s;
     session?: string;
     private _awaitedGuilds;
-    get readyState(): 0 | 2 | 1 | 3;
+    get readyState(): 0 | 1 | 2 | 3;
     constructor(client: Client, shard: [number, number]);
     private authenticate;
     connect(url?: string): Promise<unknown>;

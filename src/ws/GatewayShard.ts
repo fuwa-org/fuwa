@@ -252,6 +252,7 @@ export class GatewayShard extends EventEmitter {
       : JSON.parse(buffer.toString());
 
     this.emit('packet', data);
+    this.trace('packet received:', data);
 
     const payload: any = data.d;
 

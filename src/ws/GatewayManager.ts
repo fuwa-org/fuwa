@@ -218,6 +218,8 @@ export class GatewayManager extends EventEmitter {
       }
     }
 
+    const url = this.constructGatewayURL(options.url ?? gateway.url);
+
     for (let i = range[0]; i < range[1]; i++) {
       if (options.skipExisting && this.shards.has(i)) {
         this.debug('skipping existing shard', i);
@@ -236,7 +238,7 @@ export class GatewayManager extends EventEmitter {
       this._registerListeners(shard, false);
 
       try {
-        await shard.connect().then(() => {
+        await shard.connect(url).then(() => {
           return new Promise((resolve, reject) => {
             shard.on('READY', resolve);
             shard.on('close', (...args: [number, string]) => {
@@ -392,7 +394,7 @@ export class GatewayManager extends EventEmitter {
       this.client.options.etf ? 'etf' : 'json',
     );
     parsed.searchParams.set('v', this.client.options.apiVersion.toString());
-
+    
     return parsed.toString();
   }
 
