@@ -13,8 +13,12 @@ const client = new Fuwa.Client(process.env.DISCORD_TOKEN, {
   client.logger.info('ready');
 });
 
+const trends = new Map();
+
 client.on('messages.create', async m => {
   if (m.author.bot) return;
+
+  client.logger.trace(`${m.author.username}#${m.author.discriminator}: ${m.content}`);
 
   if (m.content.startsWith('!ping')) {
     m.channel.createMessage({
@@ -57,6 +61,25 @@ client.on('messages.create', async m => {
       });
     }
   }
+
+  (() => {
+  if (m.content) {
+    if (trends.has(m.channel.id)) {
+      const [content, users] = trends.get(m.channel.id); 
+      if (content !== m.content) return trends.delete(m.channel.id);
+      if (users.includes(m.author.id)) return;
+      users.push(m.author.id); 
+      trends.set(m.channel.id, [content, users]); 
+      if (users.length === 5) {
+        m.channel.createMessage(content);
+        trends.delete(m.channel.id);
+        return;
+      }
+    } else {
+      trends.set(m.channel.id, [m.content, [m.author.id]]);
+    }
+  }
+  })()
 });
 
 client.connect();

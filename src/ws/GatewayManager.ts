@@ -263,9 +263,8 @@ export class GatewayManager extends EventEmitter {
         this.lock = false;
       } catch (e) {
         this.debug('failed to spawn shard', i, ':', e);
-        shard.close(false);
         this.lock = false;
-        this.respawn(i);
+        this.debug(this.respawn(i));
       }
 
       this.trace('spawning shard', i, ': lock released');
@@ -278,17 +277,11 @@ export class GatewayManager extends EventEmitter {
    * @returns Whether the shard was successfully respawned.
    */
   public async respawn(id: number) {
-    const shard = this.shards.get(id);
-
-    if (!shard) return false;
-
-    this.spawn({
+    return this.spawn({
       shards: 1,
-      id: shard.id,
-      url: shard.url,
+      id,
       count: this.count,
-    });
-    return true;
+    }).then(() => true).catch(() => false);
   }
 
   /**
