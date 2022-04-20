@@ -283,7 +283,9 @@ export class GatewayManager extends EventEmitter {
       shards: 1,
       id,
       count: this.count,
-    }).then(() => true).catch(() => false);
+    })
+      .then(() => true)
+      .catch(() => false);
   }
 
   /**
