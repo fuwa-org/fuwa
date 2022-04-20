@@ -3,11 +3,11 @@
 import {
   RESTPostAPIChannelMessageJSONBody,
   MessageFlags as APIMessageFlags,
-  APIMessage,
 } from 'discord-api-types/v10';
 import { basename } from 'path';
 import { APIRequest, File } from '../../rest/APIRequest';
 import { MessageFlags } from '../bitfields/MessageFlags';
+import { DataResolver } from '../DataResolver';
 import { FuwaError } from '../errors';
 import { FirstArrayValue } from '../util';
 import {
@@ -22,6 +22,7 @@ export interface MessagePayloadData {
   tts?: boolean;
   nonce?: string;
   attachments?: (FileResolvable | MessagePayloadAttachment)[];
+  reference?: MessagePayloadReference;
   // embeds?: MessagePayloadEmbed[];
 }
 
@@ -52,14 +53,22 @@ export class MessagePayload {
     this.tts = data.tts;
     this.nonce = data.nonce;
     this.attachments = data.attachments;
+    this.reference = data.reference;
     // this.embeds = data.embeds;
   }
 
-  async json(): Promise<{ body: Partial<APIMessage>; files: File[] }> {
-    const body: Partial<APIMessage> = {
-      content: this.content,
-      tts: this.tts,
-      nonce: this.nonce,
+  async json(): Promise<{
+    body: Partial<RESTPostAPIChannelMessageJSONBody>;
+    files: File[];
+  }> {
+    const body: Partial<RESTPostAPIChannelMessageJSONBody> = {
+      content: DataResolver.str(this.content, false, !!this.content),
+      tts: DataResolver.bool(this.tts, false),
+      nonce: DataResolver.any(this.nonce, [
+        ['str', [false]],
+        ['int', [false]],
+      ]),
+      message_reference: DataResolver.messageReference(this.reference),
     };
 
     const files: APIRequest['files'] = [];
@@ -149,4 +158,11 @@ export class MessagePayloadAttachment {
 
     return this;
   }
+}
+
+export interface MessagePayloadReference {
+  message: string;
+  channel?: string;
+  guild?: string;
+  failIfNotExists?: boolean;
 }

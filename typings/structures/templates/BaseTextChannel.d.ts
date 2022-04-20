@@ -1,6 +1,6 @@
 import { APITextBasedChannel, TextChannelType, Snowflake } from 'discord-api-types/v10';
 import { Client } from '../../client/Client';
-import { MessagePayload } from '../../util/resolvables/MessagePayload';
+import { MessagePayload, MessagePayloadData } from '../../util/resolvables/MessagePayload';
 import { Channel } from '../Channel.js';
 import { DMChannel } from '../DMChannel';
 import { GuildChannel } from '../GuildChannel';
@@ -10,14 +10,14 @@ export interface BaseTextChannel extends Channel {
     lastMessageId: Snowflake | null;
     messages: ChannelMessageManager;
     _deserialise(data: APITextBasedChannel<TextChannelType>): this;
-    createMessage(data: MessagePayload | string): ReturnType<ChannelMessageManager['create']>;
+    createMessage(data: MessagePayload | MessagePayloadData | string): ReturnType<ChannelMessageManager['create']>;
 }
 export declare class BaseTextChannelInGuild extends GuildChannel implements BaseTextChannel {
     lastMessageId: Snowflake | null;
     messages: ChannelMessageManager;
     constructor(client: Client);
     _deserialise(data: any): this;
-    createMessage(data: MessagePayload | string): Promise<import("../Message").Message<TextChannel>>;
+    get createMessage(): (data: string | MessagePayload | MessagePayloadData, cache?: boolean) => Promise<import("../Message").Message<TextChannel>>;
 }
 export declare const BaseTextChannel: new (client: Client) => BaseTextChannel;
 export declare type TextChannel = DMChannel | GuildTextChannel;

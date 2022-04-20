@@ -59,6 +59,8 @@ export class Message<
 
   public attachments: MessageAttachment[] = [];
 
+  public reference: MessageReference | null = null;
+
   _deserialise(data: APIMessage): this {
     if ('id' in data) this.id = data.id as Snowflake;
 
@@ -91,6 +93,13 @@ export class Message<
       this.attachments = data.attachments.map(v =>
         new MessageAttachment(this.client)._deserialise(v),
       );
+    if ('message_reference' in data)
+      this.reference = {
+        messageId: data.message_reference!.message_id!,
+        channelId: data.message_reference!.channel_id!,
+        guildId: data.message_reference!.guild_id!,
+      };
+
     // TODO: mentions, applications, webhooks, reactions, references, etc.
 
     return this;
@@ -110,7 +119,7 @@ export class Message<
   public async edit(content: string | MessagePayload | MessagePayloadData) {
     const payload = await MessagePayload.from(content).json();
 
-    return this._modify(payload.body, payload.files);
+    return this._modify(payload.body as APIMessage, payload.files);
   }
 
   public async delete() {
@@ -153,6 +162,21 @@ export class Message<
     });
   }
 
+  public reply(
+    content: string | MessagePayload | MessagePayloadData,
+    cache = false,
+  ) {
+    return this.channel.createMessage(
+      {
+        reference: {
+          message: this.id,
+        },
+        ...(typeof content === 'string' ? { content } : content),
+      },
+      cache,
+    );
+  }
+
   toJSON(): APIMessage {
     return {
       id: this.id,
@@ -173,6 +197,12 @@ export class Message<
       mention_channels: [], // TODO
       attachments: [], // TODO
       embeds: [], // TODO
-    };
+    } as APIMessage;
   }
+}
+
+export interface MessageReference {
+  messageId: Snowflake;
+  channelId: Snowflake;
+  guildId: Snowflake;
 }

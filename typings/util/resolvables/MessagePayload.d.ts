@@ -1,5 +1,5 @@
 /// <reference types="node" />
-import { MessageFlags as APIMessageFlags, APIMessage } from 'discord-api-types/v10';
+import { RESTPostAPIChannelMessageJSONBody, MessageFlags as APIMessageFlags } from 'discord-api-types/v10';
 import { File } from '../../rest/APIRequest';
 import { MessageFlags } from '../bitfields/MessageFlags';
 import { FileResolvable } from './FileResolvable';
@@ -9,6 +9,7 @@ export interface MessagePayloadData {
     tts?: boolean;
     nonce?: string;
     attachments?: (FileResolvable | MessagePayloadAttachment)[];
+    reference?: MessagePayloadReference;
 }
 export interface MessagePayload extends MessagePayloadData {
 }
@@ -16,7 +17,7 @@ export declare class MessagePayload {
     static from(value: MessagePayload | string | MessagePayloadData): MessagePayload;
     constructor(data: MessagePayload | MessagePayloadData);
     json(): Promise<{
-        body: Partial<APIMessage>;
+        body: Partial<RESTPostAPIChannelMessageJSONBody>;
         files: File[];
     }>;
 }
@@ -40,4 +41,10 @@ export declare class MessagePayloadAttachment {
         description?: string;
     });
     resolve(): Promise<this>;
+}
+export interface MessagePayloadReference {
+    message: string;
+    channel?: string;
+    guild?: string;
+    failIfNotExists?: boolean;
 }

@@ -4,7 +4,10 @@ import {
   Snowflake,
 } from 'discord-api-types/v10';
 import { Client } from '../../client/Client';
-import { MessagePayload } from '../../util/resolvables/MessagePayload';
+import {
+  MessagePayload,
+  MessagePayloadData,
+} from '../../util/resolvables/MessagePayload';
 import { Channel } from '../Channel.js';
 import { DMChannel } from '../DMChannel';
 import { GuildChannel } from '../GuildChannel';
@@ -19,7 +22,7 @@ export interface BaseTextChannel extends Channel {
   messages: ChannelMessageManager;
   _deserialise(data: APITextBasedChannel<TextChannelType>): this;
   createMessage(
-    data: MessagePayload | string,
+    data: MessagePayload | MessagePayloadData | string,
   ): ReturnType<ChannelMessageManager['create']>;
 }
 
@@ -50,8 +53,8 @@ export class BaseTextChannelInGuild
     return this;
   }
 
-  public createMessage(data: MessagePayload | string) {
-    return this.messages.create(data);
+  public get createMessage() {
+    return this.messages.create.bind(this.messages);
   }
 }
 
@@ -63,14 +66,14 @@ export const BaseTextChannel = function (
     value: client,
   });
   this.lastMessageId = null;
-  Object.defineProperty(this, 'createMessage', {
-    value: BaseTextChannelInGuild.prototype.createMessage.bind(this),
-  });
   Object.defineProperty(this, '_deserialise', {
     value: BaseTextChannelInGuild.prototype._deserialise.bind(this),
   });
   Object.defineProperty(this, 'messages', {
     value: new ChannelMessageManager(this as unknown as TextChannel),
+  });
+  Object.defineProperty(this, 'createMessage', {
+    value: this.messages.create.bind(this.messages),
   });
 
   return this;

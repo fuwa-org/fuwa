@@ -18,3 +18,6 @@ try {
     stdio: 'inherit',
   });
 } catch {}
+
+// add modified files to git
+child_process.execSync('git add ' + modifiedFiles.join(' '));
