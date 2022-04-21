@@ -6,6 +6,7 @@ import {
 } from 'discord-api-types/v10';
 import { basename } from 'path';
 import { APIRequest, File } from '../../rest/APIRequest';
+import { MessageEmbed } from '../../structures/MessageEmbed';
 import { MessageFlags } from '../bitfields/MessageFlags';
 import { DataResolver } from '../DataResolver';
 import { FuwaError } from '../errors';
@@ -23,7 +24,7 @@ export interface MessagePayloadData {
   nonce?: string;
   attachments?: (FileResolvable | MessagePayloadAttachment)[];
   reference?: MessagePayloadReference;
-  // embeds?: MessagePayloadEmbed[];
+  embeds?: MessageEmbed[];
 }
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
@@ -54,7 +55,7 @@ export class MessagePayload {
     this.nonce = data.nonce;
     this.attachments = data.attachments;
     this.reference = data.reference;
-    // this.embeds = data.embeds;
+    this.embeds = data.embeds;
   }
 
   async json(): Promise<{
@@ -69,6 +70,7 @@ export class MessagePayload {
         ['int', [false]],
       ]),
       message_reference: DataResolver.messageReference(this.reference),
+      embeds: this.embeds?.map(v => v.toJSON()),
     };
 
     const files: APIRequest['files'] = [];

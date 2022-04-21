@@ -1,6 +1,7 @@
 /// <reference types="node" />
 import { RESTPostAPIChannelMessageJSONBody, MessageFlags as APIMessageFlags } from 'discord-api-types/v10';
 import { File } from '../../rest/APIRequest';
+import { MessageEmbed } from '../../structures/MessageEmbed';
 import { MessageFlags } from '../bitfields/MessageFlags';
 import { FileResolvable } from './FileResolvable';
 export interface MessagePayloadData {
@@ -10,6 +11,7 @@ export interface MessagePayloadData {
     nonce?: string;
     attachments?: (FileResolvable | MessagePayloadAttachment)[];
     reference?: MessagePayloadReference;
+    embeds?: MessageEmbed[];
 }
 export interface MessagePayload extends MessagePayloadData {
 }

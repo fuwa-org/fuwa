@@ -8,6 +8,7 @@ import { MessageAttachment } from './MessageAttachment';
 import { FileResolvable } from '../util/resolvables/FileResolvable';
 import { MessagePayload, MessagePayloadAttachment, MessagePayloadData } from '../util/resolvables/MessagePayload';
 import { File } from '../rest/APIRequest';
+import { MessageEmbed } from './MessageEmbed';
 export declare class Message<ChannelType extends TextChannel = TextChannel> extends BaseStructure<APIMessage> {
     nonce: string | number | null;
     guildId: Snowflake | null;
@@ -28,6 +29,8 @@ export declare class Message<ChannelType extends TextChannel = TextChannel> exte
     get editedAt(): Date | null;
     attachments: MessageAttachment[];
     reference: MessageReference | null;
+    get referencedMessage(): Message | null;
+    embeds: MessageEmbed[];
     _deserialise(data: APIMessage): this;
     _modify(data: Partial<APIMessage>, files?: File[]): Promise<this>;
     fetchMember(): Promise<import("./GuildMember").GuildMember> | Promise<null>;

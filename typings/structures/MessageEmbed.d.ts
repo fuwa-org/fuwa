@@ -1,0 +1,31 @@
+import type { APIEmbed, APIEmbedAuthor, APIEmbedFooter, APIEmbedImage, APIEmbedProvider, APIEmbedVideo, APIEmbedField, APIEmbedThumbnail } from 'discord-api-types/v10';
+import { CamelCase, Null } from '../util/util';
+export declare class MessageEmbed {
+    type: EmbedType;
+    url: string | null;
+    title: string | null;
+    description: string | null;
+    author: EmbedAuthor | null;
+    footer: EmbedFooter | null;
+    timestamp: number | null;
+    color: number | null;
+    image: EmbedImage | null;
+    video: EmbedVideo | null;
+    thumbnail: EmbedThumbnail | null;
+    provider: EmbedProvider | null;
+    fields: APIEmbedField[];
+    constructor(data: APIEmbed);
+    hexColor(): string | null;
+    timestampISO(): string | null;
+    timestampDate(): Date | null;
+    toJSON(): APIEmbed;
+}
+export declare const EmbedType: typeof import("discord-api-types/v10").EmbedType;
+export declare type EmbedType = typeof EmbedType[keyof typeof EmbedType];
+export declare type EmbedImage = Null<CamelCase<APIEmbedImage>, 'url'>;
+export declare type EmbedVideo = Null<CamelCase<APIEmbedVideo>, 'url'>;
+export declare type EmbedThumbnail = Null<CamelCase<APIEmbedThumbnail>, 'url'>;
+export declare type EmbedAuthor = Null<CamelCase<APIEmbedAuthor>, 'name'>;
+export declare type EmbedFooter = Null<CamelCase<APIEmbedFooter>, 'text'>;
+export declare type EmbedProvider = Null<CamelCase<APIEmbedProvider>, 'name'>;
+export type { APIEmbedField as EmbedField } from 'discord-api-types/v10';

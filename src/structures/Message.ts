@@ -17,6 +17,7 @@ import {
   MessagePayloadData,
 } from '../util/resolvables/MessagePayload';
 import { File } from '../rest/APIRequest';
+import { MessageEmbed } from './MessageEmbed';
 
 // TODO: Add support for DM messages
 export class Message<
@@ -60,6 +61,14 @@ export class Message<
   public attachments: MessageAttachment[] = [];
 
   public reference: MessageReference | null = null;
+  public get referencedMessage(): Message | null {
+    return (
+      (this.reference && this.channel.messages.get(this.reference.messageId)) ??
+      null
+    );
+  }
+
+  public embeds: MessageEmbed[] = [];
 
   _deserialise(data: APIMessage): this {
     if ('id' in data) this.id = data.id as Snowflake;
@@ -80,7 +89,6 @@ export class Message<
     }
     if ('nonce' in data) this.nonce = data.nonce! ?? null;
     if ('flags' in data) this.flags = new MessageFlags(data.flags!);
-    // TODO: embeds
     if ('pinned' in data) this.pinned = data.pinned;
     if ('content' in data) this.content = data.content;
     if ('timestamp' in data)
@@ -99,6 +107,8 @@ export class Message<
         channelId: data.message_reference!.channel_id!,
         guildId: data.message_reference!.guild_id!,
       };
+    if ('embeds' in data)
+      this.embeds = data.embeds.map(v => new MessageEmbed(v));
 
     // TODO: mentions, applications, webhooks, reactions, references, etc.
 
@@ -195,8 +205,8 @@ export class Message<
       mention_roles: [], // TODO
       mention_everyone: false, // TODO
       mention_channels: [], // TODO
-      attachments: [], // TODO
-      embeds: [], // TODO
+      attachments: this.attachments.map(v => v.toJSON()),
+      embeds: this.embeds.map(v => v.toJSON()),
     } as APIMessage;
   }
 }

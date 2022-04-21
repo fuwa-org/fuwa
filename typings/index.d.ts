@@ -22,6 +22,8 @@ export * from './structures/Guild';
 export * from './structures/User';
 export * from './structures/ExtendedUser';
 export * from './structures/Message';
+export * from './structures/MessageEmbed';
+export * from './structures/MessageAttachment';
 export * from './structures/GuildChannel';
 export * from './structures/GuildMember';
 export * from './structures/Channel';

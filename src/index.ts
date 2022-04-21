@@ -29,6 +29,8 @@ export * from './structures/Guild';
 export * from './structures/User';
 export * from './structures/ExtendedUser';
 export * from './structures/Message';
+export * from './structures/MessageEmbed';
+export * from './structures/MessageAttachment';
 export * from './structures/GuildChannel';
 export * from './structures/GuildMember';
 export * from './structures/Channel';
@@ -55,7 +57,7 @@ export * from './logging/LoggerOptions';
 export * from './logging/DefaultLogger';
 // we're not going to export DisabledLogger because it's internal
 
-export * from './sharding/ShardingManager'; 
+export * from './sharding/ShardingManager';
 
 export * as Types from 'discord-api-types/v10';
 export { Routes } from 'discord-api-types/v10';

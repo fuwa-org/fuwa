@@ -59,13 +59,11 @@ export class DefaultLogger implements ILogger {
   public trace(...data: any[]): void {
     if (this.options.level.includes('trace')) {
       this.log(
-        `${this.kleur().gray('trace')}:`,
+        `${this.kleur().gray('trace:')}`,
         this.kleur().gray(
           data
             .map(v =>
-              typeof v === 'string'
-                ? v
-                : util.inspect(v, { depth: 1, colors: false }),
+              typeof v === 'string' ? v : util.inspect(v, false, null, false),
             )
             .join(' '),
         ),

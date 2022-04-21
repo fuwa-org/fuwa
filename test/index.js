@@ -23,7 +23,7 @@ client.on('messages.create', async m => {
   );
 
   if (m.content.startsWith('!ping')) {
-    m.channel.createMessage({
+    m.reply({
       content: 'ping pong latency is ' + m.guild.shard.ping + 'ms',
       tts: false,
       nonce: Date.now(),
@@ -35,7 +35,7 @@ client.on('messages.create', async m => {
     try {
       const code = m.content.substring(6);
       const result = await eval(code);
-      m.channel.createMessage(
+      m.reply(
         `\`\`\`js\n${
           typeof result === 'string'
             ? result
@@ -43,7 +43,7 @@ client.on('messages.create', async m => {
         }\n\`\`\``,
       );
     } catch (e) {
-      m.channel.createMessage(
+      m.reply(
         `\`\`\`js\n${require('util')
           .inspect(e, { colors: false })
           .slice(0, 1990)}\n\`\`\``,
@@ -60,6 +60,7 @@ client.on('messages.create', async m => {
 
       m.client.rest.channels(m.channel.id).messages.post({
         body,
+        allowedRetries: 0,
       });
     }
   }
@@ -86,4 +87,10 @@ client.on('messages.create', async m => {
 
 client.connect();
 
-process.stdin.on('data', d => eval(d.toString()));
+process.stdin.on('data', d => {
+  try {
+    console.log(eval(d.toString()));
+  } catch (e) {
+    console.log(e);
+  }
+});
