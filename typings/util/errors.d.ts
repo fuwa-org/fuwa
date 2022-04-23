@@ -1,6 +1,7 @@
 import type { ArgumentType } from './util';
 export declare class FuwaError<T extends keyof typeof messages> extends Error {
     constructor(key: T, ...args: ArgumentType<typeof messages[T]>);
+    setError(error: Error): void;
 }
 declare const messages: {
     readonly INVALID_TOKEN: () => string;

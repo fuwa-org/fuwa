@@ -1,6 +1,7 @@
-import { APIGuild, APIUnavailableGuild, GuildChannelType, GuildDefaultMessageNotifications, GuildExplicitContentFilter, GuildFeature, GuildMFALevel, GuildNSFWLevel, GuildPremiumTier, GuildVerificationLevel, Snowflake } from 'discord-api-types/v10';
+import { APIGuild, APIGuildChannel, APIUnavailableGuild, GuildChannelType, GuildDefaultMessageNotifications, GuildExplicitContentFilter, GuildFeature, GuildMFALevel, GuildNSFWLevel, GuildPremiumTier, GuildVerificationLevel, Snowflake } from 'discord-api-types/v10';
 import { GuildSystemChannelFlags } from '../util/bitfields/GuildSystemChannelFlags';
 import { FileResolvable } from '../util/resolvables/FileResolvable.js';
+import { GuildChannel } from './GuildChannel';
 import { GuildChannelManager } from './managers/GuildChannelManager';
 import { GuildMemberManager } from './managers/GuildMemberManager';
 import { BaseStructure } from './templates/BaseStructure';
@@ -10,7 +11,7 @@ export declare class Guild extends BaseStructure<APIGuild | APIUnavailableGuild>
     name: string | null;
     description: string | null;
     ownerId: Snowflake;
-    get owner(): import("./ExtendedUser.js").ExtendedUser | import("./User.js").User | undefined;
+    get owner(): import("./User.js").User | import("./ExtendedUser.js").ExtendedUser | undefined;
     applicationId: Snowflake | null;
     preferredLocale: string;
     features: GuildFeature[];
@@ -46,13 +47,18 @@ export declare class Guild extends BaseStructure<APIGuild | APIUnavailableGuild>
     systemChannelId: Snowflake | null;
     systemChannelFlags: GuildSystemChannelFlags | null;
     publicUpdatesChannelId: Snowflake | null;
+    get afkChannel(): GuildChannel<APIGuildChannel<GuildChannelType>> | null | undefined;
+    get systemChannel(): GuildChannel<APIGuildChannel<GuildChannelType>> | null | undefined;
+    get widgetChannel(): GuildChannel<APIGuildChannel<GuildChannelType>> | null | undefined;
+    get rulesChannel(): GuildChannel<APIGuildChannel<GuildChannelType>> | null | undefined;
+    get publicUpdatesChannel(): GuildChannel<APIGuildChannel<GuildChannelType>> | null | undefined;
     channels: GuildChannelManager;
     get shardId(): number;
     get shard(): import("../index.js").GatewayShard | undefined;
     constructor(client: Client);
     _deserialise(data: APIGuild | APIUnavailableGuild): this;
     fetch(force?: boolean): Promise<Guild>;
-    edit(data: Partial<APIGuild | Guild>, reason?: string): Promise<this>;
+    edit(data: Partial<APIGuild>, reason?: string): Promise<this>;
     setIcon(icon: FileResolvable | null, reason?: string): Promise<this>;
     setBanner(banner: FileResolvable | null, reason?: string): Promise<this>;
     setSplash(splash: FileResolvable | null, reason?: string): Promise<this>;

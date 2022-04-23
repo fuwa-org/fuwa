@@ -1,4 +1,5 @@
 import {
+  APIGuild,
   APIMessageReferenceSend,
   ChannelType,
   GuildChannelType,
@@ -71,30 +72,54 @@ export class DataResolver {
       };
     else {
       return {
-        message_id: this.str(ref.message)!,
+        message_id: this.str(ref.message, true)!,
         channel_id: this.str(ref.channel, false),
         guild_id: this.str(ref.guild, false),
       };
     }
   }
 
+  static guild(data: Partial<APIGuild>): APIGuild {
+    if (typeof data !== 'object')
+      throw new FuwaError(
+        'INVALID_PARAMETER',
+        'data',
+        'a guild object',
+      ).setError(new TypeError());
+
+    this.str(data.id, true, true);
+    this.str(data.name, true, true);
+
+    return data as APIGuild;
+  }
+
   /// --- VALIDATORS --- ///
-  static str(
-    value: string | undefined,
-    required = true,
+  static str<T extends boolean>(
+    value: string | null | undefined,
+    required: T,
     nonempty = false,
-  ): string | undefined {
+    name = 'value',
+  ): T extends false ? string | undefined : string {
     if (value === undefined || value === null) {
       if (required)
-        throw new FuwaError('INVALID_PARAMETER', 'value', 'a string');
+        throw new FuwaError('INVALID_PARAMETER', name, 'a string').setError(
+          new TypeError(),
+        );
+      // @ts-ignore
       else return undefined;
     }
 
     if (typeof value !== 'string')
-      throw new FuwaError('INVALID_PARAMETER', 'value', 'a string');
+      throw new FuwaError('INVALID_PARAMETER', name, 'a string').setError(
+        new TypeError(),
+      );
 
     if (nonempty && value.length === 0) {
-      throw new FuwaError('INVALID_PARAMETER', 'value', 'a non-empty string');
+      throw new FuwaError(
+        'INVALID_PARAMETER',
+        name,
+        'a non-empty string',
+      ).setError(new TypeError());
     }
 
     return value;
@@ -108,19 +133,25 @@ export class DataResolver {
   ): number | undefined {
     if (value === undefined || value === null) {
       if (required)
-        throw new FuwaError('INVALID_PARAMETER', 'value', 'an integer');
+        throw new FuwaError(
+          'INVALID_PARAMETER',
+          'value',
+          'an integer',
+        ).setError(new TypeError());
       else return undefined;
     }
 
     if (typeof value !== 'number')
-      throw new FuwaError('INVALID_PARAMETER', 'value', 'an integer');
+      throw new FuwaError('INVALID_PARAMETER', 'value', 'an integer').setError(
+        new TypeError(),
+      );
 
     if (value < min || value > max)
       throw new FuwaError(
         'INVALID_PARAMETER',
         'value',
         'an integer between ' + min + ' and ' + max,
-      );
+      ).setError(new RangeError());
 
     return value;
   }
@@ -131,12 +162,16 @@ export class DataResolver {
   ): boolean | undefined {
     if (value === undefined || value === null) {
       if (required)
-        throw new FuwaError('INVALID_PARAMETER', 'value', 'a boolean');
+        throw new FuwaError('INVALID_PARAMETER', 'value', 'a boolean').setError(
+          new TypeError(),
+        );
       else return undefined;
     }
 
     if (typeof value !== 'boolean')
-      throw new FuwaError('INVALID_PARAMETER', 'value', 'a boolean');
+      throw new FuwaError('INVALID_PARAMETER', 'value', 'a boolean').setError(
+        new TypeError(),
+      );
 
     return value;
   }
@@ -163,7 +198,7 @@ export class DataResolver {
         'INVALID_PARAMETER',
         'value',
         `a valid value, one of: ${cases.map(([name]) => name).join(', ')}`,
-      );
+      ).setError(new TypeError());
     }
 
     return value;

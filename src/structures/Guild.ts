@@ -25,8 +25,8 @@ import { GuildMember } from './GuildMember.js';
 import { GuildChannelManager } from './managers/GuildChannelManager';
 import { GuildMemberManager } from './managers/GuildMemberManager';
 import { BaseStructure } from './templates/BaseStructure';
-import { CreateEntityOptions } from '../util/util';
 import { Client } from '../client/Client';
+import { DataResolver } from '../util/DataResolver.js';
 export class Guild extends BaseStructure<APIGuild | APIUnavailableGuild> {
   public available = false;
 
@@ -92,6 +92,32 @@ export class Guild extends BaseStructure<APIGuild | APIUnavailableGuild> {
   public systemChannelFlags: GuildSystemChannelFlags | null = null;
   public publicUpdatesChannelId: Snowflake | null = null;
 
+  public get afkChannel() {
+    return this.afkChannelId ? this.channels.get(this.afkChannelId) : null;
+  }
+
+  public get systemChannel() {
+    return this.systemChannelId
+      ? this.channels.get(this.systemChannelId)
+      : null;
+  }
+
+  public get widgetChannel() {
+    return this.widgetChannelId
+      ? this.channels.get(this.widgetChannelId)
+      : null;
+  }
+
+  public get rulesChannel() {
+    return this.rulesChannelId ? this.channels.get(this.rulesChannelId) : null;
+  }
+
+  public get publicUpdatesChannel() {
+    return this.publicUpdatesChannelId
+      ? this.channels.get(this.publicUpdatesChannelId)
+      : null;
+  }
+
   public channels: GuildChannelManager;
 
   public get shardId() {
@@ -150,7 +176,6 @@ export class Guild extends BaseStructure<APIGuild | APIUnavailableGuild> {
       this.discoverySplash = data.discovery_splash;
     if ('afk_timeout' in data) this.afkTimeout = data.afk_timeout;
     if ('afk_channel_id' in data) {
-      /* assign the channel, TODO */
       this.afkChannelId = data.afk_channel_id as Snowflake;
     }
     if ('verification_level' in data)
@@ -159,7 +184,6 @@ export class Guild extends BaseStructure<APIGuild | APIUnavailableGuild> {
       this.explicitContentFilter = data.explicit_content_filter;
     if ('widget_enabled' in data) this.widgetEnabled = data.widget_enabled!;
     if ('widget_channel_id' in data) {
-      /* assign the channel, TODO */
       this.widgetChannelId = data.widget_channel_id! as Snowflake;
     }
     if ('public_updates_channel_id' in data) {
@@ -215,16 +239,12 @@ export class Guild extends BaseStructure<APIGuild | APIUnavailableGuild> {
     return this.client.guilds.fetch(this.id, force);
   }
 
-  public async edit(data: Partial<APIGuild | Guild>, reason?: string) {
+  public async edit(data: Partial<APIGuild>, reason?: string) {
     return this._deserialise(
-      await this.client.http
-        .queue({
-          route: Routes.guild(this.id),
-          method: 'PATCH',
-          body: DataTransformer.asJSON(data),
-          reason,
-        })
-        .then(v => v.body.json()),
+      await this.client.rest(Routes.guild(this.id)).patch({
+        body: DataResolver.guild(data),
+        reason,
+      }),
     );
   }
 

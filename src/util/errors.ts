@@ -13,6 +13,14 @@ export class FuwaError<T extends keyof typeof messages> extends Error {
       this.name += ' [' + key + ']';
     }
   }
+
+  setError(error: Error) {
+    if (error && error.stack) {
+      this.stack =
+        `${this.name}: ${this.message}\n` +
+        error.stack?.replace(/^[^\n]*\n/, '');
+    }
+  }
 }
 
 const messages = {
