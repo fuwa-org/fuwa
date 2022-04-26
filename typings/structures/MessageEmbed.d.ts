@@ -1,5 +1,5 @@
 import type { APIEmbed, APIEmbedAuthor, APIEmbedFooter, APIEmbedImage, APIEmbedProvider, APIEmbedVideo, APIEmbedField, APIEmbedThumbnail } from 'discord-api-types/v10';
-import { CamelCase, Null } from '../util/util';
+import { CamelCase, DeepPartial, Null } from '../util/util';
 export declare class MessageEmbed {
     type: EmbedType;
     url: string | null;
@@ -14,11 +14,13 @@ export declare class MessageEmbed {
     thumbnail: EmbedThumbnail | null;
     provider: EmbedProvider | null;
     fields: APIEmbedField[];
-    constructor(data: APIEmbed);
+    constructor(data: APIEmbed | MessageEmbed);
+    from(data: APIEmbed): void;
     hexColor(): string | null;
     timestampISO(): string | null;
     timestampDate(): Date | null;
     toJSON(): APIEmbed;
+    static snake(data: DeepPartial<CamelCase<APIEmbed> & APIEmbed>): APIEmbed;
 }
 export declare const EmbedType: typeof import("discord-api-types/v10").EmbedType;
 export declare type EmbedType = typeof EmbedType[keyof typeof EmbedType];

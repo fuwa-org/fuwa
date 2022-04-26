@@ -41,12 +41,22 @@ export type CamelToSnake<T extends string | symbol | number> = JoinChars<
   PrefixAndLowercaseCapitals<SplitChars<T>>
 >;
 
-export type CamelCase<T extends Record<string, any>> = {
-  [P in SnakeToCamel<keyof T>]: T[CamelToSnake<P>];
-};
-export type SnakeCase<T extends Record<string, any>> = {
-  [P in CamelToSnake<keyof T>]: T[SnakeToCamel<P>];
-};
+export type CamelCase<T> = T extends Record<string, any>
+  ? {
+      [P in SnakeToCamel<keyof T>]: CamelCase<T[CamelToSnake<P>]>;
+    }
+  : T;
+export type SnakeCase<T> = T extends Record<string, any>
+  ? {
+      [P in CamelToSnake<keyof T>]: SnakeCase<T[SnakeToCamel<P>]>;
+    }
+  : T;
+
+export type DeepPartial<T> = T extends object
+  ? {
+      [P in keyof T]?: DeepPartial<T[P]>;
+    }
+  : T;
 
 export function omit(obj: any, keys: string[]) {
   const result = { ...obj };

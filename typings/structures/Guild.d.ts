@@ -11,7 +11,7 @@ export declare class Guild extends BaseStructure<APIGuild | APIUnavailableGuild>
     name: string | null;
     description: string | null;
     ownerId: Snowflake;
-    get owner(): import("./User.js").User | import("./ExtendedUser.js").ExtendedUser | undefined;
+    get owner(): import("./ExtendedUser.js").ExtendedUser | import("./User.js").User | undefined;
     applicationId: Snowflake | null;
     preferredLocale: string;
     features: GuildFeature[];

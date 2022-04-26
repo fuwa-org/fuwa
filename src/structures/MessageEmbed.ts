@@ -8,7 +8,7 @@ import type {
   APIEmbedField,
   APIEmbedThumbnail,
 } from 'discord-api-types/v10';
-import { CamelCase, Null } from '../util/util';
+import { CamelCase, DeepPartial, Null } from '../util/util';
 
 export class MessageEmbed {
   public type: EmbedType = EmbedType.Rich;
@@ -30,7 +30,12 @@ export class MessageEmbed {
 
   public fields: APIEmbedField[] = [];
 
-  constructor(data: APIEmbed) {
+  constructor(data: APIEmbed | MessageEmbed) {
+    if (data instanceof MessageEmbed) this.from(data.toJSON());
+    else this.from(MessageEmbed.snake(data));
+  }
+
+  from(data: APIEmbed) {
     // avoid deprecation warning
     if ('type' in data) this.type = data['type' as keyof APIEmbed] as EmbedType;
     if ('url' in data) this.url = data.url ?? null;
@@ -122,6 +127,7 @@ export class MessageEmbed {
       author: this.author
         ? {
             name: this.author.name,
+
             url: this.author.url ?? undefined,
             icon_url: this.author.iconUrl ?? undefined,
             proxy_icon_url: this.author.proxyIconUrl ?? undefined,
@@ -169,6 +175,38 @@ export class MessageEmbed {
         : undefined,
       fields: this.fields,
     };
+  }
+
+  static snake(data: DeepPartial<CamelCase<APIEmbed> & APIEmbed>): APIEmbed {
+    return {
+      ...data,
+      thumbnail: data.thumbnail
+        ? {
+            ...data.thumbnail,
+            proxy_url: data.thumbnail!.proxyUrl ?? data.thumbnail!.proxy_url,
+          }
+        : undefined,
+      image: data.image
+        ? {
+            ...data.image,
+            proxy_url: data.image!.proxyUrl ?? data.image!.proxy_url,
+          }
+        : undefined,
+      footer: data.footer
+        ? {
+            icon_url: data.footer!.iconUrl ?? data.footer!.icon_url,
+            proxy_icon_url:
+              data.footer!.proxyIconUrl ?? data.footer!.proxy_icon_url,
+          }
+        : undefined,
+      author: data.author
+        ? {
+            icon_url: data.author!.iconUrl ?? data.author!.icon_url,
+            proxy_icon_url:
+              data.author!.proxyIconUrl ?? data.author!.proxy_icon_url,
+          }
+        : undefined,
+    } as APIEmbed;
   }
 }
 

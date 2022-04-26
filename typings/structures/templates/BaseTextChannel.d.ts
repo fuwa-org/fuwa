@@ -17,7 +17,7 @@ export declare class BaseTextChannelInGuild extends GuildChannel implements Base
     messages: ChannelMessageManager;
     constructor(client: Client);
     _deserialise(data: any): this;
-    get createMessage(): (data: string | MessagePayloadData | MessagePayload, cache?: boolean) => Promise<import("../Message").Message<TextChannel>>;
+    get createMessage(): (data: string | MessagePayload | MessagePayloadData, cache?: boolean) => Promise<import("../Message").Message<TextChannel>>;
 }
 export declare const BaseTextChannel: new (client: Client) => BaseTextChannel;
 export declare type TextChannel = DMChannel | GuildTextChannel;

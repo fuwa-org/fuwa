@@ -16,11 +16,14 @@ declare type PrefixAndLowercaseCapitals<T extends string[]> = {
     [Index in keyof T]: T[Index] extends string ? PrefixAndLowercaseCapital<T[Index]> : T[Index];
 };
 export declare type CamelToSnake<T extends string | symbol | number> = JoinChars<PrefixAndLowercaseCapitals<SplitChars<T>>>;
-export declare type CamelCase<T extends Record<string, any>> = {
-    [P in SnakeToCamel<keyof T>]: T[CamelToSnake<P>];
-};
-export declare type SnakeCase<T extends Record<string, any>> = {
-    [P in CamelToSnake<keyof T>]: T[SnakeToCamel<P>];
-};
+export declare type CamelCase<T> = T extends Record<string, any> ? {
+    [P in SnakeToCamel<keyof T>]: CamelCase<T[CamelToSnake<P>]>;
+} : T;
+export declare type SnakeCase<T> = T extends Record<string, any> ? {
+    [P in CamelToSnake<keyof T>]: SnakeCase<T[SnakeToCamel<P>]>;
+} : T;
+export declare type DeepPartial<T> = T extends object ? {
+    [P in keyof T]?: DeepPartial<T[P]>;
+} : T;
 export declare function omit(obj: any, keys: string[]): any;
 export {};
