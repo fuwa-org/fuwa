@@ -65,7 +65,7 @@ export class RequestManager {
     const res = await this.client.execute(req, this.trace.bind(this)),
       now = Date.now();
 
-    if (req.useBaseUrl) this.updateOffset(res);
+    if (req.useBaseURL) this.updateOffset(res);
 
     this.debug(
       `${req.method.toUpperCase()} ${req.route} -> ${res.statusCode} ${

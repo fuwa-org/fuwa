@@ -12,7 +12,7 @@ export interface APIRequest<T = any> {
     headers?: Record<string, string>;
     reason?: string | null;
     useRateLimits?: boolean;
-    useBaseUrl?: boolean;
+    useBaseURL?: boolean;
     allowedRetries?: number;
     retries?: number;
     payloadJson?: boolean;

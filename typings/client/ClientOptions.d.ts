@@ -7,7 +7,7 @@ export interface ClientOptions {
     intents?: ClientOptionsIntents;
     logger?: boolean | ILogger | LoggerOptions;
     apiVersion?: number;
-    httpBaseUrl?: string;
+    httpBaseURL?: string;
     httpUserAgent?: string;
     httpTimings?: boolean;
     wsBrowser?: string;

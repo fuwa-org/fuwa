@@ -36,7 +36,7 @@ export interface ClientOptions {
    * Base URL for connecting to the Discord REST API. **DO NOT SPECIFY THE API VERSION IN THIS**
    * @default "https://discord.com/api"
    */
-  httpBaseUrl?: string;
+  httpBaseURL?: string;
   /**
    * User agent for the Discord REST API.
    * @default "Discordbot (https://github.com/fuwadiscord/fuwa, v{{package_version}})"
@@ -86,7 +86,7 @@ export function resolveIntents(intents: ClientOptionsIntents): Intents {
 export const DefaultClientOptions: ClientOptions = {
   intents: [Intents.Bits.Guilds, Intents.Bits.GuildMessages],
   apiVersion: 10,
-  httpBaseUrl: 'https://discord.com/api',
+  httpBaseURL: 'https://discord.com/api',
   httpUserAgent: `DiscordBot (${pkg.homepage}; ${pkg.version}) Node.js/${process.version}`,
   httpTimings: false,
   wsBrowser: 'fuwa',

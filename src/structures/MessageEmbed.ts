@@ -47,16 +47,16 @@ export class MessageEmbed {
         (data.author && {
           name: data.author.name,
           url: data.author.url ?? null,
-          iconUrl: data.author.icon_url ?? null,
-          proxyIconUrl: data.author.proxy_icon_url ?? null,
+          iconURL: data.author.icon_url ?? null,
+          proxyIconURL: data.author.proxy_icon_url ?? null,
         }) ??
         null;
     if ('footer' in data)
       this.footer =
         (data.footer && {
           text: data.footer.text,
-          iconUrl: data.footer.icon_url ?? null,
-          proxyIconUrl: data.footer.proxy_icon_url ?? null,
+          iconURL: data.footer.icon_url ?? null,
+          proxyIconURL: data.footer.proxy_icon_url ?? null,
         }) ??
         null;
     if ('timestamp' in data)
@@ -71,7 +71,7 @@ export class MessageEmbed {
           url: data.image.url,
           height: data.image.height ?? null,
           width: data.image.width ?? null,
-          proxyUrl: data.image.proxy_url ?? null,
+          proxyURL: data.image.proxy_url ?? null,
         }) ??
         null;
     if ('video' in data)
@@ -88,14 +88,14 @@ export class MessageEmbed {
           url: data.thumbnail.url,
           height: data.thumbnail.height ?? null,
           width: data.thumbnail.width ?? null,
-          proxyUrl: data.thumbnail.proxy_url ?? null,
+          proxyURL: data.thumbnail.proxy_url ?? null,
         }) ??
         null;
 
     if ('provider' in data)
       this.provider =
         (data.provider && {
-          name: data.provider.name,
+          name: data.provider.name ?? null,
           url: data.provider.url ?? null,
         }) ??
         null;
@@ -129,15 +129,15 @@ export class MessageEmbed {
             name: this.author.name,
 
             url: this.author.url ?? undefined,
-            icon_url: this.author.iconUrl ?? undefined,
-            proxy_icon_url: this.author.proxyIconUrl ?? undefined,
+            icon_url: this.author.iconURL ?? undefined,
+            proxy_icon_url: this.author.proxyIconURL ?? undefined,
           }
         : undefined,
       footer: this.footer
         ? {
             text: this.footer.text,
-            icon_url: this.footer.iconUrl ?? undefined,
-            proxy_icon_url: this.footer.proxyIconUrl ?? undefined,
+            icon_url: this.footer.iconURL ?? undefined,
+            proxy_icon_url: this.footer.proxyIconURL ?? undefined,
           }
         : undefined,
       timestamp: this.timestamp
@@ -149,12 +149,12 @@ export class MessageEmbed {
             url: this.image.url,
             height: this.image.height ?? undefined,
             width: this.image.width ?? undefined,
-            proxy_url: this.image.proxyUrl ?? undefined,
+            proxy_url: this.image.proxyURL ?? undefined,
           }
         : undefined,
       video: this.video
         ? {
-            url: this.video.url,
+            url: this.video.url ?? undefined,
             height: this.video.height ?? undefined,
             width: this.video.width ?? undefined,
           }
@@ -164,12 +164,12 @@ export class MessageEmbed {
             url: this.thumbnail.url,
             height: this.thumbnail.height ?? undefined,
             width: this.thumbnail.width ?? undefined,
-            proxy_url: this.thumbnail.proxyUrl ?? undefined,
+            proxy_url: this.thumbnail.proxyURL ?? undefined,
           }
         : undefined,
       provider: this.provider
         ? {
-            name: this.provider.name,
+            name: this.provider.name ?? undefined,
             url: this.provider.url ?? undefined,
           }
         : undefined,
@@ -177,33 +177,33 @@ export class MessageEmbed {
     };
   }
 
-  static snake(data: DeepPartial<CamelCase<APIEmbed> & APIEmbed>): APIEmbed {
+  static snake(data: DeepPartial<IMessageEmbed & APIEmbed>): APIEmbed {
     return {
       ...data,
       thumbnail: data.thumbnail
         ? {
             ...data.thumbnail,
-            proxy_url: data.thumbnail!.proxyUrl ?? data.thumbnail!.proxy_url,
+            proxy_url: data.thumbnail!.proxyURL ?? data.thumbnail!.proxy_url,
           }
         : undefined,
       image: data.image
         ? {
             ...data.image,
-            proxy_url: data.image!.proxyUrl ?? data.image!.proxy_url,
+            proxy_url: data.image!.proxyURL ?? data.image!.proxy_url,
           }
         : undefined,
       footer: data.footer
         ? {
-            icon_url: data.footer!.iconUrl ?? data.footer!.icon_url,
+            icon_url: data.footer!.iconURL ?? data.footer!.icon_url,
             proxy_icon_url:
-              data.footer!.proxyIconUrl ?? data.footer!.proxy_icon_url,
+              data.footer!.proxyIconURL ?? data.footer!.proxy_icon_url,
           }
         : undefined,
       author: data.author
         ? {
-            icon_url: data.author!.iconUrl ?? data.author!.icon_url,
+            icon_url: data.author!.iconURL ?? data.author!.icon_url,
             proxy_icon_url:
-              data.author!.proxyIconUrl ?? data.author!.proxy_icon_url,
+              data.author!.proxyIconURL ?? data.author!.proxy_icon_url,
           }
         : undefined,
     } as APIEmbed;
@@ -217,10 +217,57 @@ export const EmbedType = require('discord-api-types/v10')
 export type EmbedType = typeof EmbedType[keyof typeof EmbedType];
 
 // types
-export type EmbedImage = Null<CamelCase<APIEmbedImage>, 'url'>;
-export type EmbedVideo = Null<CamelCase<APIEmbedVideo>, 'url'>;
-export type EmbedThumbnail = Null<CamelCase<APIEmbedThumbnail>, 'url'>;
-export type EmbedAuthor = Null<CamelCase<APIEmbedAuthor>, 'name'>;
-export type EmbedFooter = Null<CamelCase<APIEmbedFooter>, 'text'>;
-export type EmbedProvider = Null<CamelCase<APIEmbedProvider>, 'name'>;
-export type { APIEmbedField as EmbedField } from 'discord-api-types/v10';
+export interface EmbedImage {
+  url: string;
+  proxyURL?: string | null;
+  height?: number | null;
+  width?: number | null;
+}
+export interface EmbedVideo {
+  url?: string | null;
+  height?: number | null;
+  width?: number | null;
+};
+export interface EmbedThumbnail {
+  url: string;
+  height?: number | null;
+  width?: number | null;
+  proxyURL?: string | null;
+};
+export interface EmbedAuthor {
+  name: string;
+  url?: string | null;
+  iconURL?: string | null;
+  proxyIconURL?: string | null;
+}
+export interface EmbedFooter {
+  text: string;
+  iconURL?: string | null;
+  proxyIconURL?: string | null;
+}
+export interface EmbedProvider {
+  name?: string | null;
+  url?: string | null;
+}
+export interface EmbedField {
+  name: string;
+  value: string;
+  inline?: boolean | null;
+}
+
+export interface IMessageEmbed {
+  type?: EmbedType;
+  title?: string;
+  description?: string;
+  url?: string;
+  /** ISO8601 timestamp */
+  timestamp?: string;
+  color?: number;
+  fields?: EmbedField[];
+  author?: EmbedAuthor;
+  footer?: EmbedFooter;
+  image?: EmbedImage;
+  thumbnail?: EmbedThumbnail;
+  video?: EmbedVideo;
+  provider?: EmbedProvider;
+}

@@ -4,7 +4,7 @@ import { RouteLike } from './RequestManager.js';
 import { ResponseData } from 'undici/types/dispatcher';
 export declare class RESTClient {
     #private;
-    baseUrl: string;
+    baseURL: string;
     options: RESTClientOptions;
     version?: number;
     constructor(options: RESTClientOptions);
@@ -17,7 +17,7 @@ export declare class RESTClient {
     execute(request: APIRequest, tracefunc?: any): Promise<ResponseData>;
 }
 export interface RESTClientOptions {
-    baseUrl: string;
+    baseURL: string;
     version?: number;
     auth?: string;
     userAgent?: string;

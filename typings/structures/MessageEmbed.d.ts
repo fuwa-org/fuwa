@@ -1,5 +1,5 @@
-import type { APIEmbed, APIEmbedAuthor, APIEmbedFooter, APIEmbedImage, APIEmbedProvider, APIEmbedVideo, APIEmbedField, APIEmbedThumbnail } from 'discord-api-types/v10';
-import { CamelCase, DeepPartial, Null } from '../util/util';
+import type { APIEmbed, APIEmbedField } from 'discord-api-types/v10';
+import { DeepPartial } from '../util/util';
 export declare class MessageEmbed {
     type: EmbedType;
     url: string | null;
@@ -20,14 +20,59 @@ export declare class MessageEmbed {
     timestampISO(): string | null;
     timestampDate(): Date | null;
     toJSON(): APIEmbed;
-    static snake(data: DeepPartial<CamelCase<APIEmbed> & APIEmbed>): APIEmbed;
+    static snake(data: DeepPartial<IMessageEmbed & APIEmbed>): APIEmbed;
 }
 export declare const EmbedType: typeof import("discord-api-types/v10").EmbedType;
 export declare type EmbedType = typeof EmbedType[keyof typeof EmbedType];
-export declare type EmbedImage = Null<CamelCase<APIEmbedImage>, 'url'>;
-export declare type EmbedVideo = Null<CamelCase<APIEmbedVideo>, 'url'>;
-export declare type EmbedThumbnail = Null<CamelCase<APIEmbedThumbnail>, 'url'>;
-export declare type EmbedAuthor = Null<CamelCase<APIEmbedAuthor>, 'name'>;
-export declare type EmbedFooter = Null<CamelCase<APIEmbedFooter>, 'text'>;
-export declare type EmbedProvider = Null<CamelCase<APIEmbedProvider>, 'name'>;
-export type { APIEmbedField as EmbedField } from 'discord-api-types/v10';
+export interface EmbedImage {
+    url: string;
+    proxyURL?: string | null;
+    height?: number | null;
+    width?: number | null;
+}
+export interface EmbedVideo {
+    url?: string | null;
+    height?: number | null;
+    width?: number | null;
+}
+export interface EmbedThumbnail {
+    url: string;
+    height?: number | null;
+    width?: number | null;
+    proxyURL?: string | null;
+}
+export interface EmbedAuthor {
+    name: string;
+    url?: string | null;
+    iconURL?: string | null;
+    proxyIconURL?: string | null;
+}
+export interface EmbedFooter {
+    text: string;
+    iconURL?: string | null;
+    proxyIconURL?: string | null;
+}
+export interface EmbedProvider {
+    name?: string | null;
+    url?: string | null;
+}
+export interface EmbedField {
+    name: string;
+    value: string;
+    inline?: boolean | null;
+}
+export interface IMessageEmbed {
+    type?: EmbedType;
+    title?: string;
+    description?: string;
+    url?: string;
+    timestamp?: string;
+    color?: number;
+    fields?: EmbedField[];
+    author?: EmbedAuthor;
+    footer?: EmbedFooter;
+    image?: EmbedImage;
+    thumbnail?: EmbedThumbnail;
+    video?: EmbedVideo;
+    provider?: EmbedProvider;
+}

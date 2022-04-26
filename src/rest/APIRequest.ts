@@ -12,7 +12,7 @@ export interface APIRequest<T = any> {
   headers?: Record<string, string>;
   reason?: string | null;
   useRateLimits?: boolean;
-  useBaseUrl?: boolean;
+  useBaseURL?: boolean;
 
   allowedRetries?: number;
   retries?: number;
@@ -44,7 +44,7 @@ export function resolveRequest(req: APIRequest): Required<APIRequest> {
     headers: {},
     reason: null,
     useRateLimits: true,
-    useBaseUrl: true,
+    useBaseURL: true,
     payloadJson: false,
     startTime: -1,
     httpStartTime: -1,

@@ -14,15 +14,15 @@ export class RESTClient {
    * An authentication token to include in the `Authorization` header for requests. Leave empty to not send that header.
    */
   #auth?: string;
-  public baseUrl: string;
+  public baseURL: string;
   public options: RESTClientOptions;
   /**
-   * API version to add to the {@link RESTClient.baseUrl}. Leave empty to not add a version at all.
+   * API version to add to the {@link RESTClient.baseURL}. Leave empty to not add a version at all.
    */
   public version?: number;
 
   public constructor(options: RESTClientOptions) {
-    this.baseUrl = options.baseUrl;
+    this.baseURL = options.baseURL;
     this.version = options.version;
     this.#auth = options.auth;
 
@@ -40,7 +40,7 @@ export class RESTClient {
   ): RESTClientOptions {
     const options: Required<ClientOptions> = clientOptions as unknown as any;
     return {
-      baseUrl: options.httpBaseUrl,
+      baseURL: options.httpBaseURL,
       version: options.apiVersion,
       auth: `${tokenType} ${token}`,
       userAgent: options.httpUserAgent,
@@ -49,7 +49,7 @@ export class RESTClient {
   }
   public static getDefaultOptions(token: string): Required<RESTClientOptions> {
     return {
-      baseUrl: DefaultClientOptions.httpBaseUrl!,
+      baseURL: DefaultClientOptions.httpBaseURL!,
       version: DefaultClientOptions.apiVersion!,
       auth: `Bot ${token}`,
       userAgent: DefaultClientOptions.httpUserAgent!,
@@ -80,7 +80,7 @@ export class RESTClient {
   ): string {
     if (!useBase) return route;
     return (
-      this.baseUrl +
+      this.baseURL +
       (this.version && versioned ? `/v${this.version}` : '') +
       route
     );
@@ -159,7 +159,7 @@ export class RESTClient {
     return `${this.formatRoute(
       request.route as RouteLike,
       request.versioned,
-      request.useBaseUrl,
+      request.useBaseURL,
     )}${query}`;
   }
 
@@ -196,7 +196,7 @@ export class RESTClient {
 }
 
 export interface RESTClientOptions {
-  baseUrl: string;
+  baseURL: string;
   version?: number;
   auth?: string;
   userAgent?: string;
