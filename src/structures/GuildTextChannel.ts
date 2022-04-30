@@ -15,7 +15,7 @@ export class GuildTextChannel extends BaseGuildTextChannel {
   toJSON(): APIGuildTextChannel<ChannelType.GuildText> {
     return {
       ...super.toJSON(),
-      topic: this.topic,
+      topic: this.topic ?? undefined,
     } as any;
   }
 }

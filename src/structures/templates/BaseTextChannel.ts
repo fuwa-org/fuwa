@@ -12,6 +12,7 @@ import { Channel } from '../Channel.js';
 import { DMChannel } from '../DMChannel';
 import { GuildChannel } from '../GuildChannel';
 import { GuildTextChannel } from '../GuildTextChannel';
+import { GuildVoiceChannel } from '../GuildVoiceChannel.js';
 import { ChannelMessageManager } from '../managers/ChannelMessageManager';
 
 // i hate this so much
@@ -81,4 +82,4 @@ export const BaseTextChannel = function (
   new (client: Client): BaseTextChannel;
 };
 
-export type TextChannel = DMChannel | GuildTextChannel;
+export type TextChannel = DMChannel | GuildTextChannel | GuildVoiceChannel;

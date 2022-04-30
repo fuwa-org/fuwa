@@ -62,7 +62,7 @@ export class GuildMember extends BaseStructure<APIGuildMember> {
   }
 
   public _deserialise(
-    data: APIGuildMember & { joined_at: string | null },
+    data: APIGuildMember & { joined_at?: string | null },
   ): this {
     if ('user' in data) {
       this.userId = data.user!.id as Snowflake;

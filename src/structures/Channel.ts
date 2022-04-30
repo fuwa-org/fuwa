@@ -13,7 +13,10 @@ import { consumeJSON } from '../rest/RequestManager.js';
 import type { DMChannel } from './DMChannel.js';
 import { Guild } from './Guild';
 import { GuildChannel, GuildChannels } from './GuildChannel.js';
+import { GuildTextChannel } from './GuildTextChannel.js';
+import { GuildVoiceChannel } from './GuildVoiceChannel.js';
 import { BaseStructure } from './templates/BaseStructure';
+import { TextChannel } from './templates/BaseTextChannel.js';
 
 export class Channel<
   T extends APIChannel = APIChannel,
@@ -92,8 +95,38 @@ export class Channel<
     return {
       id: this.id,
       type: this.type,
-      guild_id: this.guildId,
+      guild_id: this.guildId ?? undefined,
     } as T;
+  }
+
+  //#region Typeguards
+  public isDM(): this is DMChannel {
+    return this.type === ChannelType.DM;
+  }
+  public isGuild(): this is GuildChannels {
+    return ChannelType[this.type].startsWith('Guild');
+  }
+  public isText(): this is GuildTextChannel {
+    return this.type === ChannelType.GuildText;
+  }
+  public isVoice(): this is GuildVoiceChannel {
+    return this.type === ChannelType.GuildVoice;
+  }
+  public isCategory(): this is GuildChannel {
+    return this.type === ChannelType.GuildCategory;
+  }
+  public isTextBased(): this is TextChannel {
+    return (
+      this.type === ChannelType.GuildText ||
+      this.type === ChannelType.DM ||
+      this.type === ChannelType.GuildVoice
+    );
+  }
+  public isVoiceBased(): this is GuildVoiceChannel {
+    return (
+      this.type === ChannelType.GuildVoice ||
+      this.type === ChannelType.GuildStageVoice
+    );
   }
 }
 

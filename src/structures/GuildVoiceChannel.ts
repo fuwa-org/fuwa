@@ -23,7 +23,7 @@ export class GuildVoiceChannel extends BaseTextChannelInGuild {
     return {
       ...super.toJSON(),
       bitrate: this.bitrate ?? 0,
-      rtc_region: this.region,
+      rtc_region: this.region ?? undefined,
       user_limit: this.userLimit! ?? undefined,
       video_quality_mode: this.videoQuality,
       type: this.type as any,

@@ -100,7 +100,7 @@ export class GuildChannel<
       name: this.name,
       position: this.position,
       nsfw: this.nsfw,
-      parent_id: this.parentId,
+      parent_id: this.parentId ?? undefined,
     };
   }
 }
