@@ -25,7 +25,7 @@ export function handleDispatch(
       shard.session = data.d.session_id;
       shard._awaitedGuilds = data.d.guilds.map(g => g.id);
 
-      const user = new ExtendedUser(shard.client, data.d.user);
+      const user = new ExtendedUser(shard.client)._deserialise(data.d.user);
 
       shard.client.user = user;
       shard.client.users.add(user);
@@ -289,7 +289,7 @@ export function handleDispatch(
         break;
       }
 
-      const message = new Message(shard.client, data.d);
+      const message = new Message(shard.client)._deserialise(data.d);
 
       channel.messages.add(message);
 
