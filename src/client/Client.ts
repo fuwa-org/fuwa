@@ -139,12 +139,15 @@ export class Client extends EventEmitter {
   public channels: ChannelManager;
 
   /**
-   * The client's public-facing user. Extended with additional information.
+   * The client's public-facing user. Extended with additional information. Null if thr
+   * client is not logged in.
    */
   public user: ExtendedUser | null = null;
 
   private timeouts: Array<NodeJS.Timeout> = [];
   private timers: Array<NodeJS.Timeout> = [];
+
+  /** @internal @ignore */ _ready = false;
 
   public constructor(token: string, options?: ClientOptions) {
     super();

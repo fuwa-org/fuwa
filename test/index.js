@@ -15,7 +15,7 @@ const client = new Fuwa.Client(process.env.DISCORD_TOKEN, {
 
 const trends = new Map();
 
-client.on('messages.create', async m => {
+client.on('messageCreate', async m => {
   if (m.author.bot) return;
 
   client.logger.trace(

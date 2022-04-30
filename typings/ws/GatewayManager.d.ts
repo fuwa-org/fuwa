@@ -28,6 +28,7 @@ export declare class GatewayManager extends EventEmitter {
     private fetchGatewayBot;
     private constructGatewayURL;
     reset(): void;
+    event(name: string, ...data: any[]): void;
 }
 export interface GatewayManagerShardingOptions extends Omit<GatewayManagerOptions, 'shards' | 'id' | 'count'> {
     mode: 'env' | 'worker';

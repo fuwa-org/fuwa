@@ -7,8 +7,9 @@ import EventEmitter from 'node:events';
 import { Client } from '../client/Client.js';
 import { consumeJSON } from '../rest/RequestManager.js';
 import { Intents } from '../util/bitfields/Intents.js';
-import { GatewayShard } from './GatewayShard.js';
+import { GatewayShard, ShardState } from './GatewayShard.js';
 import { setTimeout as sleep } from 'node:timers/promises';
+import { handleDispatch } from './DispatchHandler.js';
 
 /**
  * The Gateway Manager is responsible for managing the client's {@link GatewayShard}s.
@@ -67,7 +68,7 @@ export class GatewayManager extends EventEmitter {
   }
 
   trace(...args: any[]) {
-    this.client.logger.trace(this.#__log_header(), ...args);
+    this.client.logger.trace('[WS => Manager]', ...args);
   }
 
   /**
@@ -334,6 +335,22 @@ export class GatewayManager extends EventEmitter {
       })
       .on('dispatch', d => {
         this.emit('dispatch', d, shard);
+        handleDispatch(this, d, shard);
+      })
+      .on('ready', () => {
+        this.event('shardReady', shard);
+        if (
+          [...this.shards.values()].every(
+            s => s.state === ShardState.Available,
+          ) &&
+          !this.client._ready
+        ) {
+          this.event('ready');
+          this.client._ready = true;
+        }
+      })
+      .on('resume', () => {
+        this.event('shardResume', shard);
       });
     if (runtime)
       shard.on('close', (code, reason) => {
@@ -396,7 +413,7 @@ export class GatewayManager extends EventEmitter {
       this.client.options.etf ? 'etf' : 'json',
     );
     parsed.searchParams.set('v', this.client.options.apiVersion.toString());
-    
+
     return parsed.toString();
   }
 
@@ -411,6 +428,13 @@ export class GatewayManager extends EventEmitter {
     }
 
     this.shards.clear();
+  }
+
+  /**
+   * Emit an event to the client.
+   */
+  event(name: string, ...data: any[]) {
+    this.client.emit(name, ...data);
   }
 }
 
