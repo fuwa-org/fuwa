@@ -4,3 +4,5 @@ secret*test*.js
 docs
 .nyc_output
 .env
+.yarn/cache
+.yarn/install-state.gz
