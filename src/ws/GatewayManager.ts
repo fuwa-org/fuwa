@@ -280,6 +280,8 @@ export class GatewayManager extends EventEmitter {
    * @returns Whether the shard was successfully respawned.
    */
   public async respawn(id: number) {
+    this.event('shardRespawn', id);
+
     return this.spawn({
       shards: 1,
       id,
@@ -347,6 +349,9 @@ export class GatewayManager extends EventEmitter {
       })
       .on('resume', () => {
         this.event('shardResume', shard);
+      })
+      .on('reconnect', () => {
+        this.event('shardReconnect', shard);
       });
     if (runtime)
       shard.on('close', (code, reason) => {

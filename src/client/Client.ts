@@ -33,6 +33,9 @@ import { HttpMethod } from 'undici/types/dispatcher';
 import { FuwaError } from '../util/errors.js';
 import { Snowflake } from 'discord-api-types/globals';
 import { DMChannel } from '../structures/DMChannel.js';
+import { GatewayShard } from '../ws/GatewayShard.js';
+import { Channels } from '../structures/Channel.js';
+import { GuildMember } from '../structures/GuildMember.js';
 
 /**
  * The client class represents a [bot application](https://discordapp.com/developers/docs/topics/oauth2)'s
@@ -344,15 +347,25 @@ export interface Client {
 
 export interface ClientEvents {
   ready: [];
-  resumed: [session_id: string];
-  'guilds.create': [Guild];
-  'guilds.delete': [id: Snowflake];
-  'guilds.update': [old: Guild, new: Guild];
-  'messages.create': [Message];
-  'messages.delete': [
-    { guild: Guild | null; channel: TextChannel; id: Snowflake },
+  shardResume: [shard: GatewayShard];
+  shardReady: [shard: GatewayShard];
+  shardReconnect: [shard: GatewayShard];
+  shardRespawn: [id: number];
+  guildCreate: [Guild];
+  guildDelete: [id: Snowflake];
+  guildUpdate: [old: Guild, new: Guild];
+  channelCreate: [Channels];
+  channelDelete: [{ id: Snowflake; guild: Snowflake | null }];
+  channelUpdate: [old: Channels, new: Channels];
+  guildMemberAdd: [GuildMember];
+  guildMemberRemove: [{ guild: Snowflake; id: Snowflake }];
+  guildMemberUpdate: [old: GuildMember, new: GuildMember];
+  guildMembersChunk: [guild: Guild, members: Snowflake[]];
+  messageCreate: [Message];
+  messageDelete: [
+    { guild: Snowflake | null; channel: Snowflake; id: Snowflake },
   ];
-  'messages.update': [old: Message, new: Message];
+  messageUpdate: [old: Message, new: Message];
 }
 
 export type APIRequestOptions<D = any> = Omit<APIRequest<D>, 'route'>;

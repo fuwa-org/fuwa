@@ -53,7 +53,7 @@ export async function handleDispatch(
       break;
     }
     case GatewayDispatchEvents.Resumed: {
-      shard.ready();
+      shard.emit('resumed');
       break;
     }
     //#endregion
@@ -81,6 +81,7 @@ export async function handleDispatch(
     }
     case GatewayDispatchEvents.GuildUpdate: {
       const guild = shard.client.guilds.get(data.d.id);
+      const oldGuild = shard.client.guilds.get(data.d.id);
 
       if (!guild) {
         shard.warn(
@@ -92,10 +93,14 @@ export async function handleDispatch(
       guild._deserialise(data.d);
 
       shard.client.guilds.update(guild);
+
+      manager.event('guildUpdate', oldGuild, guild);
       break;
     }
     case GatewayDispatchEvents.GuildDelete: {
       shard.client.guilds.remove(data.d.id);
+
+      manager.event('guildDelete', data.d.id);
       break;
     }
     //#endregion
@@ -180,7 +185,10 @@ export async function handleDispatch(
 
       shard.client.channels.remove(channel.id);
 
-      manager.event('channelDelete', channel);
+      manager.event('channelDelete', {
+        guild: channel.guildId ?? null,
+        id: channel.id,
+      });
       break;
     }
     //#endregion
@@ -216,6 +224,7 @@ export async function handleDispatch(
       }
 
       const member = guild.members.get(data.d.user.id);
+      const oldMember = guild.members.get(data.d.user.id);
 
       if (!member) {
         shard.warn(
@@ -228,7 +237,7 @@ export async function handleDispatch(
 
       guild.members.update(member);
 
-      manager.event('guildMemberUpdate', member);
+      manager.event('guildMemberUpdate', oldMember, member);
       break;
     }
     case GatewayDispatchEvents.GuildMemberRemove: {
@@ -243,7 +252,10 @@ export async function handleDispatch(
 
       guild.members.remove(data.d.user.id);
 
-      manager.event('guildMemberRemove', data.d.user.id);
+      manager.event('guildMemberRemove', {
+        id: data.d.user.id,
+        guild: guild.id,
+      });
       break;
     }
 
@@ -362,7 +374,11 @@ export async function handleDispatch(
 
       channel.messages.remove(message.id);
 
-      manager.event('messageDelete', message);
+      manager.event('messageDelete', {
+        guild: channel.guildId ?? null,
+        channel: channel.id,
+        id: message.id,
+      });
       break;
     }
 

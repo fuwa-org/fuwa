@@ -10,11 +10,13 @@ import { ChannelManager } from '../structures/managers/ChannelManager.js';
 import Events from '@fuwa/events';
 import { Message } from '../structures/Message.js';
 import { Guild } from '../structures/Guild.js';
-import { TextChannel } from '../structures/templates/BaseTextChannel.js';
 import { GatewayManager } from '../ws/GatewayManager.js';
 import { APIRequest } from '../rest/APIRequest.js';
 import { Snowflake } from 'discord-api-types/globals';
 import { DMChannel } from '../structures/DMChannel.js';
+import { GatewayShard } from '../ws/GatewayShard.js';
+import { Channels } from '../structures/Channel.js';
+import { GuildMember } from '../structures/GuildMember.js';
 export declare class Client extends EventEmitter {
     #private;
     options: Required<ClientOptions>;
@@ -43,19 +45,35 @@ export interface Client {
 }
 export interface ClientEvents {
     ready: [];
-    resumed: [session_id: string];
-    'guilds.create': [Guild];
-    'guilds.delete': [id: Snowflake];
-    'guilds.update': [old: Guild, new: Guild];
-    'messages.create': [Message];
-    'messages.delete': [
+    shardResume: [shard: GatewayShard];
+    shardReady: [shard: GatewayShard];
+    shardReconnect: [shard: GatewayShard];
+    shardRespawn: [id: number];
+    guildCreate: [Guild];
+    guildDelete: [id: Snowflake];
+    guildUpdate: [old: Guild, new: Guild];
+    channelCreate: [Channels];
+    channelDelete: [{
+        id: Snowflake;
+        guild: Snowflake | null;
+    }];
+    channelUpdate: [old: Channels, new: Channels];
+    guildMemberAdd: [GuildMember];
+    guildMemberRemove: [{
+        guild: Snowflake;
+        id: Snowflake;
+    }];
+    guildMemberUpdate: [old: GuildMember, new: GuildMember];
+    guildMembersChunk: [guild: Guild, members: Snowflake[]];
+    messageCreate: [Message];
+    messageDelete: [
         {
-            guild: Guild | null;
-            channel: TextChannel;
+            guild: Snowflake | null;
+            channel: Snowflake;
             id: Snowflake;
         }
     ];
-    'messages.update': [old: Message, new: Message];
+    messageUpdate: [old: Message, new: Message];
 }
 export declare type APIRequestOptions<D = any> = Omit<APIRequest<D>, 'route'>;
 export declare type APIProxy = {
