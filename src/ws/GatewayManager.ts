@@ -241,7 +241,7 @@ export class GatewayManager extends EventEmitter {
       try {
         await shard.connect(url).then(() => {
           return new Promise((resolve, reject) => {
-            shard.on('READY', resolve);
+            shard.on('ready', resolve);
             shard.on('close', (...args: [number, string]) => {
               reject(args);
               this.onClose(shard, ...args);
@@ -249,6 +249,8 @@ export class GatewayManager extends EventEmitter {
             shard.on('invalidSession', () => reject('invalid session'));
           });
         });
+
+        shard.removeAllListeners();
 
         this._registerListeners(shard, true);
 
