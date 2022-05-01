@@ -1,4 +1,4 @@
 docs/
 dist/
 typings/
-pnpm-lock.yaml
+.yarnrc.yml
