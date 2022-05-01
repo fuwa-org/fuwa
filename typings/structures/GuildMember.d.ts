@@ -28,7 +28,7 @@ export declare class GuildMember extends BaseStructure<APIGuildMember> {
     mute: boolean;
     constructor(client: Client, guildId: Snowflake);
     _deserialise(data: APIGuildMember & {
-        joined_at: string | null;
+        joined_at?: string | null;
     }): this;
     _patch(data: APIGuildMember, guild?: Guild, user?: User): this;
     fetch(): Promise<GuildMember>;

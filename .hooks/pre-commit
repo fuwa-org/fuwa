@@ -1,5 +1,5 @@
 #!/bin/sh
-set -e
+set -ex
 
 if git status | grep -q "\\.ts"; then 
   if [ -x "$(command -v prettier)" ]; then

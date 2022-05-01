@@ -6,3 +6,4 @@ docs
 .env
 .yarn/cache
 .yarn/install-state.gz
+.token

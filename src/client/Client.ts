@@ -139,7 +139,8 @@ export class Client extends EventEmitter {
   public channels: ChannelManager;
 
   /**
-   * The client's public-facing user. Extended with additional information.
+   * The client's public-facing user. Extended with additional information. Null if thr
+   * client is not logged in.
    */
   public user: ExtendedUser | null = null;
 

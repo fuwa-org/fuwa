@@ -5,6 +5,7 @@ import { Channel } from '../Channel.js';
 import { DMChannel } from '../DMChannel';
 import { GuildChannel } from '../GuildChannel';
 import { GuildTextChannel } from '../GuildTextChannel';
+import { GuildVoiceChannel } from '../GuildVoiceChannel.js';
 import { ChannelMessageManager } from '../managers/ChannelMessageManager';
 export interface BaseTextChannel extends Channel {
     lastMessageId: Snowflake | null;
@@ -20,4 +21,4 @@ export declare class BaseTextChannelInGuild extends GuildChannel implements Base
     get createMessage(): (data: string | MessagePayload | MessagePayloadData, cache?: boolean) => Promise<import("../Message").Message<TextChannel>>;
 }
 export declare const BaseTextChannel: new (client: Client) => BaseTextChannel;
-export declare type TextChannel = DMChannel | GuildTextChannel;
+export declare type TextChannel = DMChannel | GuildTextChannel | GuildVoiceChannel;

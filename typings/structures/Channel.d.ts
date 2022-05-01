@@ -2,8 +2,11 @@ import { APIChannel, APIChannelBase, ChannelType, Snowflake } from 'discord-api-
 import { Client } from '../client/Client.js';
 import type { DMChannel } from './DMChannel.js';
 import { Guild } from './Guild';
-import { GuildChannels } from './GuildChannel.js';
+import { GuildChannel, GuildChannels } from './GuildChannel.js';
+import { GuildTextChannel } from './GuildTextChannel.js';
+import { GuildVoiceChannel } from './GuildVoiceChannel.js';
 import { BaseStructure } from './templates/BaseStructure';
+import { TextChannel } from './templates/BaseTextChannel.js';
 export declare class Channel<T extends APIChannel = APIChannel> extends BaseStructure<T> {
     type: ChannelType;
     guildId: Snowflake | null;
@@ -18,6 +21,13 @@ export declare class Channel<T extends APIChannel = APIChannel> extends BaseStru
     edit(data: any): Promise<this>;
     fetch(): Promise<this>;
     toJSON(): T;
+    isDM(): this is DMChannel;
+    isGuild(): this is GuildChannels;
+    isText(): this is GuildTextChannel;
+    isVoice(): this is GuildVoiceChannel;
+    isCategory(): this is GuildChannel;
+    isTextBased(): this is TextChannel;
+    isVoiceBased(): this is GuildVoiceChannel;
 }
 export declare type Channels<T = GuildChannels | Channel | DMChannel, D = APIChannel> = T & {
     id: Snowflake;

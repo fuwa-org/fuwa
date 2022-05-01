@@ -227,13 +227,13 @@ export interface EmbedVideo {
   url?: string | null;
   height?: number | null;
   width?: number | null;
-};
+}
 export interface EmbedThumbnail {
   url: string;
   height?: number | null;
   width?: number | null;
   proxyURL?: string | null;
-};
+}
 export interface EmbedAuthor {
   name: string;
   url?: string | null;

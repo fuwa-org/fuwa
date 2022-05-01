@@ -1,36 +1,15 @@
 import { AsyncQueue } from '@sapphire/async-queue';
 import {
-  APIGuildMember,
-  APIMessage,
   Snowflake,
-  GatewayDispatchEvents,
-  GatewayDispatchPayload,
-  GatewayGuildCreateDispatchData,
-  GatewayGuildDeleteDispatchData,
-  GatewayGuildMemberAddDispatchData,
-  GatewayGuildMemberRemoveDispatchData,
-  GatewayGuildMembersChunkDispatchData,
-  GatewayGuildMemberUpdateDispatchData,
-  GatewayGuildUpdateDispatchData,
   GatewayIdentify,
-  GatewayMessageCreateDispatchData,
-  GatewayMessageDeleteBulkDispatchData,
-  GatewayMessageDeleteDispatchData,
-  GatewayMessageUpdateDispatchData,
   GatewayOpcodes,
-  GatewayReadyDispatchData,
   GatewayReceivePayload,
   GatewayResume,
   GatewaySendPayload,
 } from 'discord-api-types/v10';
 import WebSocket from 'ws';
 import { Client } from '../client/Client';
-import { Guild } from '../structures/Guild';
-import { ExtendedUser } from '../structures/ExtendedUser';
 import { Intents } from '../util/bitfields/Intents';
-import { GuildMember } from '../structures/GuildMember';
-import { Message } from '../structures/Message';
-import { TextChannel } from '../structures/templates/BaseTextChannel';
 import EventEmitter from 'node:events';
 
 /**
@@ -46,6 +25,17 @@ try {
   erlpack = require('erlpack');
 } catch {
   // it's not installed
+}
+
+export enum ShardState {
+  Disconnected = 0,
+  Connecting,
+  Reconnecting,
+  Identifying,
+  Ready,
+  Resuming,
+  GuildsReady,
+  Available,
 }
 
 /**
@@ -73,12 +63,12 @@ export class GatewayShard extends EventEmitter {
    * The last sequence number received from Discord. Used in heartbeating
    * and to catch up to recieved events when resuming.
    */
-  private s = -1;
+  public seq = -1;
   /** The current session ID of the shard. */
   public session?: string;
 
-  /** @internal */
-  private _awaitedGuilds: Snowflake[] = [];
+  /** @internal @ignore */
+  _awaitedGuilds: Snowflake[] = null as any;
 
   /** @internal */
   #timers: NodeJS.Timer[] = [];
@@ -89,6 +79,8 @@ export class GatewayShard extends EventEmitter {
   get readyState() {
     return this._socket?.readyState ?? WebSocket.CONNECTING;
   }
+
+  public state = ShardState.Disconnected;
 
   constructor(public client: Client, public readonly shard: [number, number]) {
     super();
@@ -118,14 +110,15 @@ export class GatewayShard extends EventEmitter {
     if (this.session) {
       this.debugPretty('Resuming...', {
         session: this.session,
-        seq: this.s,
+        seq: this.seq,
       });
+      this.state = ShardState.Resuming;
       this.send(<GatewayResume>{
         op: GatewayOpcodes.Resume,
         d: {
           token: this.client.token(false),
           session_id: this.session,
-          seq: this.s,
+          seq: this.seq,
         },
       });
     } else {
@@ -134,6 +127,7 @@ export class GatewayShard extends EventEmitter {
         shard: this.shard.join(', '),
         intents: this.client.options.intents,
       });
+      this.state = ShardState.Identifying;
       this.send(<GatewayIdentify>{
         op: GatewayOpcodes.Identify,
         d: {
@@ -155,6 +149,8 @@ export class GatewayShard extends EventEmitter {
   public connect(url = this.url) {
     this.url = url;
 
+    this.state = ShardState.Connecting;
+
     Object.defineProperty(this, '_socket', {
       enumerable: false,
       value: new WebSocket(url),
@@ -167,6 +163,7 @@ export class GatewayShard extends EventEmitter {
     this._socket.on('message', this.onMessage.bind(this));
     this._socket.on('close', (code, reason) => {
       this.emit('close', code, reason);
+      this.state = ShardState.Disconnected;
     });
 
     return new Promise((res, rej) => {
@@ -199,23 +196,24 @@ export class GatewayShard extends EventEmitter {
     this.debug('Reset shard');
   }
 
-  /** @internal */
-  public debug(...data: any[]) {
-    this.client.debug(
-      `[${this.client.logger.kleur().blue('WS')} => ${this.client.logger
-        .kleur()
-        .yellow(this.id.toString())}]`,
-      ...data,
-    );
+  #__log_header() {
+    return `[${this.client.logger.kleur().blue('WS')} => ${this.client.logger
+      .kleur()
+      .yellow(this.id.toString())}]`;
   }
 
-  /** @internal */
-  private trace(...data: any[]) {
+  /** @internal @ignore */
+  debug(...data: any[]) {
+    this.client.debug(this.#__log_header(), ...data);
+  }
+
+  /** @internal @ignore */
+  trace(...data: any[]) {
     this.client.logger.trace(`[WS => ${this.id}]`, ...data);
   }
 
-  /** @internal */
-  private debugPretty(message: string, data: Record<string, any>) {
+  /** @internal @ignore */
+  debugPretty(message: string, data: Record<string, any>) {
     this.debug(
       message,
       '\n',
@@ -223,6 +221,16 @@ export class GatewayShard extends EventEmitter {
         .map(([K, V]) => `\t${K}\t\t:\t${V}`)
         .join('\n'),
     );
+  }
+
+  /** @internal @ignore */
+  warn(...data: any[]) {
+    this.client.logger.warn(this.#__log_header(), ...data);
+  }
+
+  /** @internal @ignore */
+  error(...data: any[]) {
+    this.client.logger.error(this.#__log_header(), ...data);
   }
 
   /** Await a packet of a specific type from the gateway. */
@@ -252,13 +260,8 @@ export class GatewayShard extends EventEmitter {
       : JSON.parse(buffer.toString());
 
     this.emit('packet', data);
-    this.trace('packet received:', data);
 
     const payload: any = data.d;
-
-    if (data.s) {
-      this.s = data.s;
-    }
 
     switch (data.op) {
       case GatewayOpcodes.Hello: {
@@ -285,6 +288,8 @@ export class GatewayShard extends EventEmitter {
         break;
       }
       case GatewayOpcodes.Reconnect: {
+        this.trace('received reconnect opcode');
+
         this.reconnect();
 
         break;
@@ -297,249 +302,26 @@ export class GatewayShard extends EventEmitter {
         break;
       }
       case GatewayOpcodes.Dispatch: {
-        let event = payload as GatewayDispatchPayload['d'];
-
         this.trace('received dispatch', data.t);
 
-        this.emit(data.t, data.d);
-
-        switch (data.t) {
-          case GatewayDispatchEvents.Ready: {
-            event = event as GatewayReadyDispatchData;
-
-            this.session = event.session_id;
-            this._awaitedGuilds = event.guilds.map(v => v.id as Snowflake);
-
-            this.debugPretty('ready!', {
-              session: this.session,
-              guilds: event.guilds?.length,
-            });
-
-            this.client.users.add(
-              new ExtendedUser(this.client)._deserialise(event.user),
-            );
-
-            this.client.user = this.client.users.get(
-              event.user.id as Snowflake,
-            ) as ExtendedUser;
-
-            if (
-              !(<Intents>this.client.options.intents).has(Intents.Bits.Guilds)
-            ) {
-              this.client.logger.warn(
-                "Client intents don't include guilds, this may cause issues.",
-              );
-              this.client.delegate('meta.ready');
-            }
-
-            break;
-          }
-          case GatewayDispatchEvents.Resumed: {
-            this.debug('resumed session', this.session);
-            this.client.delegate('meta.resumed', this.session);
-            break;
-          }
-          case GatewayDispatchEvents.GuildCreate: {
-            const data = event as GatewayGuildCreateDispatchData;
-            this.client.guilds.add(new Guild(this.client)._deserialise(data));
-
-            if (this._awaitedGuilds.includes(data.id as Snowflake)) {
-              this._awaitedGuilds = this._awaitedGuilds.filter(
-                v => v !== data.id,
-              );
-
-              if (this._awaitedGuilds.length === 0) {
-                this.client.delegate('meta.ready');
-              }
-            } else {
-              this.client.delegate(
-                'guilds.create',
-                this.client.guilds.cache.get(data.id as Snowflake),
-              );
-            }
-            break;
-          }
-          case GatewayDispatchEvents.GuildUpdate: {
-            const data = event as GatewayGuildUpdateDispatchData;
-            const guild = this.client.guilds.cache.get(data.id as Snowflake);
-            const newGuild =
-              guild?._deserialise(data) ??
-              new Guild(this.client)._deserialise(data);
-
-            this.client.guilds.update(newGuild);
-
-            this.client.delegate('guilds.update', guild, newGuild);
-            break;
-          }
-          case GatewayDispatchEvents.GuildDelete: {
-            const data = event as GatewayGuildDeleteDispatchData;
-            this.client.guilds.remove(data.id as Snowflake);
-
-            this.client.delegate('guilds.delete', data.id);
-            break;
-          }
-          case GatewayDispatchEvents.GuildMemberAdd: {
-            const data = event as GatewayGuildMemberAddDispatchData;
-            const guild = this.client.guilds.cache.get(
-              data.guild_id as Snowflake,
-            );
-
-            if (guild) {
-              const member = new GuildMember(
-                this.client,
-                guild.id,
-              )._deserialise(data);
-              guild.members.add(member);
-
-              this.client.delegate('guilds.members.add', member);
-            }
-            break;
-          }
-          case GatewayDispatchEvents.GuildMemberRemove: {
-            const data = event as GatewayGuildMemberRemoveDispatchData;
-            const guild = this.client.guilds.cache.get(
-              data.guild_id as Snowflake,
-            );
-
-            if (guild) {
-              const member = guild.members.get(
-                data.user.id as Snowflake,
-              ) as GuildMember;
-
-              guild.members.remove(member.id);
-
-              this.client.delegate(
-                'guilds.members.remove',
-                member.user!,
-                guild,
-              );
-              this.client.guilds.update(guild!);
-            }
-
-            break;
-          }
-          case GatewayDispatchEvents.GuildMemberUpdate: {
-            const data = event as GatewayGuildMemberUpdateDispatchData;
-            const guild = this.client.guilds.cache.get(
-              data.guild_id as Snowflake,
-            );
-
-            if (guild) {
-              const member =
-                guild.members.get(data.user.id as Snowflake) ??
-                (await guild.members.fetch(data.user.id as Snowflake));
-
-              const newMember = member._deserialise(data as APIGuildMember);
-
-              guild.members.update(newMember);
-
-              this.client.delegate('guilds.members.update', member, newMember);
-              this.client.guilds.update(guild!);
-            }
-            break;
-          }
-          case GatewayDispatchEvents.GuildMembersChunk: {
-            const data = event as GatewayGuildMembersChunkDispatchData;
-            const guild = this.client.guilds.cache.get(
-              data.guild_id as Snowflake,
-            );
-
-            if (guild) {
-              const members = data.members.map(v =>
-                new GuildMember(this.client, guild.id)._deserialise(v),
-              );
-
-              guild.members.addMany(members);
-
-              this.client.delegate('guilds.members.chunk', members);
-              this.client.guilds.update(guild!);
-            }
-            break;
-          }
-          case GatewayDispatchEvents.MessageCreate: {
-            const data = event as GatewayMessageCreateDispatchData;
-            const channel = this.client.channels.cache.get(
-              data.channel_id as Snowflake,
-            ) as TextChannel;
-
-            if (channel) {
-              const message = new Message<typeof channel>(
-                this.client,
-              )._deserialise(data);
-
-              channel.messages.add(message);
-
-              this.client.delegate('meta.messages.create', message);
-            }
-            break;
-          }
-          case GatewayDispatchEvents.MessageUpdate: {
-            const data = event as GatewayMessageUpdateDispatchData;
-            const channel = this.client.channels.cache.get(
-              data.channel_id as Snowflake,
-            ) as TextChannel;
-
-            if (channel) {
-              const message = channel.messages.cache.get(
-                data.id as Snowflake,
-              ) as Message<typeof channel>;
-
-              if (message) {
-                const newMessage = message._deserialise(data as APIMessage);
-                channel.messages.update(newMessage);
-
-                this.client.delegate(
-                  'meta.messages.update',
-                  message,
-                  newMessage,
-                );
-              }
-            }
-            break;
-          }
-          case GatewayDispatchEvents.MessageDelete: {
-            const data = event as GatewayMessageDeleteDispatchData;
-            const channel = this.client.channels.cache.get(
-              data.channel_id as Snowflake,
-            ) as TextChannel;
-
-            if (channel) {
-              channel.messages.cache.delete(data.id as Snowflake);
-
-              this.client.delegate('meta.messages.delete', {
-                channel,
-                guild: channel.guild,
-                id: data.id,
-              });
-            }
-            break;
-          }
-          case GatewayDispatchEvents.MessageDeleteBulk: {
-            const data = event as GatewayMessageDeleteBulkDispatchData;
-            const channel = this.client.channels.cache.get(
-              data.channel_id as Snowflake,
-            ) as TextChannel;
-
-            if (channel) {
-              channel.messages.removeMany(data.ids as Snowflake[]);
-
-              this.client.delegate('meta.messages.delete', {
-                channel,
-                guild: channel.guild,
-                ids: data.ids,
-              });
-            }
-            break;
-          }
-          default: {
-            this.client.logger.warn('Unhandled dispatch event', data.t);
-            this.trace('Event:', data.d);
-          }
-        }
+        this.emit('dispatch', data);
 
         break;
       }
     }
+
+    if (data.s) {
+      this.seq = data.s;
+    }
+  }
+
+  ready() {
+    if (this.state === ShardState.Available || this._awaitedGuilds.length) {
+      return true;
+    }
+
+    this.state = ShardState.Available;
+    this.emit('ready');
   }
 
   /**
@@ -583,7 +365,7 @@ export class GatewayShard extends EventEmitter {
    * **Warning**: if you use this too soon after previously heartbeating, the internal property {@link GatewayShard.heartbeat_acked} may not be set correctly, causing the shard to assume a dead connection and close the socket.
    */
   public heartbeat() {
-    if (this.s <= 0) return;
+    if (this.seq <= 0) return;
 
     if (!this.heartbeat_acked) {
       this.reconnect();
@@ -593,12 +375,12 @@ export class GatewayShard extends EventEmitter {
 
     this.send({
       op: GatewayOpcodes.Heartbeat,
-      d: this.s,
+      d: this.seq,
     });
 
     this.heartbeat_acked = false;
 
-    this.trace('sent heartbeat, seq ' + this.s);
+    this.trace('sent heartbeat, seq ' + this.seq);
 
     this.#timeouts.push(
       setTimeout(() => {
@@ -626,7 +408,7 @@ export class GatewayShard extends EventEmitter {
 
     if (!resume) {
       this.session = undefined;
-      this.s = -1;
+      this.seq = -1;
     }
 
     this.#timers.forEach(t => clearInterval(t));
@@ -635,8 +417,12 @@ export class GatewayShard extends EventEmitter {
 
   /** Reconnect to the gateway. */
   public reconnect() {
+    this.emit('reconnect');
+
     this.close(true);
     this.connect(this.url);
+
+    this.state = ShardState.Reconnecting;
   }
 
   /** @internal */
@@ -650,5 +436,10 @@ export class GatewayShard extends EventEmitter {
         this.heartbeat_interval * Math.random(),
       ),
     );
+  }
+
+  /** @internal @ignore */
+  setTimeout(func: (...args: any[]) => any, timeout: number) {
+    return this.#timeouts.push(setTimeout(func, timeout));
   }
 }
