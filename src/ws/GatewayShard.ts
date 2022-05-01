@@ -327,7 +327,7 @@ export class GatewayShard extends EventEmitter {
     if (!this._socket)
       throw new Error("GatewayShard#send called when shard wasn't connected");
 
-    if (this.readyState !== WebSocket.OPEN) {
+    if (this._socket.readyState !== WebSocket.OPEN) {
       await new Promise(resolve => this._socket.once('open', resolve));
     }
 
