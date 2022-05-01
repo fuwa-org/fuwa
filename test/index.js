@@ -37,10 +37,6 @@ const trends = new Map();
 client.on('messageCreate', async m => {
   if (m.author.bot) return;
 
-  console.log(
-    `${m.author.username}#${m.author.discriminator} (${m.author.tag}): ${m.content}`,
-  );
-
   client.logger.trace(
     `${m.author.username}#${m.author.discriminator}: ${m.content}`,
   );
