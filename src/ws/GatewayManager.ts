@@ -340,13 +340,9 @@ export class GatewayManager extends EventEmitter {
       .on('ready', () => {
         this.event('shardReady', shard);
         if (
-          [...this.shards.values()].every(
-            s => s.state === ShardState.Available,
-          ) &&
-          !this.client._ready
+          [...this.shards.values()].every(s => s.state === ShardState.Available)
         ) {
           this.event('ready');
-          this.client._ready = true;
         }
       })
       .on('resume', () => {

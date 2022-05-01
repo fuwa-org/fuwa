@@ -27,7 +27,6 @@ export declare class Client extends EventEmitter {
     user: ExtendedUser | null;
     private timeouts;
     private timers;
-    _ready: boolean;
     constructor(token: string, options?: ClientOptions);
     connect(): Promise<void>;
     token(redact?: boolean): string;

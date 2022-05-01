@@ -147,8 +147,6 @@ export class Client extends EventEmitter {
   private timeouts: Array<NodeJS.Timeout> = [];
   private timers: Array<NodeJS.Timeout> = [];
 
-  /** @internal @ignore */ _ready = false;
-
   public constructor(token: string, options?: ClientOptions) {
     super();
 
