@@ -46,7 +46,11 @@ const client = new Fuwa.Client('my token', {
   ],
 });
 
-client.on('messages.create', message => {
+client.on('ready', () => {
+  client.logger.info(`Logged in as ${client.user.tag}`);
+});
+
+client.on('messageCreate', message => {
   if (message.content === 'hi, bot!') {
     return message.channel.createMessage('hello, ' + message.author.tag);
   }
