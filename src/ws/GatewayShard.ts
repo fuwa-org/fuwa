@@ -63,12 +63,12 @@ export class GatewayShard extends EventEmitter {
    * The last sequence number received from Discord. Used in heartbeating
    * and to catch up to recieved events when resuming.
    */
-  private s = -1;
+  public seq = -1;
   /** The current session ID of the shard. */
   public session?: string;
 
   /** @internal @ignore */
-  _awaitedGuilds: Snowflake[] = [];
+  _awaitedGuilds: Snowflake[] = null as any;
 
   /** @internal */
   #timers: NodeJS.Timer[] = [];
@@ -110,7 +110,7 @@ export class GatewayShard extends EventEmitter {
     if (this.session) {
       this.debugPretty('Resuming...', {
         session: this.session,
-        seq: this.s,
+        seq: this.seq,
       });
       this.state = ShardState.Resuming;
       this.send(<GatewayResume>{
@@ -118,7 +118,7 @@ export class GatewayShard extends EventEmitter {
         d: {
           token: this.client.token(false),
           session_id: this.session,
-          seq: this.s,
+          seq: this.seq,
         },
       });
     } else {
@@ -263,10 +263,6 @@ export class GatewayShard extends EventEmitter {
 
     const payload: any = data.d;
 
-    if (data.s) {
-      this.s = data.s;
-    }
-
     switch (data.op) {
       case GatewayOpcodes.Hello: {
         this.heartbeat_interval = payload.heartbeat_interval;
@@ -308,11 +304,14 @@ export class GatewayShard extends EventEmitter {
       case GatewayOpcodes.Dispatch: {
         this.trace('received dispatch', data.t);
 
-        this.emit(data.t, data.d);
         this.emit('dispatch', data);
 
         break;
       }
+    }
+
+    if (data.s) {
+      this.seq = data.s;
     }
   }
 
@@ -366,7 +365,7 @@ export class GatewayShard extends EventEmitter {
    * **Warning**: if you use this too soon after previously heartbeating, the internal property {@link GatewayShard.heartbeat_acked} may not be set correctly, causing the shard to assume a dead connection and close the socket.
    */
   public heartbeat() {
-    if (this.s <= 0) return;
+    if (this.seq <= 0) return;
 
     if (!this.heartbeat_acked) {
       this.reconnect();
@@ -376,12 +375,12 @@ export class GatewayShard extends EventEmitter {
 
     this.send({
       op: GatewayOpcodes.Heartbeat,
-      d: this.s,
+      d: this.seq,
     });
 
     this.heartbeat_acked = false;
 
-    this.trace('sent heartbeat, seq ' + this.s);
+    this.trace('sent heartbeat, seq ' + this.seq);
 
     this.#timeouts.push(
       setTimeout(() => {
@@ -409,7 +408,7 @@ export class GatewayShard extends EventEmitter {
 
     if (!resume) {
       this.session = undefined;
-      this.s = -1;
+      this.seq = -1;
     }
 
     this.#timers.forEach(t => clearInterval(t));

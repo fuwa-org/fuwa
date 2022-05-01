@@ -30,7 +30,7 @@ export declare class GatewayShard extends EventEmitter {
     private heartbeat_acked;
     url: string;
     ping: number;
-    private s;
+    seq: number;
     session?: string;
     _awaitedGuilds: Snowflake[];
     get readyState(): 0 | 1 | 2 | 3;

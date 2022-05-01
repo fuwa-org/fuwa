@@ -14,7 +14,7 @@ import { Intents } from '../util/bitfields/Intents';
 import { GatewayManager } from './GatewayManager';
 import { GatewayShard } from './GatewayShard';
 
-export function handleDispatch(
+export async function handleDispatch(
   manager: GatewayManager,
   data: GatewayDispatchPayload,
   shard: GatewayShard,
@@ -60,10 +60,14 @@ export function handleDispatch(
 
     //#region Guilds
     case GatewayDispatchEvents.GuildCreate: {
+      if (shard._awaitedGuilds === null) {
+        await shard.awaitPacket(d => d.t === 'READY');
+      }
+
       const guild = new Guild(shard.client)._deserialise(data.d);
       shard.client.guilds.add(guild);
 
-      if (shard._awaitedGuilds?.includes(guild.id)) {
+      if (shard._awaitedGuilds.includes(guild.id)) {
         shard._awaitedGuilds.splice(shard._awaitedGuilds.indexOf(guild.id), 1);
         if (shard._awaitedGuilds.length === 0) {
           shard.debug(`shard ${shard.id} has no guilds left to sync`);
