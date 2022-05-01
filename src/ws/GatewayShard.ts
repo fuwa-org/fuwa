@@ -75,11 +75,6 @@ export class GatewayShard extends EventEmitter {
   /** @internal */
   #timeouts: NodeJS.Timeout[] = [];
 
-  /** The WebSocket's ready state. */
-  get readyState() {
-    return this._socket?.readyState ?? WebSocket.CONNECTING;
-  }
-
   public state = ShardState.Disconnected;
 
   constructor(public client: Client, public readonly shard: [number, number]) {

@@ -33,7 +33,6 @@ export declare class GatewayShard extends EventEmitter {
     seq: number;
     session?: string;
     _awaitedGuilds: Snowflake[];
-    get readyState(): 0 | 2 | 1 | 3;
     state: ShardState;
     constructor(client: Client, shard: [number, number]);
     private authenticate;
