@@ -72,7 +72,9 @@ export class DefaultLogger implements ILogger {
   }
 
   public log(...data: any[]): void {
-    process.stdout.write(
+    (process.env.NODE_ENV === 'development'
+      ? console.log
+      : process.stdout.write.bind(process.stdout))(
       data
         .map(d =>
           typeof d === 'string'

@@ -1,8 +1,27 @@
 #!/bin/node
-/** @format */
 
 const { DefaultClientOptions, Intents } = require('..');
 const Fuwa = require('..');
+
+{
+  // reading token from file
+  if (
+    !process.env.DISCORD_TOKEN?.length ||
+    process.env.DISCORD_TOKEN.startsWith('::readfrom::')
+  ) {
+    const token = require('fs')
+      .readFileSync(
+        process.env.DISCORD_TOKEN.replace(/^::readfrom::/, '').replace(
+          /~~/g,
+          process.cwd(),
+        ),
+        'utf8',
+      )
+      .trim();
+
+    process.env.DISCORD_TOKEN = token;
+  }
+}
 
 const client = new Fuwa.Client(process.env.DISCORD_TOKEN, {
   logger: {
@@ -17,6 +36,10 @@ const trends = new Map();
 
 client.on('messageCreate', async m => {
   if (m.author.bot) return;
+
+  console.log(
+    `${m.author.username}#${m.author.discriminator} (${m.author.tag}): ${m.content}`,
+  );
 
   client.logger.trace(
     `${m.author.username}#${m.author.discriminator}: ${m.content}`,
