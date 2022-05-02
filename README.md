@@ -1,14 +1,14 @@
-# 不和 (fuwa)
+# fuwa
 
-不和 is a simple, small and easy-to-use library for use in
+fuwa is a simple, small and easy-to-use library for use in
 [Node.js](https://nodejs.org) to interact with the popular text and VoIP instant
 messaging application [Discord](https://discord.com) using its
 [official API](https://discord.com/developers/docs).
 
-**Note**: this package is currently maintained in 0ver, which means breaking
+**note**: this package is currently maintained in 0ver, which means breaking
 changes may occur at our discretion in compliance with SemVer.
 
-## Installation
+## installation
 
 Node.js version 16 or higher is required for this library.
 
@@ -29,9 +29,9 @@ cd node_modules/fuwa
 tsc
 ```
 
-**Note**: pin to a commit you like to avoid breaking changes
+**note**: pin to a commit you like to avoid breaking changes
 
-## Getting started
+## getting started
 
 Fuwa is designed to be quite simple to use, and easy to transfer from other
 libraries like Discord.js. A simple bot would be programmed along the lines of:
@@ -59,19 +59,19 @@ client.on('messageCreate', message => {
 client.connect();
 ```
 
-## Optional dependencies
+## optional dependencies
 
-- **Erlpack**: For _very_ fast encoding/decoding of gateway messages. To use
+- **erlpack**: For _very_ fast encoding/decoding of gateway messages. To use
   this feature, install [`erlpack`](https://npm.im/erlpack) as an npm dependency
   and pass `etf: true` to your `Client`'s options.
   - => If you have your own custom ETF decoder, you can pass that instead to
     `etf`, but make sure it implements our `Erlpack` interface.
-- **Kleur**: For coloured log output. To use this feature, install
+- **kleur**: For coloured log output. To use this feature, install
   [`kleur`](https://npm.im/kleur) as an npm dependency.
 
-# Links
+# links
 
-- [Website (with documentation)](https://fuwadiscord.github.io/fuwa)
+- [website (with documentation)](https://fuwadiscord.github.io/fuwa)
 - [GitHub repository](https://github.com/FuwaDiscord/fuwa)
-- [Related projects](https://discord.com/developers/docs/topics/community-resources)
-- [Discord server](https://discord.gg/tDG9BMz5s7)
+- [related projects](https://discord.com/developers/docs/topics/community-resources)
+- [discord server](https://discord.gg/tDG9BMz5s7)
