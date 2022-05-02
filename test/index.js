@@ -54,13 +54,13 @@ client.on('messageCreate', async m => {
     try {
       const code = m.content.substring(6);
       const result = await eval(code);
-      m.reply(
-        `\`\`\`js\n${
+      m.reply({
+        content: `\`\`\`js\n${
           typeof result === 'string'
             ? result
             : require('util').inspect(result, { colors: false }).slice(0, 1990)
         }\n\`\`\``,
-      );
+      });
     } catch (e) {
       m.reply(
         `\`\`\`js\n${require('util')
@@ -113,3 +113,34 @@ process.stdin.on('data', d => {
     console.log(e);
   }
 });
+
+/**
+ * returns a string representing the inheritance tree of the given object
+ * @param {any} obj
+ * @returns {string}
+ * @example
+ * inheritanceTree(new Date())
+ * // => "Function\n|> Date"
+ * @example
+ * class A {}
+ * class B extends A {}
+ * class C extends B {}
+ * inheritanceTree(new C())
+ * // => "Function\n|> A\n|> B\n|> C"
+ */
+function inheritanceTree(obj) {
+  const tree = [];
+
+  while (obj) {
+    tree.push(obj.constructor.name);
+    obj = Object.getPrototypeOf(obj);
+  }
+
+  return tree
+    .reverse()
+    .filter((v, i, a) => {
+      if (i === 0) return true;
+      return a[i - 1] !== v;
+    })
+    .join('\n|> ');
+}
