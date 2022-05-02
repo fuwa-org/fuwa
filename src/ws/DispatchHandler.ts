@@ -34,7 +34,10 @@ export async function handleDispatch(
 
       shard.debug(`ready with ${data.d.guilds.length} guilds to sync`);
 
-      if ((shard.client.options.intents as Intents).has(Intents.Bits.Guilds)) {
+      if (
+        (shard.client.options.intents as Intents).has(Intents.Bits.Guilds) &&
+        data.d.guilds.length > 0
+      ) {
         shard.setTimeout(() => {
           if (shard._awaitedGuilds.length) {
             shard.debug(
@@ -49,6 +52,8 @@ export async function handleDispatch(
         );
         shard.ready();
       }
+
+      shard.emit('preReady');
 
       break;
     }

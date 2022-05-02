@@ -28,6 +28,7 @@ const client = new Fuwa.Client(process.env.DISCORD_TOKEN, {
     level: 'trace',
   },
   intents: [...DefaultClientOptions.intents, Intents.Bits.MessageContent],
+  httpTimings: true,
 }).on('ready', () => {
   client.logger.info('ready');
 });
@@ -68,10 +69,27 @@ client.on('messageCreate', async m => {
           .slice(0, 1990)}\n\`\`\``,
       );
     }
+  } else if (
+    m.content.startsWith('!events') &&
+    m.author.id === '728342296696979526'
+  ) {
+    const update = (a, { id }) =>
+      m.channel.createMessage('shard ' + id + ': ' + a);
+    client.ws
+      .on('preReady', update.bind(null, 'received ready'))
+      .on('ready', update.bind(null, 'lazy loaded all guilds'))
+      .on('reconnect', update.bind(null, 'will reconnect'))
+      .on('resume', update.bind(null, 'resumed'))
+      .on('close', update.bind(null, 'closed'))
+      .on('hello', (shard, interval) =>
+        update('received hello with heartbeat interval ' + interval, shard),
+      );
+
+    client.on('shardRespawn', id => update('will respawn', { id }));
   }
 
-  if (m.attachments.length > 0) {
-    if (Math.random() < 0.6) {
+  if (m.attachments.length > 0 || m.content.includes('69')) {
+    if (Math.random() < 0.6 || m.content.includes('696969')) {
       /** @type {Fuwa.Types.RESTPostAPIChannelMessageJSONBody} */
       const body = {
         content: 'wow so cool',
@@ -80,6 +98,7 @@ client.on('messageCreate', async m => {
       m.client.rest.channels(m.channel.id).messages.post({
         body,
         allowedRetries: 0,
+        startTime: Date.now(),
       });
     }
   }
@@ -89,10 +108,9 @@ client.on('messageCreate', async m => {
       if (trends.has(m.channel.id)) {
         const [content, users] = trends.get(m.channel.id);
         if (content !== m.content) return trends.delete(m.channel.id);
-        if (users.includes(m.author.id)) return;
         users.push(m.author.id);
         trends.set(m.channel.id, [content, users]);
-        if (users.length === 5) {
+        if (users.length === Math.trunc(Math.random() * 1 + 4)) {
           m.channel.createMessage(content);
           trends.delete(m.channel.id);
           return;

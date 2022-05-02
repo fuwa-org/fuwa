@@ -266,6 +266,7 @@ export class GatewayShard extends EventEmitter {
           this.heartbeat_interval,
         );
         this.startHeartbeat();
+        this.emit('hello', this.heartbeat_interval);
 
         break;
       }

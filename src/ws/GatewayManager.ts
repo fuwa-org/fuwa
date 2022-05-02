@@ -241,7 +241,7 @@ export class GatewayManager extends EventEmitter {
       try {
         await shard.connect(url).then(() => {
           return new Promise((resolve, reject) => {
-            shard.on('ready', resolve);
+            shard.on('preReady', resolve);
             shard.on('close', (...args: [number, string]) => {
               reject(args);
               this.onClose(shard, ...args);
@@ -348,22 +348,37 @@ export class GatewayManager extends EventEmitter {
         ) {
           this.event('ready');
         }
-      })
-      .on('resume', () => {
-        this.event('shardResume', shard);
-      })
-      .on('reconnect', () => {
-        this.event('shardReconnect', shard);
       });
     if (runtime)
       shard.on('close', (code, reason) => {
-        this.onClose(shard, code, reason.toString());
+        this.onClose(shard, code, reason);
       });
+
+    (function registerMirrors(this: GatewayManager) {
+      for (const mirror of [
+        'ready',
+        'preReady',
+        'resume',
+        'reconnect',
+        'close',
+        'hello',
+      ]) {
+        shard.on(mirror, (...args: any[]) => {
+          this.emit(mirror, shard, ...args);
+          this.event(
+            `shard${mirror[0].toUpperCase()}${mirror.slice(0)}`,
+            shard,
+            ...args,
+          );
+        });
+      }
+    }.call(this));
+
     return shard;
   }
 
   /** @internal */
-  private onClose(shard: GatewayShard, code: number, reason: string) {
+  private onClose(shard: GatewayShard, code: number, reason: string | Buffer) {
     this.debug(
       `Shard ${shard.id} closed with code`,
       code,
