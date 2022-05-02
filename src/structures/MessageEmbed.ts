@@ -1,14 +1,5 @@
-import type {
-  APIEmbed,
-  APIEmbedAuthor,
-  APIEmbedFooter,
-  APIEmbedImage,
-  APIEmbedProvider,
-  APIEmbedVideo,
-  APIEmbedField,
-  APIEmbedThumbnail,
-} from 'discord-api-types/v10';
-import { CamelCase, DeepPartial, Null } from '../util/util';
+import type { APIEmbed, APIEmbedField } from 'discord-api-types/v10';
+import { DeepPartial } from '../util/util';
 
 export class MessageEmbed {
   public type: EmbedType = EmbedType.Rich;

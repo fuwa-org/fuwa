@@ -3,6 +3,7 @@ export * from './client/ClientOptions';
 
 export * from './util/bitfields/Bitfield';
 export * from './util/bitfields/GuildSystemChannelFlags';
+export * from './util/bitfields/GuildMemberFlags';
 export * from './util/bitfields/UserFlags';
 export * from './util/bitfields/Intents';
 export * from './util/bitfields/MessageFlags';
