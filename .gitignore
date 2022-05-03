@@ -1,9 +1,9 @@
-dist/
-node_modules/
-secret*test*.js
-docs
-.nyc_output
-.env
+**/dist/
+**/node_modules/
+**/secret*test*.js
+/docs
+**/.nyc_output
+**/.env
 .yarn/cache
 .yarn/install-state.gz
-.token
+**/.token
