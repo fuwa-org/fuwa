@@ -33,7 +33,7 @@
     "@splatterxl/tsconfig": "1.1.1",
     "@types/node": "17.0.31",
     "@typescript-eslint/eslint-plugin": "5.22.0",
-    "@typescript-eslint/parser": "5.21.0",
+    "@typescript-eslint/parser": "5.22.0",
     "cz-conventional-changelog": "3.3.0",
     "eslint": "8.14.0",
     "prettier": "2.6",
