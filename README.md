@@ -19,10 +19,10 @@ you'll be ready to go!
 
 ```sh
 # with npm
-npm install --save fuwadiscord/fuwa
+npm install --save fuwa-org/fuwa
 
 # with yarn
-yarn add github:fuwadiscord/fuwa
+yarn add github:fuwa-org/fuwa
 
 # then, compile the code (if you're installing from GitHub)
 cd node_modules/fuwa
