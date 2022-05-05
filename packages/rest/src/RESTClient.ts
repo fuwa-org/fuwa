@@ -1,6 +1,7 @@
 import FormData from 'form-data';
 import undici from 'undici';
-import { ResponseData } from 'undici/types/dispatcher';
+import { inspect } from 'util';
+import { RequestOptions, ResponseData } from 'undici/types/dispatcher';
 import { APIRequest } from './APIRequest';
 import { RouteLike } from './RequestManager.js';
 
@@ -62,6 +63,9 @@ export class RESTClient {
   public setAuth(auth: string) {
     this.#auth = auth;
     return this;
+  }
+  public getAuth() {
+    return this.#auth;
   }
 
   public createHeaders(request: APIRequest): Record<string, string> {
@@ -173,10 +177,10 @@ export class RESTClient {
   public execute(request: APIRequest, tracefunc?: any): Promise<ResponseData> {
     request = this.resolveBody(request);
 
-    const options: any = {
-        method: request.method,
+    const options: RequestOptions = {
+        method: request.method ?? 'GET',
         headers: this.createHeaders(request),
-      },
+      } as RequestOptions,
       url = this.createURL(request);
 
     if (request.body) options.body = request.body;
@@ -185,9 +189,14 @@ export class RESTClient {
       tracefunc(
         options.method,
         url,
-        '\n',
-        'body:',
-        prettifyBody(options.headers['content-type'] ?? '', options.body),
+        options.body
+          ? prettifyBody(
+              options.headers![
+                'content-type' as keyof typeof options['headers']
+              ],
+              options.body! as Buffer,
+            )
+          : '',
       );
     }
 
@@ -206,7 +215,10 @@ export interface RESTClientOptions {
 
 function prettifyBody(contentType: string, body: Buffer) {
   if (contentType.startsWith('application/json')) {
-    return JSON.parse(body.toString());
+    return inspect(JSON.parse(body.toString()), {
+      depth: null,
+      colors: false,
+    });
   }
 
   return body?.toString();

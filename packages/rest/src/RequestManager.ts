@@ -7,10 +7,18 @@ import {
   APIError,
   parseErr,
   RateLimitedError,
-  RESTError
+  RESTError,
 } from './RESTError.js';
 
-// Yeah, copied from Discord.js because I can't even think for myself.
+export interface RequestManagerOptions {
+  timings?: boolean;
+  logger?: {
+    debug?: (...args: any[]) => void;
+    trace?: (...args: any[]) => void;
+    kleur?: any;
+  };
+}
+
 export class RequestManager {
   // maybe this'll be of some use someday
   // private buckets: Map<string, RateLimit> = new Map();
@@ -28,12 +36,10 @@ export class RequestManager {
   /** When the global rate limit will reset. */
   public reset = Date.now() + 1e3;
 
-  /** Whether to measure the timing of HTTP requests */
-  public timings = false;
-
-  constructor(public client: RESTClient, public _client?: any) {
-    if (_client?.options?.httpTimings) this.timings = true;
-  }
+  constructor(
+    public client: RESTClient,
+    public options: RequestManagerOptions = {},
+  ) {}
 
   public get durUntilReset() {
     return this.reset + this.offset - Date.now();
@@ -60,7 +66,7 @@ export class RequestManager {
     bucket: BucketQueueManager,
     req: Required<APIRequest>,
   ): Promise<ResponseData> {
-    if (this.timings) req.httpStartTime = Date.now();
+    if (this.options.timings) req.httpStartTime = Date.now();
 
     const res = await this.client.execute(req, this.trace.bind(this)),
       now = Date.now();
@@ -71,7 +77,7 @@ export class RequestManager {
       `${req.method.toUpperCase()} ${req.route} -> ${res.statusCode} ${
         STATUS_CODES[res.statusCode]
       }${
-        this.timings
+        this.options.timings
           ? ` (${now - req.startTime}ms${
               now - req.httpStartTime !== now - req.startTime
                 ? ` full; ${now - req.httpStartTime}ms http`
@@ -99,7 +105,7 @@ export class RequestManager {
 
             if (req.retries < req.allowedRetries) {
               req.retries++;
-              this._client.debug('got ratelimited at', bucket.id, '- retrying');
+              this.debug('got ratelimited at', bucket.id, '- retrying');
 
               return this.queue(req);
             } else {
@@ -144,7 +150,7 @@ export class RequestManager {
       req = resolveRequest({ route: req, ...options });
     } else req = resolveRequest(req);
 
-    if (this.timings) req.startTime = Date.now();
+    if (this.options.timings) req.startTime = Date.now();
 
     if (!req.useRateLimits)
       return this.makeRequest(
@@ -172,15 +178,20 @@ export class RequestManager {
   }
 
   #__log_header() {
-    return `[${this._client?.logger.kleur().green('REST')}]`;
+    return `[${this.options?.logger?.kleur?.().green('REST') ?? 'REST'}]`;
   }
 
-  private debug(...args: any[]) {
-    this._client?.logger.debug(this.#__log_header(), ...args);
+  /** @ignore */
+  __log_header() {
+    return this.#__log_header();
+  }
+
+  debug(...args: any[]) {
+    this.options?.logger?.debug?.(this.#__log_header(), ...args);
   }
 
   private trace(...args: any[]) {
-    this._client?.logger.trace('[REST]', ...args);
+    this.options?.logger?.trace?.('[REST]', ...args);
   }
 }
 

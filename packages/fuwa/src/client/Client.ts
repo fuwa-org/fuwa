@@ -153,18 +153,12 @@ export class Client extends EventEmitter {
     super();
 
     this.options = Object.assign(
+      {},
       DefaultClientOptions,
       options,
     ) as Required<ClientOptions>;
     this.options.intents = resolveIntents(this.options.intents!);
     this.#token = token;
-    this.http = new RequestManager(
-      new RESTClient(
-        RESTClient.createRESTOptions(this.options, this.#token, 'Bot'),
-      ),
-      this,
-    );
-    this.ws = new GatewayManager(this);
 
     if (!this.options.logger) {
       this.logger = new DisabledLogger();
@@ -175,6 +169,17 @@ export class Client extends EventEmitter {
     } else {
       this.logger = this.options.logger;
     }
+
+    this.http = new RequestManager(
+      new RESTClient(
+        RESTClient.createRESTOptions(this.options, this.#token, 'Bot'),
+      ),
+      {
+        timings: this.options.httpTimings,
+        logger: this.logger,
+      },
+    );
+    this.ws = new GatewayManager(this);
 
     this.guilds = new GuildManager(this);
     this.users = new UserManager(this);

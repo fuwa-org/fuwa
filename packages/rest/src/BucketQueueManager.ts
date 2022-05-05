@@ -80,14 +80,11 @@ export class BucketQueueManager {
     }
   }
 
+  #__log_header() {
+    return `[${this.manager.__log_header()} -> ${this.id}]`;
+  }
+
   private debug(...data: any[]) {
-    this.manager._client?.debug(
-      `[${this.manager._client?.logger
-        .kleur()
-        .blueBright('REST')} => ${this.manager._client?.logger
-        .kleur()
-        .green(this.id)}]`,
-      ...data,
-    );
+    this.manager.debug(this.#__log_header(), ...data);
   }
 }
