@@ -1,4 +1,4 @@
-# fuwa
+# fuwa.
 
 fuwa is a simple, small and easy-to-use library for use in
 [Node.js](https://nodejs.org) to interact with the popular text and VoIP instant
@@ -8,7 +8,7 @@ messaging application [Discord](https://discord.com) using its
 **note**: this package is currently maintained in 0ver, which means breaking
 changes may occur at our discretion in compliance with SemVer.
 
-## installation
+## installation.
 
 Node.js version 16 or higher is required for this library.
 
@@ -31,7 +31,7 @@ tsc
 
 **note**: pin to a commit you like to avoid breaking changes
 
-## getting started
+## getting started.
 
 Fuwa is designed to be quite simple to use, and easy to transfer from other
 libraries like Discord.js. A simple bot would be programmed along the lines of:
@@ -59,7 +59,7 @@ client.on('messageCreate', message => {
 client.connect();
 ```
 
-## optional dependencies
+## optional dependencies.
 
 - **erlpack**: For _very_ fast encoding/decoding of gateway messages. To use
   this feature, install [`erlpack`](https://npm.im/erlpack) as an npm dependency
@@ -71,7 +71,7 @@ client.connect();
 
 # links
 
-- [website (with documentation)](https://fuwadiscord.github.io/fuwa)
-- [GitHub repository](https://github.com/FuwaDiscord/fuwa)
-- [related projects](https://discord.com/developers/docs/topics/community-resources)
-- [discord server](https://discord.gg/tDG9BMz5s7)
+- [documentation.](https://fuwa-org.github.io/fuwa)
+- [repository.](https://github.com/fuwa-org/fuwa)
+- [related projects.](https://discord.com/developers/docs/topics/community-resources)
+- [discord server.](https://discord.gg/tDG9BMz5s7)
