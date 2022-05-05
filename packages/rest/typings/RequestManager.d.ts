@@ -8,10 +8,10 @@ export interface RequestManagerOptions {
         debug?: (...args: any[]) => void;
         trace?: (...args: any[]) => void;
         kleur?: any;
+        header?: (() => string) | string;
     };
 }
 export declare class RequestManager {
-    #private;
     client: RESTClient;
     options: RequestManagerOptions;
     limit: number;

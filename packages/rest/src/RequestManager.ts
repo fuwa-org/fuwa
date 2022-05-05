@@ -16,6 +16,7 @@ export interface RequestManagerOptions {
     debug?: (...args: any[]) => void;
     trace?: (...args: any[]) => void;
     kleur?: any;
+    header?: (() => string) | string;
   };
 }
 
@@ -177,21 +178,27 @@ export class RequestManager {
     this.offset = local - discordDate;
   }
 
-  #__log_header() {
-    return `[${this.options?.logger?.kleur?.().green('REST') ?? 'REST'}]`;
-  }
-
   /** @ignore */
   __log_header() {
-    return this.#__log_header();
+    if (this.options.logger?.header) {
+      const header = this.options.logger.header;
+
+      if (typeof header === 'function') {
+        return header();
+      } else {
+        return header;
+      }
+    } else {
+      return `[${this.options.logger?.kleur?.().green('REST') ?? 'REST'}]`;
+    }
   }
 
   debug(...args: any[]) {
-    this.options?.logger?.debug?.(this.#__log_header(), ...args);
+    this.options.logger?.debug?.(this.__log_header(), ...args);
   }
 
   private trace(...args: any[]) {
-    this.options?.logger?.trace?.('[REST]', ...args);
+    this.options.logger?.trace?.(this.__log_header(), ...args);
   }
 }
 

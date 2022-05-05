@@ -6,11 +6,17 @@ const manager = new REST.default(
   {
     timings: true,
     logger: {
-      debug: console.log,
+      header: () => '[abcdef]',
+      debug: (message, ...args) => {
+        if (!message.startsWith('[abcdef]'))
+          throw new Error(`Unexpected message: ${message}`);
+
+        console.log(message, ...args);
+      },
       trace: console.log,
-      kleur: null
-    }
-  }
+      kleur: null,
+    },
+  },
 );
 
 manager.client.setAuth(process.env.DISCORD_TOKEN);
