@@ -4,7 +4,7 @@
   "description": "Small library to facilitate JavaScript-ifying Discord objects",
   "main": "dist/index.js",
   "scripts": {
-    "test": " "
+    "build": "tsc"
   },
   "repository": {
     "type": "git",
@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/fuwa-org/fuwa/issues"
   },
-  "homepage": "https://github.com/fuwa-org/fuwa#readme"
+  "homepage": "https://github.com/fuwa-org/fuwa#readme",
+  "dependencies": {
+    "discord-api-types": "^0.32.1"
+  }
 }

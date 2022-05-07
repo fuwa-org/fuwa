@@ -1,6 +1,7 @@
 import FormData from 'form-data';
 import undici from 'undici';
-import { inspect } from 'util';
+import { URLSearchParams } from 'node:url';
+import { inspect } from 'node:util';
 import { RequestOptions, ResponseData } from 'undici/types/dispatcher';
 import { APIRequest } from './APIRequest';
 import { RouteLike } from './RequestManager.js';
@@ -164,6 +165,12 @@ export class RESTClient {
   public createURL(request: APIRequest) {
     let query = '';
     if (request.query) {
+      if (
+        typeof request.query === 'object' &&
+        !(request.query instanceof URLSearchParams)
+      ) {
+        request.query = new URLSearchParams(request.query);
+      }
       query = `?${request.query.toString()}`;
     }
 
