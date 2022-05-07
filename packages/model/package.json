@@ -1,0 +1,19 @@
+{
+  "name": "@fuwa/model",
+  "version": "0.1.0",
+  "description": "Small library to facilitate JavaScript-ifying Discord objects",
+  "main": "dist/index.js",
+  "scripts": {
+    "test": " "
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/fuwa-org/fuwa.git"
+  },
+  "author": "Splatterxl <splatterxl@outlook.ie>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/fuwa-org/fuwa/issues"
+  },
+  "homepage": "https://github.com/fuwa-org/fuwa#readme"
+}

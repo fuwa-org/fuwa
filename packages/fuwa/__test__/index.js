@@ -73,8 +73,7 @@ client.on('messageCreate', async m => {
     m.content.startsWith('!events') &&
     m.author.id === '728342296696979526'
   ) {
-    const update = (a, { id }) =>
-      m.reply('shard ' + id + ': ' + a);
+    const update = (a, { id }) => m.reply('shard ' + id + ': ' + a);
     client.ws
       .on('preReady', update.bind(null, 'received ready'))
       .on('ready', update.bind(null, 'lazy loaded all guilds'))

@@ -6,7 +6,7 @@ const manager = new REST.default(
   {
     timings: true,
     logger: {
-      header: () => '[abcdef]',
+      header: '',
       debug: (message, ...args) => {
         if (!message.startsWith('[abcdef]'))
           throw new Error(`Unexpected message: ${message}`);

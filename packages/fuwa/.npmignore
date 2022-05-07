@@ -1,7 +1,4 @@
-!dist
-!typings
-!README.md
-src
 __test__
+src
 cliff.toml
 tsconfig.json

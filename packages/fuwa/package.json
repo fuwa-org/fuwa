@@ -1,7 +1,7 @@
 {
   "name": "fuwa",
   "version": "0.0.1-beta.2",
-  "description": "不和 (fuwa) is a simple, easy-to-use and lightweight Discord API wrapper",
+  "description": "fuwa is a simple, easy-to-use and lightweight Discord API wrapper",
   "main": "./dist/index.js",
   "type": "commonjs",
   "scripts": {
@@ -13,10 +13,10 @@
     "docs": "yarn docs:build && yarn docs:serve",
     "prettify": "prettier -w ."
   },
-  "repository": "https://github.com/FuwaDiscord/fuwa.git",
+  "repository": "https://github.com/fuwa-org/fuwa.git",
   "keywords": [],
   "author": "Splatterxl <splatterxl@outlook.ie>",
-  "license": "AGPL-3.0-or-later",
+  "license": "MIT",
   "types": "./typings/index.d.ts",
   "homepage": "https://fuwadiscord.github.io/fuwa/",
   "dependencies": {

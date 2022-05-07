@@ -2,14 +2,15 @@
   "configurations": [
     {
       "name": "Launch Program",
-      "program": "${workspaceFolder}/test/index.js",
+      "program": "${workspaceFolder}/packages/fuwa/__test__/index.js",
       "request": "launch",
       "skipFiles": ["<node_internals>/**"],
       "type": "node",
       "env": {
         "NODE_ENV": "development",
         "DISCORD_TOKEN": "::readfrom::~~/.token"
-      }
+      },
+      "runtimeExecutable": "/home/splat/.nvm/versions/node/v18.0.0/bin/node"
     },
     {
       "command": "source .env && npm start",

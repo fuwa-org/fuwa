@@ -1,6 +1,5 @@
 import { Client } from '../../client/Client';
 import { Snowflake } from 'discord-api-types/v10';
-import { DataTransformer } from '../../rest/DataTransformer';
 import { SnowflakeInfo } from '../../util/Snowflake';
 
 export abstract class BaseStructure<T> {
@@ -31,6 +30,6 @@ export abstract class BaseStructure<T> {
 
   public static toJSON(data: any): any {
     if (data.toJSON && typeof data.toJSON === 'function') return data.toJSON();
-    else return DataTransformer.snakeCase(data);
+    else return {};
   }
 }
