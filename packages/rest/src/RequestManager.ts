@@ -39,7 +39,7 @@ export class RequestManager {
 
   constructor(
     public client: RESTClient,
-    public options: RequestManagerOptions = {},
+    public init: RequestManagerOptions = {},
   ) {}
 
   public get durUntilReset() {
@@ -66,7 +66,7 @@ export class RequestManager {
     bucket: BucketQueueManager,
     req: Required<APIRequest>,
   ): Promise<ResponseData> {
-    if (this.options.timings) req.httpStartTime = Date.now();
+    if (this.init.timings) req.httpStartTime = Date.now();
 
     this.trace(`Sending ${req.method} to ${req.route}...`);
 
@@ -84,7 +84,7 @@ export class RequestManager {
       `${req.method.toUpperCase()} ${req.route} -> ${res.statusCode} ${
         STATUS_CODES[res.statusCode]
       }${
-        this.options.timings
+        this.init.timings
           ? ` (${now - req.startTime}ms${
               now - req.httpStartTime !== now - req.startTime
                 ? ` full; ${now - req.httpStartTime}ms http`
@@ -161,7 +161,7 @@ export class RequestManager {
       req = resolveRequest({ route: req, ...options });
     } else req = resolveRequest(req);
 
-    if (this.options.timings) req.startTime = Date.now();
+    if (this.init.timings) req.startTime = Date.now();
 
     if (!req.useRateLimits)
       return this.makeRequest(
@@ -210,8 +210,8 @@ export class RequestManager {
 
   /** @ignore */
   __log_header() {
-    if (this.options.logger?.header) {
-      const header = this.options.logger.header;
+    if (this.init.logger?.header) {
+      const header = this.init.logger.header;
 
       if (typeof header === 'function') {
         return header();
@@ -219,16 +219,16 @@ export class RequestManager {
         return header;
       }
     } else {
-      return `[${this.options.logger?.kleur?.().green('REST') ?? 'REST'}]`;
+      return `[${this.init.logger?.kleur?.().green('REST') ?? 'REST'}]`;
     }
   }
 
   debug(...args: any[]) {
-    this.options.logger?.debug?.(this.__log_header(), ...args);
+    this.init.logger?.debug?.(this.__log_header(), ...args);
   }
 
   private trace(...args: any[]) {
-    this.options.logger?.trace?.(this.__log_header(), ...args);
+    this.init.logger?.trace?.(this.__log_header(), ...args);
   }
 }
 
