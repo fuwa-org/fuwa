@@ -42,13 +42,31 @@ export class REST extends RequestManager {
 
   //#region Methods
 
+  /**
+   * Send a request to the Discord API
+   * @param options Request data to send alongside boilerplate headers
+   * @returns JSON response from the API
+   */
   async request<T>(options: APIRequest): Promise<T> {
     const res = await this.queue(options);
 
     return (await res.body.json()) as T;
   }
 
+  /**
+   * Send a HTTP GET request to the Discord API
+   * @param route Route to send the request to
+   * @param options Additional request options. `body` and `files` are ignored.
+   * @returns JSON response from the API
+   */
   get<T>(route: RouteLike, options?: RequestOptions) {
+    if (options?.body) {
+      delete options.body;
+    }
+    if (options?.files) {
+      delete options.files;
+    }
+
     return this.request<T>({
       method: 'GET',
       route,
@@ -56,6 +74,14 @@ export class REST extends RequestManager {
     });
   }
 
+  /**
+   * Send a HTTP POST request to the Discord API
+   * @param route Route to send the request to
+   * @param options Additional request options. `body` and `files` are merged if both
+   * are supplied, using different strategies for `body` depending on
+   * {@link APIRequest.payloadJson}.
+   * @returns JSON response from the API
+   */
   post<T>(route: RouteLike, options: RequestOptions) {
     return this.request<T>({
       method: 'POST',
@@ -64,6 +90,13 @@ export class REST extends RequestManager {
     });
   }
 
+  /**
+   * Send a HTTP PUT request to the Discord API
+   * @param route Route to send the request to
+   * @param options Additional request options. `body` and `files` are treated like
+   * in {@link REST.post}.
+   * @returns JSON response from the API
+   */
   put<T>(route: RouteLike, options: RequestOptions) {
     return this.request<T>({
       method: 'PUT',
@@ -72,6 +105,13 @@ export class REST extends RequestManager {
     });
   }
 
+  /**
+   * Send a HTTP PATCH request to the Discord API
+   * @param route Route to send the request to
+   * @param options Additional request options. `body` and `files` are treated like
+   * in {@link REST.post}.
+   * @returns JSON response from the API
+   */
   patch<T>(route: RouteLike, options: RequestOptions) {
     return this.request<T>({
       method: 'PATCH',
@@ -80,6 +120,12 @@ export class REST extends RequestManager {
     });
   }
 
+  /**
+   * Send a HTTP DELETE request to the Discord API
+   * @param route Route to send the request to
+   * @param options Additional request options. `body` and `files` are ignored.
+   * @returns JSON/empty response from the API, usually 204 No Content therefore empty
+   */
   delete<T>(route: RouteLike, options?: RequestOptions) {
     return this.request<T>({
       method: 'DELETE',
@@ -88,6 +134,11 @@ export class REST extends RequestManager {
     });
   }
 
+  /**
+   * Send a HTTP OPTIONS request to the Discord API
+   * @param route Route to send the request to
+   * @param options Additional request options.
+   */
   options<T>(route: RouteLike, options?: RequestOptions) {
     return this.request<T>({
       method: 'OPTIONS',
@@ -96,6 +147,12 @@ export class REST extends RequestManager {
     });
   }
 
+  /**
+   * Send a HTTP HEAD request to the Discord API
+   * @param route Route to send the request to
+   * @param options Additional request options.
+   * @returns Empty response from the API, headers are consumed internally.
+   */
   head<T>(route: RouteLike, options?: RequestOptions) {
     return this.request<T>({
       method: 'HEAD',
@@ -104,23 +161,22 @@ export class REST extends RequestManager {
     });
   }
 
-  connect<T>(route: RouteLike, options?: RequestOptions) {
-    return this.request<T>({
-      method: 'CONNECT',
-      route,
-      ...options,
+  //#endregion
+
+  //#region Audit Log
+
+  /**
+   * Requires the `VIEW_AUDIT_LOG` permission
+   */
+  getGuildAuditLog(guildID: string, options: RESTGetAPIAuditLogQuery) {
+    return this.get<RESTGetAPIAuditLogResult>(`/guilds/${guildID}/audit-logs`, {
+      query: options,
     });
   }
 
   //#endregion
 
-  //#region Entrypoints
-
-  getGuildAuditLogs(guildID: string, options: RESTGetAPIAuditLogQuery) {
-    return this.get<RESTGetAPIAuditLogResult>(`/guilds/${guildID}/audit-logs`, {
-      query: options,
-    });
-  }
+  //#region Channel
 
   getChannel(id: string) {
     return this.get<RESTGetAPIChannelResult>(`/channels/${id}`);
