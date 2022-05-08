@@ -7,11 +7,11 @@ declare type RequestOptions = Partial<APIRequest>;
 declare type Awaitable<T> = Promise<T> | T;
 export declare class REST extends RequestManager {
     beforeRequest: ((options: RequestOptions) => Awaitable<void | RequestOptions>) | undefined;
-    afterRequest: ((options: RequestOptions, response: ResponseData, json?: any) => Awaitable<void>) | undefined;
+    afterRequest: ((options: RequestOptions, response: ResponseData, text: string, json: any | null) => Awaitable<void>) | undefined;
     constructor(token?: string | undefined, options?: RESTClientOptions, managerOptions?: RequestManagerOptions);
     token(token?: string | null): string | this | undefined;
-    before(cb: REST['beforeRequest']): this;
-    after(cb: REST['afterRequest']): this;
+    before(cb: REST["beforeRequest"]): this;
+    after(cb: REST["afterRequest"]): this;
     request<T>(options: APIRequest): Promise<T>;
     get<T>(route: RouteLike, options?: RequestOptions): Promise<T>;
     post<T>(route: RouteLike, options: RequestOptions): Promise<T>;
