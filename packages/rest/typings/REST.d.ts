@@ -1,4 +1,4 @@
-import { RESTGetAPIAuditLogQuery, RESTGetAPIChannelInvitesResult, RESTGetAPIChannelMessageReactionUsersQuery, RESTGetAPIChannelMessageReactionUsersResult, RESTGetAPIChannelMessagesQuery, RESTGetAPIChannelMessagesResult, RESTPatchAPIChannelJSONBody, RESTPatchAPIChannelMessageJSONBody, RESTPostAPIChannelMessageJSONBody, RESTPutAPIChannelPermissionJSONBody } from 'discord-api-types/v10';
+import { APIThreadChannel, APIThreadMember, RESTGetAPIAuditLogQuery, RESTGetAPIChannelInvitesResult, RESTGetAPIChannelMessageReactionUsersQuery, RESTGetAPIChannelMessageReactionUsersResult, RESTGetAPIChannelMessagesQuery, RESTGetAPIChannelMessagesResult, RESTGetAPIChannelPinsResult, RESTGetAPIChannelThreadMembersResult, RESTGetAPIChannelThreadsArchivedQuery, RESTPatchAPIChannelJSONBody, RESTPatchAPIChannelMessageJSONBody, RESTPostAPIChannelInviteJSONBody, RESTPostAPIChannelMessageJSONBody, RESTPostAPIChannelMessagesThreadsJSONBody, RESTPostAPIChannelThreadsJSONBody, RESTPostAPIGuildForumThreadsJSONBody, RESTPutAPIChannelPermissionJSONBody } from 'discord-api-types/v10';
 import { ResponseData } from 'undici/types/dispatcher';
 import { APIRequest, File } from './APIRequest.js';
 import { RequestManager, RequestManagerOptions, RouteLike } from './RequestManager.js';
@@ -10,8 +10,8 @@ export declare class REST extends RequestManager {
     afterRequest: ((options: RequestOptions, response: ResponseData, text: string, json: any | null) => Awaitable<void>) | undefined;
     constructor(token?: string | undefined, options?: RESTClientOptions, managerOptions?: RequestManagerOptions);
     token(token?: string | null): string | this | undefined;
-    before(cb: REST["beforeRequest"]): this;
-    after(cb: REST["afterRequest"]): this;
+    before(cb: REST['beforeRequest']): this;
+    after(cb: REST['afterRequest']): this;
     request<T>(options: APIRequest): Promise<T>;
     get<T>(route: RouteLike, options?: RequestOptions): Promise<T>;
     post<T>(route: RouteLike, options: RequestOptions): Promise<T>;
@@ -40,5 +40,35 @@ export declare class REST extends RequestManager {
     bulkDeleteMessages(channelID: string, messages: string[] | number, reason?: string): Promise<never>;
     editChannelPermissions(channelID: string, overwriteID: string, data: RESTPutAPIChannelPermissionJSONBody, reason?: string): Promise<never>;
     getChannelInvites(channelID: string): Promise<RESTGetAPIChannelInvitesResult>;
+    createChannelInvite(channelID: string, data: RESTPostAPIChannelInviteJSONBody, reason?: string): Promise<import("discord-api-types/v10").APIExtendedInvite>;
+    deleteChannelPermission(channelID: string, overwriteID: string, reason?: string): Promise<never>;
+    followNewsChannel(channelID: string, webhookChannelID: string): Promise<import("discord-api-types/v10").APIFollowedChannel>;
+    triggerTypingIndicator(channelID: string): Promise<never>;
+    getPinnedMessages(channelID: string): Promise<RESTGetAPIChannelPinsResult>;
+    pinMessage(channelID: string, messageID: string, reason?: string): Promise<never>;
+    unpinMessage(channelID: string, messageID: string, reason?: string): Promise<never>;
+    addGroupDMRecipient(channelID: string, userID: string, accessToken: string, nickname?: string): Promise<unknown>;
+    removeGroupDMRecipient(channelID: string, userID: string): Promise<unknown>;
+    startThreadFromMessage(channelID: string, messageID: string, data: RESTPostAPIChannelMessagesThreadsJSONBody, reason?: string): Promise<import("discord-api-types/v10").APIChannel>;
+    startThread(channelID: string, data: RESTPostAPIChannelThreadsJSONBody, reason?: string): Promise<import("discord-api-types/v10").APIChannel>;
+    startThreadInForumChannel(channelID: string, data: RESTPostAPIGuildForumThreadsJSONBody, { reason, files }?: {
+        reason?: string;
+        files?: File[];
+    }): Promise<RESTPostAPIGuildForumThreadsJSONBody>;
+    joinThread(channelID: string): Promise<never>;
+    addThreadMember(channelID: string, userID: string): Promise<never>;
+    leaveThread(channelID: string): Promise<never>;
+    removeThreadMember(channelID: string, userID: string): Promise<never>;
+    getThreadMember(channelID: string, userID: string): Promise<RESTGetAPIChannelThreadMembersResult>;
+    listThreadMembers(channelID: string): Promise<RESTGetAPIChannelThreadMembersResult>;
+    listActiveThreads(channelID: string): Promise<APIThreadList>;
+    listPublicArchivedThreads(channelID: string, options?: RESTGetAPIChannelThreadsArchivedQuery): Promise<APIThreadList>;
+    listPrivateArchivedThreads(channelID: string, options?: RESTGetAPIChannelThreadsArchivedQuery): Promise<APIThreadList>;
+    listJoinedPrivateArchivedThreads(channelID: string, options?: RESTGetAPIChannelThreadsArchivedQuery): Promise<APIThreadList>;
+}
+export interface APIThreadList {
+    threads: APIThreadChannel[];
+    members: APIThreadMember[];
+    has_more: boolean;
 }
 export {};

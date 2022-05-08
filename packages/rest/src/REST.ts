@@ -1,6 +1,12 @@
 import {
+  APIThreadChannel,
+  APIThreadMember,
   RESTDeleteAPIChannelMessageResult,
+  RESTDeleteAPIChannelPermissionResult,
+  RESTDeleteAPIChannelPinResult,
+  RESTDeleteAPIChannelRecipientResult,
   RESTDeleteAPIChannelResult,
+  RESTDeleteAPIChannelThreadMembersResult,
   RESTGetAPIAuditLogQuery,
   RESTGetAPIAuditLogResult,
   RESTGetAPIChannelInvitesResult,
@@ -9,18 +15,33 @@ import {
   RESTGetAPIChannelMessageResult,
   RESTGetAPIChannelMessagesQuery,
   RESTGetAPIChannelMessagesResult,
+  RESTGetAPIChannelPinsResult,
   RESTGetAPIChannelResult,
+  RESTGetAPIChannelThreadMembersResult,
+  RESTGetAPIChannelThreadsArchivedQuery,
   RESTPatchAPIChannelJSONBody,
   RESTPatchAPIChannelMessageJSONBody,
   RESTPatchAPIChannelMessageResult,
   RESTPatchAPIChannelResult,
+  RESTPostAPIChannelFollowersResult,
+  RESTPostAPIChannelInviteJSONBody,
+  RESTPostAPIChannelInviteResult,
   RESTPostAPIChannelMessageCrosspostResult,
   RESTPostAPIChannelMessageJSONBody,
   RESTPostAPIChannelMessageResult,
   RESTPostAPIChannelMessagesBulkDeleteResult,
+  RESTPostAPIChannelMessagesThreadsJSONBody,
+  RESTPostAPIChannelMessagesThreadsResult,
+  RESTPostAPIChannelThreadsJSONBody,
+  RESTPostAPIChannelThreadsResult,
+  RESTPostAPIChannelTypingResult,
+  RESTPostAPIGuildForumThreadsJSONBody,
   RESTPutAPIChannelMessageReactionResult,
   RESTPutAPIChannelPermissionJSONBody,
   RESTPutAPIChannelPermissionResult,
+  RESTPutAPIChannelPinResult,
+  RESTPutAPIChannelRecipientResult,
+  RESTPutAPIChannelThreadMembersResult,
 } from 'discord-api-types/v10';
 import { ResponseData } from 'undici/types/dispatcher';
 import { APIRequest, File } from './APIRequest.js';
@@ -333,11 +354,7 @@ export class REST extends RequestManager {
   }
 
   deleteOwnReaction(channelID: string, messageID: string, emoji: string) {
-    return this.delete(
-      `/channels/${channelID}/messages/${messageID}/reactions/${encodeURIComponent(
-        emoji,
-      )}/@me`,
-    );
+    return this.deleteUserReaction(channelID, messageID, emoji, '@me');
   }
 
   deleteUserReaction(
@@ -456,5 +473,221 @@ export class REST extends RequestManager {
     );
   }
 
+  createChannelInvite(
+    channelID: string,
+    data: RESTPostAPIChannelInviteJSONBody,
+    reason?: string,
+  ) {
+    return this.post<RESTPostAPIChannelInviteResult>(
+      `/channels/${channelID}/invites`,
+      {
+        body: data,
+        reason,
+      },
+    );
+  }
+
+  deleteChannelPermission(
+    channelID: string,
+    overwriteID: string,
+    reason?: string,
+  ) {
+    return this.delete<RESTDeleteAPIChannelPermissionResult>(
+      `/channels/${channelID}/permissions/${overwriteID}`,
+      {
+        reason,
+      },
+    );
+  }
+
+  followNewsChannel(channelID: string, webhookChannelID: string) {
+    return this.post<RESTPostAPIChannelFollowersResult>(
+      `/channels/${channelID}/followers`,
+      {
+        body: {
+          webhook_channel_id: webhookChannelID,
+        },
+      },
+    );
+  }
+
+  triggerTypingIndicator(channelID: string) {
+    return this.post<RESTPostAPIChannelTypingResult>(
+      `/channels/${channelID}/typing`,
+      {},
+    );
+  }
+
+  getPinnedMessages(channelID: string) {
+    return this.get<RESTGetAPIChannelPinsResult>(`/channels/${channelID}/pins`);
+  }
+
+  pinMessage(channelID: string, messageID: string, reason?: string) {
+    return this.put<RESTPutAPIChannelPinResult>(
+      `/channels/${channelID}/pins/${messageID}`,
+      {
+        reason,
+      },
+    );
+  }
+
+  unpinMessage(channelID: string, messageID: string, reason?: string) {
+    return this.delete<RESTDeleteAPIChannelPinResult>(
+      `/channels/${channelID}/pins/${messageID}`,
+      {
+        reason,
+      },
+    );
+  }
+
+  addGroupDMRecipient(
+    channelID: string,
+    userID: string,
+    accessToken: string,
+    nickname?: string,
+  ) {
+    return this.put<RESTPutAPIChannelRecipientResult>(
+      `/channels/${channelID}/recipients/${userID}`,
+      {
+        body: {
+          access_token: accessToken,
+          nick: nickname,
+        },
+      },
+    );
+  }
+
+  removeGroupDMRecipient(channelID: string, userID: string) {
+    return this.delete<RESTDeleteAPIChannelRecipientResult>(
+      `/channels/${channelID}/recipients/${userID}`,
+    );
+  }
+
+  startThreadFromMessage(
+    channelID: string,
+    messageID: string,
+    data: RESTPostAPIChannelMessagesThreadsJSONBody,
+    reason?: string,
+  ) {
+    return this.post<RESTPostAPIChannelMessagesThreadsResult>(
+      `/channels/${channelID}/messages/${messageID}/threads`,
+      {
+        body: data,
+        reason,
+      },
+    );
+  }
+
+  startThread(
+    channelID: string,
+    data: RESTPostAPIChannelThreadsJSONBody,
+    reason?: string,
+  ) {
+    return this.post<RESTPostAPIChannelThreadsResult>(
+      `/channels/${channelID}/threads`,
+      {
+        body: data,
+        reason,
+      },
+    );
+  }
+
+  startThreadInForumChannel(
+    channelID: string,
+    data: RESTPostAPIGuildForumThreadsJSONBody,
+    { reason, files }: { reason?: string; files?: File[] } = {},
+  ) {
+    return this.post<RESTPostAPIGuildForumThreadsJSONBody>(
+      `/channels/${channelID}/threads`,
+      {
+        body: data,
+        files,
+        reason,
+      },
+    );
+  }
+
+  joinThread(channelID: string) {
+    return this.addThreadMember(channelID, '@me');
+  }
+
+  addThreadMember(channelID: string, userID: string) {
+    return this.put<RESTPutAPIChannelThreadMembersResult>(
+      `/channels/${channelID}/thread-members/${userID}`,
+      {},
+    );
+  }
+
+  leaveThread(channelID: string) {
+    return this.removeThreadMember(channelID, '@me');
+  }
+
+  removeThreadMember(channelID: string, userID: string) {
+    return this.delete<RESTDeleteAPIChannelThreadMembersResult>(
+      `/channels/${channelID}/thread-members/${userID}`,
+    );
+  }
+
+  getThreadMember(channelID: string, userID: string) {
+    return this.get<RESTGetAPIChannelThreadMembersResult>(
+      `/channels/${channelID}/thread-members/${userID}`,
+    );
+  }
+
+  listThreadMembers(channelID: string) {
+    return this.get<RESTGetAPIChannelThreadMembersResult>(
+      `/channels/${channelID}/thread-members`,
+    );
+  }
+
+  /**
+   * @deprecated This endpoint is deprecated and will be removed in API v10.
+   */
+  listActiveThreads(channelID: string) {
+    return this.get<APIThreadList>(`/channels/${channelID}/threads/active`);
+  }
+
+  listPublicArchivedThreads(
+    channelID: string,
+    options?: RESTGetAPIChannelThreadsArchivedQuery,
+  ) {
+    return this.get<APIThreadList>(
+      `/channels/${channelID}/threads/archived/public`,
+      {
+        query: options,
+      },
+    );
+  }
+
+  listPrivateArchivedThreads(
+    channelID: string,
+    options?: RESTGetAPIChannelThreadsArchivedQuery,
+  ) {
+    return this.get<APIThreadList>(
+      `/channels/${channelID}/threads/archived/private`,
+      {
+        query: options,
+      },
+    );
+  }
+
+  listJoinedPrivateArchivedThreads(
+    channelID: string,
+    options?: RESTGetAPIChannelThreadsArchivedQuery,
+  ) {
+    return this.get<APIThreadList>(
+      `/channels/${channelID}/users/@me/threads/archived/private`,
+      {
+        query: options,
+      },
+    );
+  }
+
   //#endregion
+}
+
+export interface APIThreadList {
+  threads: APIThreadChannel[];
+  members: APIThreadMember[];
+  has_more: boolean;
 }
