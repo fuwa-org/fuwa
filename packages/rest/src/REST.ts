@@ -22,7 +22,9 @@ import {
   RESTPutAPIChannelPermissionJSONBody,
   RESTPutAPIChannelPermissionResult,
 } from 'discord-api-types/v10';
+import { ResponseData } from 'undici/types/dispatcher';
 import { APIRequest, File } from './APIRequest.js';
+import { DefaultDiscordOptions } from './index.js';
 import {
   RequestManager,
   RequestManagerOptions,
@@ -31,13 +33,66 @@ import {
 import { RESTClient, RESTClientOptions } from './RESTClient.js';
 
 type RequestOptions = Partial<APIRequest>;
+type Awaitable<T> = Promise<T> | T;
 
 export class REST extends RequestManager {
+  beforeRequest:
+    | ((options: RequestOptions) => Awaitable<void | RequestOptions>)
+    | undefined = undefined;
+  afterRequest:
+    | ((
+        options: RequestOptions,
+        response: ResponseData,
+        json?: any,
+      ) => Awaitable<void>)
+    | undefined = undefined;
+
   constructor(
-    options: RESTClientOptions,
+    token: string | undefined = process.env.DISCORD_TOKEN,
+    options: RESTClientOptions = DefaultDiscordOptions,
     managerOptions: RequestManagerOptions = {},
   ) {
+    Object.assign(options, DefaultDiscordOptions);
+
+    options.auth = token;
+
     super(new RESTClient(options), managerOptions);
+  }
+
+  /**
+   * Set or gets the authentication token for requests to use. Tokens require a token type, must be `Bot` or `Bearer`.
+   * @returns The REST client instance if the token was set, otherwise the current token.
+   */
+  token(token?: string | null) {
+    if (token) {
+      this.client.setAuth(token);
+    }
+
+    if (token === null) {
+      this.client.setAuth(undefined);
+    }
+
+    return token ?? token === null ? this : this.client.getAuth();
+  }
+
+  /**
+   * Set a task to be run before a request is sent. The task is passed the request options, and is expected to return `undefined` _or_ modified options.
+   * @param cb Task to run before a request is sent.
+   * @returns The REST client instance.
+   */
+  before(cb: REST['beforeRequest']) {
+    this.beforeRequest = cb;
+    return this;
+  }
+
+  /**
+   * Set a task to be run after a request is sent. The task is passed the request options, the response data and parsed JSON from the response, and is not expected to return anything.
+   * @param cb Task to run after a request is sent.
+   * @returns The REST client instance.
+   */
+  after(cb: REST['afterRequest']) {
+    this.afterRequest = cb;
+    return this;
   }
 
   //#region Methods
@@ -48,9 +103,23 @@ export class REST extends RequestManager {
    * @returns JSON response from the API
    */
   async request<T>(options: APIRequest): Promise<T> {
-    const res = await this.queue(options);
+    const task = await this.beforeRequest?.(options);
 
-    return (await res.body.json()) as T;
+    if (
+      task &&
+      typeof task === 'object' &&
+      !Array.isArray(task) &&
+      task !== null
+    ) {
+      Object.assign(options, task);
+    }
+
+    const res = await this.queue(options),
+      json = (await res.body.json()) as T;
+
+    await this.afterRequest?.(options, res, json);
+
+    return json;
   }
 
   /**

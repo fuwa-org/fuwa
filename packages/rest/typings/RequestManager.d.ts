@@ -13,13 +13,13 @@ export interface RequestManagerOptions {
 }
 export declare class RequestManager {
     client: RESTClient;
-    options: RequestManagerOptions;
+    init: RequestManagerOptions;
     limit: number;
     offset: number;
     buckets: Map<string, BucketQueueManager>;
     remaining: number;
     reset: number;
-    constructor(client: RESTClient, options?: RequestManagerOptions);
+    constructor(client: RESTClient, init?: RequestManagerOptions);
     get durUntilReset(): number;
     getBucket(route: RouteLike): string[];
     get globalLimited(): boolean;

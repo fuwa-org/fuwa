@@ -5,8 +5,11 @@
   "main": "dist/index.js",
   "types": "typings/index.d.ts",
   "scripts": {
+    "precommit": "yarn build --noEmit && yarn lint",
     "build": "tsc",
-    "build:watch": "tsc -w"
+    "build:watch": "tsc -w",
+    "lint": "eslint . --ext .ts",
+    "lint:fix": "yarn lint --fix"
   },
   "repository": {
     "type": "git",
