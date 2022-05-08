@@ -21,13 +21,11 @@ export class BucketQueueManager {
   ) {}
 
   private applyRateLimitInfo(res: ResponseData) {
-    if (res.headers['x-ratelimit-limit']) {
-      this.limit = +res.headers['x-ratelimit-limit'];
-      this.remaining = +res.headers['x-ratelimit-remaining']!;
-      this.reset = +res.headers['x-ratelimit-reset']! * 1000;
-    } else {
-      // the route uses omly the global rate limit
-    }
+    if (!res.headers['x-ratelimit-bucket']) return;
+
+    this.limit = +res.headers['x-ratelimit-limit']!;
+    this.remaining = +res.headers['x-ratelimit-remaining']!;
+    this.reset = +res.headers['x-ratelimit-reset']! * 1000;
   }
   public get durUntilReset() {
     return this.reset + this.manager.offset - Date.now();
@@ -44,7 +42,7 @@ export class BucketQueueManager {
     }
   }
   public get limited() {
-    return this.manager.globalLimited || this.localLimited;
+    return this.manager.limited || this.localLimited;
   }
   public get localLimited() {
     return this.remaining === 0 && Date.now() < this.reset;
@@ -59,10 +57,10 @@ export class BucketQueueManager {
         const dur = this.durUntilReset;
         this.debug(`Rate limited, sleeping for ${dur}ms`);
         await sleep(dur);
-      } else if (this.manager.globalLimited) {
+      } else if (this.manager.limited) {
         const dur = this.manager.durUntilReset;
-        this.debug(`Rate limited, sleeping for ${dur}ms`);
-        await sleep(this.manager.durUntilReset);
+        this.debug(`Globally rate limited, sleeping for ${dur}ms`);
+        await sleep(dur);
       }
     }
 
@@ -81,7 +79,7 @@ export class BucketQueueManager {
   }
 
   #__log_header() {
-    return `[${this.manager.__log_header()} -> ${this.id}]`;
+    return `[${this.id}]`;
   }
 
   private debug(...data: any[]) {

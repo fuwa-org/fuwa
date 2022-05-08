@@ -45,7 +45,6 @@ export class RequestManager {
   public get durUntilReset() {
     return this.reset + this.offset - Date.now();
   }
-
   public getBucket(route: RouteLike) {
     const majorId =
       /(?:channels|guilds|webhooks)\/(\d{17,19})/.exec(route)?.[1] ?? 'global';
@@ -59,7 +58,7 @@ export class RequestManager {
     return [`${endpoint}:${majorId}`, majorId];
   }
 
-  public get globalLimited() {
+  public get limited() {
     return this.remaining === 0 && Date.now() < this.reset;
   }
 
@@ -69,7 +68,14 @@ export class RequestManager {
   ): Promise<ResponseData> {
     if (this.options.timings) req.httpStartTime = Date.now();
 
-    const res = await this.client.execute(req, this.trace.bind(this)),
+    this.trace(`Sending ${req.method} to ${req.route}...`);
+
+    const res = await this.client.execute(
+        req,
+        this.init.logger?.trace && !this.init.logger?.debug
+          ? this.trace.bind(this)
+          : undefined,
+      ),
       now = Date.now();
 
     if (req.useBaseURL) this.updateOffset(res);
@@ -91,6 +97,10 @@ export class RequestManager {
     if (res.statusCode < 200) {
       throw new RESTError(req, res);
     } else if (res.statusCode < 300) {
+      if (req.useRateLimits) {
+        this.updateHeaders(res);
+      }
+
       return res;
     } else if (res.statusCode < 500) {
       switch (res.statusCode) {
@@ -176,6 +186,26 @@ export class RequestManager {
     const local = Date.now();
 
     this.offset = local - discordDate;
+  }
+
+  // this doesn't need to run in the same tick as the request
+  private updateHeaders(res: ResponseData) {
+    this.remaining--;
+
+    while (Date.now() > this.reset) {
+      this.reset += 1e3;
+      this.remaining = this.limit;
+    }
+
+    if (
+      !!res.headers['x-ratelimit-bucket'] ||
+      !res.headers['x-ratelimit-reset']
+    )
+      return;
+
+    this.limit = +res.headers['x-ratelimit-limit']!;
+    this.remaining = +res.headers['x-ratelimit-remaining']!;
+    this.reset = +res.headers['x-ratelimit-reset']! * 1000;
   }
 
   /** @ignore */
