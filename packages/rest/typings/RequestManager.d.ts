@@ -22,11 +22,12 @@ export declare class RequestManager {
     constructor(client: RESTClient, init?: RequestManagerOptions);
     get durUntilReset(): number;
     getBucket(route: RouteLike): string[];
-    get globalLimited(): boolean;
+    get limited(): boolean;
     makeRequest(bucket: BucketQueueManager, req: Required<APIRequest>): Promise<ResponseData>;
     queue<T>(route: RouteLike, options?: Omit<APIRequest, 'route'>): Promise<Response<T>>;
     queue<T>(req: APIRequest): Promise<Response<T>>;
     private updateOffset;
+    private updateHeaders;
     __log_header(): string;
     debug(...args: any[]): void;
     private trace;
