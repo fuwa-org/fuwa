@@ -43,7 +43,8 @@ export class REST extends RequestManager {
     | ((
         options: RequestOptions,
         response: ResponseData,
-        json?: any,
+        text: string,
+        json: any | null,
       ) => Awaitable<void>)
     | undefined = undefined;
 
@@ -103,6 +104,11 @@ export class REST extends RequestManager {
    * @returns JSON response from the API
    */
   async request<T>(options: APIRequest): Promise<T> {
+    const token = this.client.getAuth();
+    if (token && !token.startsWith('Bot ') && !token.startsWith('Bearer ')) {
+      this.client.setAuth(`Bot ${token}`);
+    }
+
     const task = await this.beforeRequest?.(options);
 
     if (
@@ -115,9 +121,17 @@ export class REST extends RequestManager {
     }
 
     const res = await this.queue(options),
-      json = (await res.body.json()) as T;
+      text = await res.body.text();
 
-    await this.afterRequest?.(options, res, json);
+    let json = null as any;
+
+    try {
+      json = JSON.parse(text);
+    } catch (e) {
+      // do nothing
+    }
+
+    await this.afterRequest?.(options, res, text, json);
 
     return json;
   }
