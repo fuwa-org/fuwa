@@ -61,7 +61,7 @@ export class RESTClient {
     };
   }
 
-  public setAuth(auth: string) {
+  public setAuth(auth?: string) {
     this.#auth = auth;
     return this;
   }

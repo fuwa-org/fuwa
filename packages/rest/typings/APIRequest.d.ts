@@ -5,7 +5,7 @@ export interface APIRequest<T = any> {
     route: string;
     auth?: boolean;
     versioned?: boolean;
-    query?: URLSearchParams | string | null;
+    query?: URLSearchParams | string | Record<string, any> | null;
     body?: T | null;
     files?: File[] | null;
     method?: HttpMethod;
