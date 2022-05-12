@@ -24,7 +24,7 @@
     "@types/ws": "8.5.3",
     "discord-api-types": "0.32.0",
     "lodash.snakecase": "4.1.1",
-    "undici": "5.1.1",
+    "undici": "5.2.0",
     "ws": "8.6.0"
   },
   "devDependencies": {
