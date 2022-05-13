@@ -1,12 +1,12 @@
 import {
-  APIThreadChannel,
-  APIThreadMember,
+  APIThreadList,
   RESTDeleteAPIChannelMessageResult,
   RESTDeleteAPIChannelPermissionResult,
   RESTDeleteAPIChannelPinResult,
   RESTDeleteAPIChannelRecipientResult,
   RESTDeleteAPIChannelResult,
   RESTDeleteAPIChannelThreadMembersResult,
+  RESTDeleteAPIGuildEmojiResult,
   RESTGetAPIAuditLogQuery,
   RESTGetAPIAuditLogResult,
   RESTGetAPIChannelInvitesResult,
@@ -19,10 +19,14 @@ import {
   RESTGetAPIChannelResult,
   RESTGetAPIChannelThreadMembersResult,
   RESTGetAPIChannelThreadsArchivedQuery,
+  RESTGetAPIGuildEmojiResult,
+  RESTGetAPIGuildEmojisResult,
   RESTPatchAPIChannelJSONBody,
   RESTPatchAPIChannelMessageJSONBody,
   RESTPatchAPIChannelMessageResult,
   RESTPatchAPIChannelResult,
+  RESTPatchAPIGuildEmojiJSONBody,
+  RESTPatchAPIGuildEmojiResult,
   RESTPostAPIChannelFollowersResult,
   RESTPostAPIChannelInviteJSONBody,
   RESTPostAPIChannelInviteResult,
@@ -35,6 +39,7 @@ import {
   RESTPostAPIChannelThreadsJSONBody,
   RESTPostAPIChannelThreadsResult,
   RESTPostAPIChannelTypingResult,
+  RESTPostAPIGuildEmojiResult,
   RESTPostAPIGuildForumThreadsJSONBody,
   RESTPutAPIChannelMessageReactionResult,
   RESTPutAPIChannelPermissionJSONBody,
@@ -52,6 +57,7 @@ import {
   RouteLike,
 } from './RequestManager.js';
 import { RESTClient, RESTClientOptions } from './RESTClient.js';
+import { createDataURL } from './util.js';
 
 type RequestOptions = Partial<APIRequest>;
 type Awaitable<T> = Promise<T> | T;
@@ -684,10 +690,116 @@ export class REST extends RequestManager {
   }
 
   //#endregion
-}
 
-export interface APIThreadList {
-  threads: APIThreadChannel[];
-  members: APIThreadMember[];
-  has_more: boolean;
+  //#region Emoji
+  listGuildEmojis(guildID: string) {
+    return this.get<RESTGetAPIGuildEmojisResult>(`/guilds/${guildID}/emojis`);
+  }
+
+  getGuildEmoji(guildID: string, emojiID: string) {
+    return this.get<RESTGetAPIGuildEmojiResult>(
+      `/guilds/${guildID}/emojis/${emojiID}`,
+    );
+  }
+
+  createGuildEmoji(
+    guildID: string,
+    name: string,
+    data: Required<Omit<File, 'filename' | 'key'>>,
+    roles?: string[],
+    reason?: string,
+  ) {
+    return this.post<RESTPostAPIGuildEmojiResult>(`/guilds/${guildID}/emojis`, {
+      body: {
+        name,
+        image: createDataURL(data),
+        roles,
+      },
+      reason,
+    });
+  }
+
+  editGuildEmoji(
+    guildID: string,
+    emojiID: string,
+    data: RESTPatchAPIGuildEmojiJSONBody,
+    reason?: string,
+  ) {
+    return this.patch<RESTPatchAPIGuildEmojiResult>(
+      `/guilds/${guildID}/emojis/${emojiID}`,
+      {
+        body: data,
+        reason,
+      },
+    );
+  }
+
+  deleteGuildEmoji(guildID: string, emojiID: string, reason?: string) {
+    return this.delete<RESTDeleteAPIGuildEmojiResult>(
+      `/guilds/${guildID}/emojis/${emojiID}`,
+      {
+        reason,
+      },
+    );
+  }
+
+  //#endregion
+
+  //#region Guild
+  getGuild(guildID: string, withCounts = false) {
+    return this.get<RESTGetAPIGuild>(`/guilds/${guildID}`, {
+      query: {
+        with_counts: withCounts,
+      },
+    });
+  }
+
+  getGuildPreview(guildID: string) {
+    return this.get<RESTGetAPIGuildPreviewResult>(`/guilds/${guildID}/preview`);
+  }
+
+  editGuild(guildID: string, data: RESTPatchAPIGuildJSONBody, reason?: string) {
+    return this.patch<RESTPatchAPIGuildResult>(`/guilds/${guildID}`, {
+      body: data,
+      reason,
+    });
+  }
+
+  deleteGuild(guildID: string) {
+    return this.delete<RESTDeleteAPIGuildResult>(`/guilds/${guildID}`);
+  }
+
+  getGuildChannels(guildID: string) {
+    return this.get<RESTGetAPIGuildChannelsResult>(
+      `/guilds/${guildID}/channels`,
+    );
+  }
+
+  createGuildChannel(
+    guildID: string,
+    data: RESTPostAPIGuildChannelsJSONBody,
+    reason?: string,
+  ) {
+    return this.post<RESTPostAPIGuildChannelsResult>(
+      `/guilds/${guildID}/channels`,
+      {
+        body: data,
+        reason,
+      },
+    );
+  }
+
+  editGuildChannelPositions(
+    guildID: string,
+    data: RESTPatchAPIGuildChannelPositionsJSONBody,
+    reason?: string,
+  ) {
+    return this.patch<RESTPatchAPIGuildChannelPositionsResult>(
+      `/guilds/${guildID}/channels`,
+      {
+        body: data,
+        reason,
+      },
+    );
+  }
 }
