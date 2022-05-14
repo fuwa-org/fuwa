@@ -1,12 +1,21 @@
 import {
+  APIGuildMember,
+  APIGuildWidget as RESTGetAPIGuildWidgetResult,
   APIThreadList,
+  GuildWidgetStyle,
   RESTDeleteAPIChannelMessageResult,
   RESTDeleteAPIChannelPermissionResult,
   RESTDeleteAPIChannelPinResult,
   RESTDeleteAPIChannelRecipientResult,
   RESTDeleteAPIChannelResult,
   RESTDeleteAPIChannelThreadMembersResult,
+  RESTDeleteAPIGuildBanResult,
   RESTDeleteAPIGuildEmojiResult,
+  RESTDeleteAPIGuildIntegrationResult,
+  RESTDeleteAPIGuildMemberResult,
+  RESTDeleteAPIGuildMemberRoleResult,
+  RESTDeleteAPIGuildResult,
+  RESTDeleteAPIGuildRoleResult,
   RESTGetAPIAuditLogQuery,
   RESTGetAPIAuditLogResult,
   RESTGetAPIChannelInvitesResult,
@@ -19,14 +28,47 @@ import {
   RESTGetAPIChannelResult,
   RESTGetAPIChannelThreadMembersResult,
   RESTGetAPIChannelThreadsArchivedQuery,
+  RESTGetAPIGuildBanResult,
+  RESTGetAPIGuildBansQuery,
+  RESTGetAPIGuildBansResult,
+  RESTGetAPIGuildChannelsResult,
   RESTGetAPIGuildEmojiResult,
   RESTGetAPIGuildEmojisResult,
+  RESTGetAPIGuildIntegrationsResult,
+  RESTGetAPIGuildInvitesResult,
+  RESTGetAPIGuildMemberResult,
+  RESTGetAPIGuildMembersQuery,
+  RESTGetAPIGuildMembersResult,
+  RESTGetAPIGuildPreviewResult,
+  RESTGetAPIGuildPruneCountQuery,
+  RESTGetAPIGuildPruneCountResult,
+  RESTGetAPIGuildResult,
+  RESTGetAPIGuildRolesResult,
+  RESTGetAPIGuildVoiceRegionsResult,
+  RESTGetAPIGuildVanityUrlResult,
+  RESTGetAPIGuildWelcomeScreenResult,
+  RESTGetAPIGuildWidgetSettingsResult,
   RESTPatchAPIChannelJSONBody,
   RESTPatchAPIChannelMessageJSONBody,
   RESTPatchAPIChannelMessageResult,
   RESTPatchAPIChannelResult,
+  RESTPatchAPIGuildChannelPositionsJSONBody,
+  RESTPatchAPIGuildChannelPositionsResult,
   RESTPatchAPIGuildEmojiJSONBody,
   RESTPatchAPIGuildEmojiResult,
+  RESTPatchAPIGuildJSONBody,
+  RESTPatchAPIGuildMemberJSONBody,
+  RESTPatchAPIGuildMemberResult,
+  RESTPatchAPIGuildResult,
+  RESTPatchAPIGuildRoleJSONBody,
+  RESTPatchAPIGuildRolePositionsJSONBody,
+  RESTPatchAPIGuildRolePositionsResult,
+  RESTPatchAPIGuildRoleResult,
+  RESTPatchAPIGuildVoiceStateUserJSONBody,
+  RESTPatchAPIGuildVoiceStateCurrentMemberJSONBody,
+  RESTPatchAPIGuildWelcomeScreenJSONBody,
+  RESTPatchAPIGuildWidgetSettingsJSONBody,
+  RESTPatchAPIGuildWidgetSettingsResult,
   RESTPostAPIChannelFollowersResult,
   RESTPostAPIChannelInviteJSONBody,
   RESTPostAPIChannelInviteResult,
@@ -39,14 +81,25 @@ import {
   RESTPostAPIChannelThreadsJSONBody,
   RESTPostAPIChannelThreadsResult,
   RESTPostAPIChannelTypingResult,
+  RESTPostAPIGuildChannelJSONBody,
+  RESTPostAPIGuildChannelResult,
   RESTPostAPIGuildEmojiResult,
   RESTPostAPIGuildForumThreadsJSONBody,
+  RESTPostAPIGuildPruneJSONBody,
+  RESTPostAPIGuildPruneResult,
+  RESTPostAPIGuildRoleJSONBody,
+  RESTPostAPIGuildRoleResult,
   RESTPutAPIChannelMessageReactionResult,
   RESTPutAPIChannelPermissionJSONBody,
   RESTPutAPIChannelPermissionResult,
   RESTPutAPIChannelPinResult,
   RESTPutAPIChannelRecipientResult,
   RESTPutAPIChannelThreadMembersResult,
+  RESTPutAPIGuildBanJSONBody,
+  RESTPutAPIGuildBanResult,
+  RESTPutAPIGuildMemberJSONBody,
+  RESTPutAPIGuildMemberResult,
+  RESTPutAPIGuildMemberRoleResult,
 } from 'discord-api-types/v10';
 import { ResponseData } from 'undici/types/dispatcher';
 import { APIRequest, File } from './APIRequest.js';
@@ -59,7 +112,7 @@ import {
 import { RESTClient, RESTClientOptions } from './RESTClient.js';
 import { createDataURL } from './util.js';
 
-type RequestOptions = Partial<APIRequest>;
+type RequestOptions = Partial<APIRequest & { buf: boolean }>;
 type Awaitable<T> = Promise<T> | T;
 
 export class REST extends RequestManager {
@@ -130,7 +183,7 @@ export class REST extends RequestManager {
    * @param options Request data to send alongside boilerplate headers
    * @returns JSON response from the API
    */
-  async request<T>(options: APIRequest): Promise<T> {
+  async request<T>(options: APIRequest & { buf?: boolean }): Promise<T> {
     const token = this.client.getAuth();
     if (token && !token.startsWith('Bot ') && !token.startsWith('Bearer ')) {
       this.client.setAuth(`Bot ${token}`);
@@ -147,8 +200,12 @@ export class REST extends RequestManager {
       Object.assign(options, task);
     }
 
-    const res = await this.queue(options),
-      text = await res.body.text();
+    const res = await this.queue(options);
+
+    if (options.buf)
+      return res.body.arrayBuffer().then(Buffer.from) as Promise<T>;
+
+    const text = await res.body.text();
 
     let json = null as any;
 
@@ -747,7 +804,7 @@ export class REST extends RequestManager {
 
   //#region Guild
   getGuild(guildID: string, withCounts = false) {
-    return this.get<RESTGetAPIGuild>(`/guilds/${guildID}`, {
+    return this.get<RESTGetAPIGuildResult>(`/guilds/${guildID}`, {
       query: {
         with_counts: withCounts,
       },
@@ -777,10 +834,10 @@ export class REST extends RequestManager {
 
   createGuildChannel(
     guildID: string,
-    data: RESTPostAPIGuildChannelsJSONBody,
+    data: RESTPostAPIGuildChannelJSONBody,
     reason?: string,
   ) {
-    return this.post<RESTPostAPIGuildChannelsResult>(
+    return this.post<RESTPostAPIGuildChannelResult>(
       `/guilds/${guildID}/channels`,
       {
         body: data,
@@ -802,4 +859,358 @@ export class REST extends RequestManager {
       },
     );
   }
+
+  getGuildMember(guildID: string, userID: string) {
+    return this.get<RESTGetAPIGuildMemberResult>(
+      `/guilds/${guildID}/members/${userID}`,
+    );
+  }
+
+  listGuildMembers(guildID: string, options?: RESTGetAPIGuildMembersQuery) {
+    return this.get<RESTGetAPIGuildMembersResult>(
+      `/guilds/${guildID}/members`,
+      {
+        query: options,
+      },
+    );
+  }
+
+  searchGuildMembers(guildID: string, query: string, limit?: number) {
+    return this.get<RESTGetAPIGuildMembersResult>(
+      `/guilds/${guildID}/members/search`,
+      {
+        query: {
+          query,
+          limit,
+        },
+      },
+    );
+  }
+
+  addGuildMember(
+    guildID: string,
+    userID: string,
+    accessToken: string,
+    data?: Omit<RESTPutAPIGuildMemberJSONBody, 'access_token'>,
+  ) {
+    return this.put<RESTPutAPIGuildMemberResult>(
+      `/guilds/${guildID}/members/${userID}`,
+      {
+        body: {
+          access_token: accessToken,
+          ...data,
+        },
+      },
+    );
+  }
+
+  editGuildMember(
+    guildID: string,
+    userID: string,
+    data: RESTPatchAPIGuildMemberJSONBody,
+    reason?: string,
+  ) {
+    return this.patch<RESTPatchAPIGuildMemberResult>(
+      `/guilds/${guildID}/members/${userID}`,
+      {
+        body: data,
+        reason,
+      },
+    );
+  }
+
+  editCurrentMember(guildID: string, nickname?: string, reason?: string) {
+    return this.editGuildMember(
+      guildID,
+      '@me',
+      {
+        nick: nickname,
+      },
+      reason,
+    );
+  }
+
+  /**
+   * @deprecated Deprecated in favour of {@link REST.editCurrentMember}
+   */
+  editCurrentUserNick(guildID: string, nickname?: string, reason?: string) {
+    return this.patch<APIGuildMember>(`/guilds/${guildID}/members/@me/nick`, {
+      body: {
+        nick: nickname,
+      },
+      reason,
+    });
+  }
+
+  addGuildMemberRole(
+    guildID: string,
+    userID: string,
+    roleID: string,
+    reason?: string,
+  ) {
+    return this.put<RESTPutAPIGuildMemberRoleResult>(
+      `/guilds/${guildID}/members/${userID}/roles/${roleID}`,
+      {
+        reason,
+      },
+    );
+  }
+
+  removeGuildMemberRole(
+    guildID: string,
+    userID: string,
+    roleID: string,
+    reason?: string,
+  ) {
+    return this.delete<RESTDeleteAPIGuildMemberRoleResult>(
+      `/guilds/${guildID}/members/${userID}/roles/${roleID}`,
+      {
+        reason,
+      },
+    );
+  }
+
+  removeGuildMember(guildID: string, userID: string, reason?: string) {
+    return this.delete<RESTDeleteAPIGuildMemberResult>(
+      `/guilds/${guildID}/members/${userID}`,
+      {
+        reason,
+      },
+    );
+  }
+
+  getGuildBans(guildID: string, options?: RESTGetAPIGuildBansQuery) {
+    return this.get<RESTGetAPIGuildBansResult>(`/guilds/${guildID}/bans`, {
+      query: options,
+    });
+  }
+
+  getGuildBan(guildID: string, userID: string) {
+    return this.get<RESTGetAPIGuildBanResult>(
+      `/guilds/${guildID}/bans/${userID}`,
+    );
+  }
+
+  createGuildBan(
+    guildID: string,
+    userID: string,
+    data: RESTPutAPIGuildBanJSONBody,
+    reason?: string,
+  ) {
+    return this.put<RESTPutAPIGuildBanResult>(
+      `/guilds/${guildID}/bans/${userID}`,
+      {
+        body: data,
+        reason,
+      },
+    );
+  }
+
+  removeGuildBan(guildID: string, userID: string, reason?: string) {
+    return this.delete<RESTDeleteAPIGuildBanResult>(
+      `/guilds/${guildID}/bans/${userID}`,
+      {
+        reason,
+      },
+    );
+  }
+
+  getGuildRoles(guildID: string) {
+    return this.get<RESTGetAPIGuildRolesResult>(`/guilds/${guildID}/roles`);
+  }
+
+  createGuildRole(
+    guildID: string,
+    data: RESTPostAPIGuildRoleJSONBody & {
+      icon: Omit<File, 'filename' | 'key'> | string;
+    },
+    reason?: string,
+  ) {
+    if (data.icon && typeof data.icon !== 'string')
+      data.icon = createDataURL(data.icon);
+
+    return this.post<RESTPostAPIGuildRoleResult>(`/guilds/${guildID}/roles`, {
+      body: data,
+      reason,
+    });
+  }
+
+  editGuildRolePositions(
+    guildID: string,
+    data: RESTPatchAPIGuildRolePositionsJSONBody,
+    reason?: string,
+  ) {
+    return this.patch<RESTPatchAPIGuildRolePositionsResult>(
+      `/guilds/${guildID}/roles`,
+      {
+        body: data,
+        reason,
+      },
+    );
+  }
+
+  editGuildRole(
+    guildID: string,
+    roleID: string,
+    data: RESTPatchAPIGuildRoleJSONBody,
+    reason?: string,
+  ) {
+    return this.patch<RESTPatchAPIGuildRoleResult>(
+      `/guilds/${guildID}/roles/${roleID}`,
+      {
+        body: data,
+        reason,
+      },
+    );
+  }
+
+  deleteGuildRole(guildID: string, roleID: string, reason?: string) {
+    return this.delete<RESTDeleteAPIGuildRoleResult>(
+      `/guilds/${guildID}/roles/${roleID}`,
+      {
+        reason,
+      },
+    );
+  }
+
+  getGuildPruneCount(
+    guildID: string,
+    options?: RESTGetAPIGuildPruneCountQuery,
+  ) {
+    return this.get<RESTGetAPIGuildPruneCountResult>(
+      `/guilds/${guildID}/prune`,
+      {
+        query: options,
+      },
+    );
+  }
+
+  startGuildPrune(
+    guildID: string,
+    options?: RESTPostAPIGuildPruneJSONBody,
+    reason?: string,
+  ) {
+    return this.post<RESTPostAPIGuildPruneResult>(`/guilds/${guildID}/prune`, {
+      body: options,
+      reason,
+    });
+  }
+
+  getGuildVoiceRegions(guildID: string) {
+    return this.get<RESTGetAPIGuildVoiceRegionsResult>(
+      `/guilds/${guildID}/regions`,
+    );
+  }
+
+  getGuildInvites(guildID: string) {
+    return this.get<RESTGetAPIGuildInvitesResult>(`/guilds/${guildID}/invites`);
+  }
+
+  getGuildIntegrations(guildID: string) {
+    return this.get<RESTGetAPIGuildIntegrationsResult>(
+      `/guilds/${guildID}/integrations`,
+    );
+  }
+
+  deleteGuildIntegration(
+    guildID: string,
+    integrationID: string,
+    reason?: string,
+  ) {
+    return this.delete<RESTDeleteAPIGuildIntegrationResult>(
+      `/guilds/${guildID}/integrations/${integrationID}`,
+      {
+        reason,
+      },
+    );
+  }
+
+  getGuildWidgetSettings(guildID: string) {
+    return this.get<RESTGetAPIGuildWidgetSettingsResult>(
+      `/guilds/${guildID}/widget`,
+    );
+  }
+
+  editGuildWidgetSettings(
+    guildID: string,
+    data: RESTPatchAPIGuildWidgetSettingsJSONBody,
+    reason?: string,
+  ) {
+    return this.patch<RESTPatchAPIGuildWidgetSettingsResult>(
+      `/guilds/${guildID}/widget`,
+      {
+        body: data,
+        reason,
+      },
+    );
+  }
+
+  getGuildWidgetData(guildID: string) {
+    return this.get<RESTGetAPIGuildWidgetResult>(
+      `/guilds/${guildID}/widget.json`,
+    );
+  }
+
+  getGuildVanity(guildID: string) {
+    return this.get<RESTGetAPIGuildVanityUrlResult>(
+      `/guilds/${guildID}/vanity-url`,
+    );
+  }
+
+  getGuildWidgetImage(guildID: string, style: GuildWidgetStyle) {
+    return this.get<Buffer>(`/guilds/${guildID}/widget.png`, {
+      query: {
+        style,
+      },
+    });
+  }
+
+  getGuildWelcomeScreen(guildID: string) {
+    return this.get<RESTGetAPIGuildWelcomeScreenResult>(
+      `/guilds/${guildID}/welcome-screen`,
+    );
+  }
+
+  editGuildWelcomeScreen(
+    guildID: string,
+    data: RESTPatchAPIGuildWelcomeScreenJSONBody,
+    reason?: string,
+  ) {
+    return this.patch<RESTGetAPIGuildWelcomeScreenResult>(
+      `/guilds/${guildID}/welcome-screen`,
+      {
+        body: data,
+        reason,
+      },
+    );
+  }
+
+  editUserVoiceState(
+    guildID: string,
+    userID: string,
+    data: RESTPatchAPIGuildVoiceStateUserJSONBody & {
+      request_to_speak_timestamp?: string;
+    },
+    reason?: string,
+  ) {
+    return this.patch<never>(`/guilds/${guildID}/voice-states/${userID}`, {
+      body: data,
+      reason,
+    });
+  }
+
+  editCurrentUserVoiceState(
+    guildID: string,
+    data: RESTPatchAPIGuildVoiceStateCurrentMemberJSONBody,
+    reason?: string,
+  ) {
+    return this.editUserVoiceState(
+      guildID,
+      '@me',
+      data as RESTPatchAPIGuildVoiceStateUserJSONBody,
+      reason,
+    );
+  }
+
+  //#endregion
 }

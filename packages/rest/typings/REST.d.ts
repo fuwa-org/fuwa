@@ -1,9 +1,12 @@
-import { APIThreadChannel, APIThreadMember, RESTGetAPIAuditLogQuery, RESTGetAPIChannelInvitesResult, RESTGetAPIChannelMessageReactionUsersQuery, RESTGetAPIChannelMessageReactionUsersResult, RESTGetAPIChannelMessagesQuery, RESTGetAPIChannelMessagesResult, RESTGetAPIChannelPinsResult, RESTGetAPIChannelThreadMembersResult, RESTGetAPIChannelThreadsArchivedQuery, RESTPatchAPIChannelJSONBody, RESTPatchAPIChannelMessageJSONBody, RESTPostAPIChannelInviteJSONBody, RESTPostAPIChannelMessageJSONBody, RESTPostAPIChannelMessagesThreadsJSONBody, RESTPostAPIChannelThreadsJSONBody, RESTPostAPIGuildForumThreadsJSONBody, RESTPutAPIChannelPermissionJSONBody } from 'discord-api-types/v10';
+/// <reference types="node" />
+import { APIGuildMember, APIGuildWidget as RESTGetAPIGuildWidgetResult, APIThreadList, GuildWidgetStyle, RESTGetAPIAuditLogQuery, RESTGetAPIChannelInvitesResult, RESTGetAPIChannelMessageReactionUsersQuery, RESTGetAPIChannelMessageReactionUsersResult, RESTGetAPIChannelMessagesQuery, RESTGetAPIChannelMessagesResult, RESTGetAPIChannelPinsResult, RESTGetAPIChannelThreadMembersResult, RESTGetAPIChannelThreadsArchivedQuery, RESTGetAPIGuildBansQuery, RESTGetAPIGuildBansResult, RESTGetAPIGuildChannelsResult, RESTGetAPIGuildEmojisResult, RESTGetAPIGuildIntegrationsResult, RESTGetAPIGuildInvitesResult, RESTGetAPIGuildMembersQuery, RESTGetAPIGuildMembersResult, RESTGetAPIGuildPruneCountQuery, RESTGetAPIGuildPruneCountResult, RESTGetAPIGuildRolesResult, RESTGetAPIGuildVoiceRegionsResult, RESTGetAPIGuildVanityUrlResult, RESTPatchAPIChannelJSONBody, RESTPatchAPIChannelMessageJSONBody, RESTPatchAPIGuildChannelPositionsJSONBody, RESTPatchAPIGuildEmojiJSONBody, RESTPatchAPIGuildJSONBody, RESTPatchAPIGuildMemberJSONBody, RESTPatchAPIGuildRoleJSONBody, RESTPatchAPIGuildRolePositionsJSONBody, RESTPatchAPIGuildRolePositionsResult, RESTPatchAPIGuildVoiceStateUserJSONBody, RESTPatchAPIGuildVoiceStateCurrentMemberJSONBody, RESTPatchAPIGuildWelcomeScreenJSONBody, RESTPatchAPIGuildWidgetSettingsJSONBody, RESTPostAPIChannelInviteJSONBody, RESTPostAPIChannelMessageJSONBody, RESTPostAPIChannelMessagesThreadsJSONBody, RESTPostAPIChannelThreadsJSONBody, RESTPostAPIGuildChannelJSONBody, RESTPostAPIGuildForumThreadsJSONBody, RESTPostAPIGuildPruneJSONBody, RESTPostAPIGuildPruneResult, RESTPostAPIGuildRoleJSONBody, RESTPutAPIChannelPermissionJSONBody, RESTPutAPIGuildBanJSONBody, RESTPutAPIGuildMemberJSONBody } from 'discord-api-types/v10';
 import { ResponseData } from 'undici/types/dispatcher';
 import { APIRequest, File } from './APIRequest.js';
 import { RequestManager, RequestManagerOptions, RouteLike } from './RequestManager.js';
 import { RESTClientOptions } from './RESTClient.js';
-declare type RequestOptions = Partial<APIRequest>;
+declare type RequestOptions = Partial<APIRequest & {
+    buf: boolean;
+}>;
 declare type Awaitable<T> = Promise<T> | T;
 export declare class REST extends RequestManager {
     beforeRequest: ((options: RequestOptions) => Awaitable<void | RequestOptions>) | undefined;
@@ -12,7 +15,9 @@ export declare class REST extends RequestManager {
     token(token?: string | null): string | this | undefined;
     before(cb: REST['beforeRequest']): this;
     after(cb: REST['afterRequest']): this;
-    request<T>(options: APIRequest): Promise<T>;
+    request<T>(options: APIRequest & {
+        buf?: boolean;
+    }): Promise<T>;
     get<T>(route: RouteLike, options?: RequestOptions): Promise<T>;
     post<T>(route: RouteLike, options: RequestOptions): Promise<T>;
     put<T>(route: RouteLike, options: RequestOptions): Promise<T>;
@@ -65,10 +70,55 @@ export declare class REST extends RequestManager {
     listPublicArchivedThreads(channelID: string, options?: RESTGetAPIChannelThreadsArchivedQuery): Promise<APIThreadList>;
     listPrivateArchivedThreads(channelID: string, options?: RESTGetAPIChannelThreadsArchivedQuery): Promise<APIThreadList>;
     listJoinedPrivateArchivedThreads(channelID: string, options?: RESTGetAPIChannelThreadsArchivedQuery): Promise<APIThreadList>;
-}
-export interface APIThreadList {
-    threads: APIThreadChannel[];
-    members: APIThreadMember[];
-    has_more: boolean;
+    listGuildEmojis(guildID: string): Promise<RESTGetAPIGuildEmojisResult>;
+    getGuildEmoji(guildID: string, emojiID: string): Promise<import("discord-api-types/v10").APIEmoji>;
+    createGuildEmoji(guildID: string, name: string, data: Required<Omit<File, 'filename' | 'key'>>, roles?: string[], reason?: string): Promise<import("discord-api-types/v10").APIEmoji>;
+    editGuildEmoji(guildID: string, emojiID: string, data: RESTPatchAPIGuildEmojiJSONBody, reason?: string): Promise<import("discord-api-types/v10").APIEmoji>;
+    deleteGuildEmoji(guildID: string, emojiID: string, reason?: string): Promise<never>;
+    getGuild(guildID: string, withCounts?: boolean): Promise<import("discord-api-types/v10").APIGuild>;
+    getGuildPreview(guildID: string): Promise<import("discord-api-types/v10").APIGuildPreview>;
+    editGuild(guildID: string, data: RESTPatchAPIGuildJSONBody, reason?: string): Promise<import("discord-api-types/v10").APIGuild>;
+    deleteGuild(guildID: string): Promise<never>;
+    getGuildChannels(guildID: string): Promise<RESTGetAPIGuildChannelsResult>;
+    createGuildChannel(guildID: string, data: RESTPostAPIGuildChannelJSONBody, reason?: string): Promise<import("discord-api-types/v10").APIChannel>;
+    editGuildChannelPositions(guildID: string, data: RESTPatchAPIGuildChannelPositionsJSONBody, reason?: string): Promise<never>;
+    getGuildMember(guildID: string, userID: string): Promise<APIGuildMember>;
+    listGuildMembers(guildID: string, options?: RESTGetAPIGuildMembersQuery): Promise<RESTGetAPIGuildMembersResult>;
+    searchGuildMembers(guildID: string, query: string, limit?: number): Promise<RESTGetAPIGuildMembersResult>;
+    addGuildMember(guildID: string, userID: string, accessToken: string, data?: Omit<RESTPutAPIGuildMemberJSONBody, 'access_token'>): Promise<APIGuildMember>;
+    editGuildMember(guildID: string, userID: string, data: RESTPatchAPIGuildMemberJSONBody, reason?: string): Promise<APIGuildMember>;
+    editCurrentMember(guildID: string, nickname?: string, reason?: string): Promise<APIGuildMember>;
+    editCurrentUserNick(guildID: string, nickname?: string, reason?: string): Promise<APIGuildMember>;
+    addGuildMemberRole(guildID: string, userID: string, roleID: string, reason?: string): Promise<never>;
+    removeGuildMemberRole(guildID: string, userID: string, roleID: string, reason?: string): Promise<never>;
+    removeGuildMember(guildID: string, userID: string, reason?: string): Promise<never>;
+    getGuildBans(guildID: string, options?: RESTGetAPIGuildBansQuery): Promise<RESTGetAPIGuildBansResult>;
+    getGuildBan(guildID: string, userID: string): Promise<import("discord-api-types/v10").APIBan>;
+    createGuildBan(guildID: string, userID: string, data: RESTPutAPIGuildBanJSONBody, reason?: string): Promise<never>;
+    removeGuildBan(guildID: string, userID: string, reason?: string): Promise<never>;
+    getGuildRoles(guildID: string): Promise<RESTGetAPIGuildRolesResult>;
+    createGuildRole(guildID: string, data: RESTPostAPIGuildRoleJSONBody & {
+        icon: Omit<File, 'filename' | 'key'> | string;
+    }, reason?: string): Promise<import("discord-api-types/v10").APIRole>;
+    editGuildRolePositions(guildID: string, data: RESTPatchAPIGuildRolePositionsJSONBody, reason?: string): Promise<RESTPatchAPIGuildRolePositionsResult>;
+    editGuildRole(guildID: string, roleID: string, data: RESTPatchAPIGuildRoleJSONBody, reason?: string): Promise<import("discord-api-types/v10").APIRole>;
+    deleteGuildRole(guildID: string, roleID: string, reason?: string): Promise<never>;
+    getGuildPruneCount(guildID: string, options?: RESTGetAPIGuildPruneCountQuery): Promise<RESTGetAPIGuildPruneCountResult>;
+    startGuildPrune(guildID: string, options?: RESTPostAPIGuildPruneJSONBody, reason?: string): Promise<RESTPostAPIGuildPruneResult>;
+    getGuildVoiceRegions(guildID: string): Promise<RESTGetAPIGuildVoiceRegionsResult>;
+    getGuildInvites(guildID: string): Promise<RESTGetAPIGuildInvitesResult>;
+    getGuildIntegrations(guildID: string): Promise<RESTGetAPIGuildIntegrationsResult>;
+    deleteGuildIntegration(guildID: string, integrationID: string, reason?: string): Promise<never>;
+    getGuildWidgetSettings(guildID: string): Promise<import("discord-api-types/v10").APIGuildWidgetSettings>;
+    editGuildWidgetSettings(guildID: string, data: RESTPatchAPIGuildWidgetSettingsJSONBody, reason?: string): Promise<import("discord-api-types/v10").APIGuildWidgetSettings>;
+    getGuildWidgetData(guildID: string): Promise<RESTGetAPIGuildWidgetResult>;
+    getGuildVanity(guildID: string): Promise<RESTGetAPIGuildVanityUrlResult>;
+    getGuildWidgetImage(guildID: string, style: GuildWidgetStyle): Promise<Buffer>;
+    getGuildWelcomeScreen(guildID: string): Promise<import("discord-api-types/v10").APIGuildWelcomeScreen>;
+    editGuildWelcomeScreen(guildID: string, data: RESTPatchAPIGuildWelcomeScreenJSONBody, reason?: string): Promise<import("discord-api-types/v10").APIGuildWelcomeScreen>;
+    editUserVoiceState(guildID: string, userID: string, data: RESTPatchAPIGuildVoiceStateUserJSONBody & {
+        request_to_speak_timestamp?: string;
+    }, reason?: string): Promise<never>;
+    editCurrentUserVoiceState(guildID: string, data: RESTPatchAPIGuildVoiceStateCurrentMemberJSONBody, reason?: string): Promise<never>;
 }
 export {};

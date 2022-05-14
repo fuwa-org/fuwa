@@ -5,6 +5,6 @@ import { User } from '../User.js';
 import { BaseManager } from './BaseManager.js';
 export declare class UserManager extends BaseManager<ExtendedUser | User> {
     constructor(client: Client);
-    fetch(id: Snowflake, cache?: boolean): Promise<ExtendedUser | User>;
+    fetch(id: Snowflake, cache?: boolean): Promise<User | ExtendedUser>;
     fetchMe(): Promise<ExtendedUser>;
 }
