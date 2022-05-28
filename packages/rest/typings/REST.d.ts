@@ -1,13 +1,14 @@
 /// <reference types="node" />
-import { APIGuildMember, APIGuildWidget as RESTGetAPIGuildWidgetResult, APIThreadList, GuildWidgetStyle, RESTGetAPIAuditLogQuery, RESTGetAPIChannelInvitesResult, RESTGetAPIChannelMessageReactionUsersQuery, RESTGetAPIChannelMessageReactionUsersResult, RESTGetAPIChannelMessagesQuery, RESTGetAPIChannelMessagesResult, RESTGetAPIChannelPinsResult, RESTGetAPIChannelThreadMembersResult, RESTGetAPIChannelThreadsArchivedQuery, RESTGetAPIGuildBansQuery, RESTGetAPIGuildBansResult, RESTGetAPIGuildChannelsResult, RESTGetAPIGuildEmojisResult, RESTGetAPIGuildIntegrationsResult, RESTGetAPIGuildInvitesResult, RESTGetAPIGuildMembersQuery, RESTGetAPIGuildMembersResult, RESTGetAPIGuildPruneCountQuery, RESTGetAPIGuildPruneCountResult, RESTGetAPIGuildRolesResult, RESTGetAPIGuildVoiceRegionsResult, RESTGetAPIGuildVanityUrlResult, RESTPatchAPIChannelJSONBody, RESTPatchAPIChannelMessageJSONBody, RESTPatchAPIGuildChannelPositionsJSONBody, RESTPatchAPIGuildEmojiJSONBody, RESTPatchAPIGuildJSONBody, RESTPatchAPIGuildMemberJSONBody, RESTPatchAPIGuildRoleJSONBody, RESTPatchAPIGuildRolePositionsJSONBody, RESTPatchAPIGuildRolePositionsResult, RESTPatchAPIGuildVoiceStateUserJSONBody, RESTPatchAPIGuildVoiceStateCurrentMemberJSONBody, RESTPatchAPIGuildWelcomeScreenJSONBody, RESTPatchAPIGuildWidgetSettingsJSONBody, RESTPostAPIChannelInviteJSONBody, RESTPostAPIChannelMessageJSONBody, RESTPostAPIChannelMessagesThreadsJSONBody, RESTPostAPIChannelThreadsJSONBody, RESTPostAPIGuildChannelJSONBody, RESTPostAPIGuildForumThreadsJSONBody, RESTPostAPIGuildPruneJSONBody, RESTPostAPIGuildPruneResult, RESTPostAPIGuildRoleJSONBody, RESTPutAPIChannelPermissionJSONBody, RESTPutAPIGuildBanJSONBody, RESTPutAPIGuildMemberJSONBody } from 'discord-api-types/v10';
+import { APIGuildMember, APIGuildWidget as RESTGetAPIGuildWidgetResult, APIThreadList, GuildWidgetStyle, RESTGetAPIAuditLogQuery, RESTGetAPIChannelInvitesResult, RESTGetAPIChannelMessageReactionUsersQuery, RESTGetAPIChannelMessageReactionUsersResult, RESTGetAPIChannelMessagesQuery, RESTGetAPIChannelMessagesResult, RESTGetAPIChannelPinsResult, RESTGetAPIChannelThreadMembersResult, RESTGetAPIChannelThreadsArchivedQuery, RESTGetAPIGuildBansQuery, RESTGetAPIGuildBansResult, RESTGetAPIGuildChannelsResult, RESTGetAPIGuildEmojisResult, RESTGetAPIGuildIntegrationsResult, RESTGetAPIGuildInvitesResult, RESTGetAPIGuildMembersQuery, RESTGetAPIGuildMembersResult, RESTGetAPIGuildPruneCountQuery, RESTGetAPIGuildPruneCountResult, RESTGetAPIGuildRolesResult, RESTGetAPIGuildVoiceRegionsResult, RESTGetAPIGuildVanityUrlResult, RESTPatchAPIChannelJSONBody, RESTPatchAPIChannelMessageJSONBody, RESTPatchAPIGuildChannelPositionsJSONBody, RESTPatchAPIGuildEmojiJSONBody, RESTPatchAPIGuildJSONBody, RESTPatchAPIGuildMemberJSONBody, RESTPatchAPIGuildRoleJSONBody, RESTPatchAPIGuildRolePositionsJSONBody, RESTPatchAPIGuildRolePositionsResult, RESTPatchAPIGuildVoiceStateUserJSONBody, RESTPatchAPIGuildVoiceStateCurrentMemberJSONBody, RESTPatchAPIGuildWelcomeScreenJSONBody, RESTPatchAPIGuildWidgetSettingsJSONBody, RESTPostAPIChannelInviteJSONBody, RESTPostAPIChannelMessageJSONBody, RESTPostAPIChannelMessagesThreadsJSONBody, RESTPostAPIChannelThreadsJSONBody, RESTPostAPIGuildChannelJSONBody, RESTPostAPIGuildForumThreadsJSONBody, RESTPostAPIGuildPruneJSONBody, RESTPostAPIGuildPruneResult, RESTPostAPIGuildRoleJSONBody, RESTPutAPIChannelPermissionJSONBody, RESTPutAPIGuildBanJSONBody, RESTPutAPIGuildMemberJSONBody, RESTGetAPIGuildScheduledEventsResult, RESTPostAPIGuildScheduledEventJSONBody, RESTPatchAPIGuildScheduledEventJSONBody, RESTGetAPIGuildScheduledEventUsersQuery, RESTGetAPIGuildScheduledEventUsersResult } from 'discord-api-types/v10';
 import { ResponseData } from 'undici/types/dispatcher';
-import { APIRequest, File } from './APIRequest.js';
+import { APIRequest, File as FileData } from './APIRequest.js';
 import { RequestManager, RequestManagerOptions, RouteLike } from './RequestManager.js';
 import { RESTClientOptions } from './RESTClient.js';
 declare type RequestOptions = Partial<APIRequest & {
     buf: boolean;
 }>;
 declare type Awaitable<T> = Promise<T> | T;
+declare type File = Required<Omit<FileData, 'filename' | 'key'>>;
 export declare class REST extends RequestManager {
     beforeRequest: ((options: RequestOptions) => Awaitable<void | RequestOptions>) | undefined;
     afterRequest: ((options: RequestOptions, response: ResponseData, text: string, json: any | null) => Awaitable<void>) | undefined;
@@ -72,7 +73,7 @@ export declare class REST extends RequestManager {
     listJoinedPrivateArchivedThreads(channelID: string, options?: RESTGetAPIChannelThreadsArchivedQuery): Promise<APIThreadList>;
     listGuildEmojis(guildID: string): Promise<RESTGetAPIGuildEmojisResult>;
     getGuildEmoji(guildID: string, emojiID: string): Promise<import("discord-api-types/v10").APIEmoji>;
-    createGuildEmoji(guildID: string, name: string, data: Required<Omit<File, 'filename' | 'key'>>, roles?: string[], reason?: string): Promise<import("discord-api-types/v10").APIEmoji>;
+    createGuildEmoji(guildID: string, name: string, data: File, roles?: string[], reason?: string): Promise<import("discord-api-types/v10").APIEmoji>;
     editGuildEmoji(guildID: string, emojiID: string, data: RESTPatchAPIGuildEmojiJSONBody, reason?: string): Promise<import("discord-api-types/v10").APIEmoji>;
     deleteGuildEmoji(guildID: string, emojiID: string, reason?: string): Promise<never>;
     getGuild(guildID: string, withCounts?: boolean): Promise<import("discord-api-types/v10").APIGuild>;
@@ -120,5 +121,17 @@ export declare class REST extends RequestManager {
         request_to_speak_timestamp?: string;
     }, reason?: string): Promise<never>;
     editCurrentUserVoiceState(guildID: string, data: RESTPatchAPIGuildVoiceStateCurrentMemberJSONBody, reason?: string): Promise<never>;
+    listGuildScheduledEvents(guildID: string, withUserCount?: boolean): Promise<RESTGetAPIGuildScheduledEventsResult>;
+    createGuildScheduledEvent(guildID: string, data: Omit<RESTPostAPIGuildScheduledEventJSONBody, 'image'>, { image, reason }?: {
+        image?: File;
+        reason?: string;
+    }): Promise<import("discord-api-types/v10").APIGuildScheduledEvent>;
+    getGuildScheduledEvent(guildID: string, scheduledEventID: string, withUserCount?: boolean): Promise<import("discord-api-types/v10").APIGuildScheduledEvent>;
+    editGuildScheduledEvent(guildID: string, scheduledEventID: string, data: Omit<RESTPatchAPIGuildScheduledEventJSONBody, 'image'>, { image, reason }?: {
+        image?: File;
+        reason?: string;
+    }): Promise<import("discord-api-types/v10").APIGuildScheduledEvent>;
+    deleteGuildScheduledEvent(guildID: string, scheduledEventID: string): Promise<never>;
+    getGuildScheduledEventUsers(guildID: string, scheduledEventID: string, options: RESTGetAPIGuildScheduledEventUsersQuery): Promise<RESTGetAPIGuildScheduledEventUsersResult>;
 }
 export {};
