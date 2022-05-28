@@ -100,9 +100,18 @@ import {
   RESTPutAPIGuildMemberJSONBody,
   RESTPutAPIGuildMemberResult,
   RESTPutAPIGuildMemberRoleResult,
+  RESTGetAPIGuildScheduledEventsResult,
+  RESTPostAPIGuildScheduledEventJSONBody,
+  RESTPostAPIGuildScheduledEventResult,
+  RESTPatchAPIGuildScheduledEventJSONBody,
+  RESTGetAPIGuildScheduledEventResult,
+  RESTPatchAPIGuildScheduledEventResult,
+  RESTDeleteAPIGuildScheduledEventResult,
+  RESTGetAPIGuildScheduledEventUsersQuery,
+  RESTGetAPIGuildScheduledEventUsersResult,
 } from 'discord-api-types/v10';
 import { ResponseData } from 'undici/types/dispatcher';
-import { APIRequest, File } from './APIRequest.js';
+import { APIRequest, File as FileData } from './APIRequest.js';
 import { DefaultDiscordOptions } from './index.js';
 import {
   RequestManager,
@@ -110,10 +119,11 @@ import {
   RouteLike,
 } from './RequestManager.js';
 import { RESTClient, RESTClientOptions } from './RESTClient.js';
-import { createDataURL } from './util.js';
+import { createDataURL as createDataURI } from './util.js';
 
 type RequestOptions = Partial<APIRequest & { buf: boolean }>;
 type Awaitable<T> = Promise<T> | T;
+type File = Required<Omit<FileData, 'filename' | 'key'>>;
 
 export class REST extends RequestManager {
   beforeRequest:
@@ -762,14 +772,14 @@ export class REST extends RequestManager {
   createGuildEmoji(
     guildID: string,
     name: string,
-    data: Required<Omit<File, 'filename' | 'key'>>,
+    data: File,
     roles?: string[],
     reason?: string,
   ) {
     return this.post<RESTPostAPIGuildEmojiResult>(`/guilds/${guildID}/emojis`, {
       body: {
         name,
-        image: createDataURL(data),
+        image: createDataURI(data),
         roles,
       },
       reason,
@@ -1027,7 +1037,7 @@ export class REST extends RequestManager {
     reason?: string,
   ) {
     if (data.icon && typeof data.icon !== 'string')
-      data.icon = createDataURL(data.icon);
+      data.icon = createDataURI(data.icon);
 
     return this.post<RESTPostAPIGuildRoleResult>(`/guilds/${guildID}/roles`, {
       body: data,
@@ -1209,6 +1219,90 @@ export class REST extends RequestManager {
       '@me',
       data as RESTPatchAPIGuildVoiceStateUserJSONBody,
       reason,
+    );
+  }
+
+  //#endregion
+
+  //#region Scheduled Events
+
+  listGuildScheduledEvents(guildID: string, withUserCount = false) {
+    return this.get<RESTGetAPIGuildScheduledEventsResult>(
+      `/guilds/${guildID}/scheduled-events`,
+      {
+        query: {
+          with_user_count: withUserCount,
+        },
+      },
+    );
+  }
+
+  createGuildScheduledEvent(
+    guildID: string,
+    data: Omit<RESTPostAPIGuildScheduledEventJSONBody, 'image'>,
+    { image, reason }: { image?: File; reason?: string } = {},
+  ) {
+    return this.post<RESTPostAPIGuildScheduledEventResult>(
+      `/guilds/${guildID}/scheduled-events`,
+      {
+        body: {
+          image: image ? createDataURI(image) : undefined,
+          ...data,
+        },
+        reason,
+      },
+    );
+  }
+
+  getGuildScheduledEvent(
+    guildID: string,
+    scheduledEventID: string,
+    withUserCount = false,
+  ) {
+    return this.get<RESTGetAPIGuildScheduledEventResult>(
+      `/guilds/${guildID}/scheduled-events/${scheduledEventID}`,
+      {
+        query: {
+          with_user_count: withUserCount,
+        },
+      },
+    );
+  }
+
+  editGuildScheduledEvent(
+    guildID: string,
+    scheduledEventID: string,
+    data: Omit<RESTPatchAPIGuildScheduledEventJSONBody, 'image'>,
+    { image, reason }: { image?: File; reason?: string } = {},
+  ) {
+    return this.patch<RESTPatchAPIGuildScheduledEventResult>(
+      `/guilds/${guildID}/scheduled-events/${scheduledEventID}`,
+      {
+        body: {
+          image: image ? createDataURI(image) : undefined,
+          ...data,
+        },
+        reason,
+      },
+    );
+  }
+
+  deleteGuildScheduledEvent(guildID: string, scheduledEventID: string) {
+    return this.delete<RESTDeleteAPIGuildScheduledEventResult>(
+      `/guilds/${guildID}/scheduled-events/${scheduledEventID}`,
+    );
+  }
+
+  getGuildScheduledEventUsers(
+    guildID: string,
+    scheduledEventID: string,
+    options: RESTGetAPIGuildScheduledEventUsersQuery,
+  ) {
+    return this.get<RESTGetAPIGuildScheduledEventUsersResult>(
+      `/guilds/${guildID}/scheduled-events/${scheduledEventID}/users`,
+      {
+        query: options,
+      },
     );
   }
 
