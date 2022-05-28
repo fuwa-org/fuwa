@@ -11,20 +11,23 @@ import { RouteLike } from './RequestManager.js';
  */
 export class RESTClient {
   /**
-   * An authentication token to include in the `Authorization` header for requests. Leave empty to not send that header.
+   * An authentication token to include in the `Authorization` header for requests.
    */
   #auth?: string;
-  public baseURL: string;
-  public options: RESTClientOptions;
+  public baseURL?: string;
   /**
    * API version to add to the {@link RESTClient.baseURL}. Leave empty to not add a version at all.
    */
   public version?: number;
+  public options: RESTClientOptions;
 
   public constructor(options: RESTClientOptions) {
     this.baseURL = options.baseURL;
     this.version = options.version;
     this.#auth = options.auth;
+
+    delete options.baseURL;
+    delete options.version;
 
     this.options = options;
 
@@ -212,7 +215,7 @@ export class RESTClient {
 }
 
 export interface RESTClientOptions {
-  baseURL: string;
+  baseURL?: string;
   version?: number;
   auth?: string;
   userAgent?: string;

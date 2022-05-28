@@ -2,7 +2,7 @@ import Events from '@fuwa/events';
 import {
   APIRequest,
   consumeJSON,
-  RequestManager,
+  REST,
   Response,
   RESTClient,
 } from '@fuwa/rest';
@@ -121,7 +121,7 @@ export class Client extends EventEmitter {
   /**
    * The request manager used internally by the Client.
    */
-  public http: RequestManager;
+  public http: REST;
 
   /**
    * A collection of all the guilds available to this client. This may not always represent
@@ -149,16 +149,21 @@ export class Client extends EventEmitter {
   private timeouts: Array<NodeJS.Timeout> = [];
   private timers: Array<NodeJS.Timeout> = [];
 
-  public constructor(token: string, options?: ClientOptions) {
+  public constructor(token?: string, options?: ClientOptions);
+  public constructor(options?: ClientOptions);
+  public constructor(token?: string | ClientOptions, options?: ClientOptions) {
     super();
 
     this.options = Object.assign(
       {},
       DefaultClientOptions,
-      options,
+      typeof token === "object" ? token : { token, ...options },
     ) as Required<ClientOptions>;
+    this.#token = this.options.token ?? process.env.DISCORD_TOKEN ?? '';
     this.options.intents = resolveIntents(this.options.intents!);
-    this.#token = token;
+    options = this.options;
+    delete options.token;
+    this.options = options as Required<ClientOptions>;
 
     if (!this.options.logger) {
       this.logger = new DisabledLogger();
@@ -170,10 +175,9 @@ export class Client extends EventEmitter {
       this.logger = this.options.logger;
     }
 
-    this.http = new RequestManager(
-      new RESTClient(
-        RESTClient.createRESTOptions(this.options, this.#token, 'Bot'),
-      ),
+    this.http = new REST(
+      'Bot ' + this.#token,
+      RESTClient.createRESTOptions(this.options, this.#token, 'Bot'),
       {
         timings: this.options.httpTimings,
         logger: this.logger,

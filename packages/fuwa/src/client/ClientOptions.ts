@@ -12,6 +12,12 @@ export const pkg = JSON.parse(
 /** Options for {@link Client}s. For default values see {@link DefaultClientOptions} */
 export interface ClientOptions {
   /**
+   * Authentication token for the bot.
+   * @default process.env.DISCORD_TOKEN
+   */
+  token?: string;
+
+  /**
    * The [Gateway Intents](https://discord.com/developers/docs/topics/gateway#list-of-intents) to use for this client.
    * @default DefaultClientOptions.intents
    */

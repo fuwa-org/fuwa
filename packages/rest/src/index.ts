@@ -1,12 +1,12 @@
 import { RequestManager } from './RequestManager.js';
 import { RESTClientOptions } from './RESTClient.js';
+import { version } from './util.js';
 
 export const DefaultDiscordOptions: RESTClientOptions = {
   baseURL: 'https://discord.com/api',
   version: 10,
-  userAgent: 'DiscordBot (https://github.com/fuwa-org/fuwa; 0.0.0)',
+  userAgent: 'DiscordBot (https://github.com/fuwa-org/fuwa; ' + version + ')',
   headers: {},
-  auth: 'Bot <UNSET>',
 };
 
 export * from './APIRequest.js';

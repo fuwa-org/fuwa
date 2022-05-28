@@ -3,9 +3,9 @@ import { APIRequest } from './APIRequest';
 import { RouteLike } from './RequestManager.js';
 export declare class RESTClient {
     #private;
-    baseURL: string;
-    options: RESTClientOptions;
+    baseURL?: string;
     version?: number;
+    options: RESTClientOptions;
     constructor(options: RESTClientOptions);
     static createRESTOptions(clientOptions: any, token: string, tokenType: 'Bot' | 'Bearer'): RESTClientOptions;
     static getDefaultOptions(token: string): Required<RESTClientOptions>;
@@ -18,7 +18,7 @@ export declare class RESTClient {
     execute(request: APIRequest, tracefunc?: any): Promise<ResponseData>;
 }
 export interface RESTClientOptions {
-    baseURL: string;
+    baseURL?: string;
     version?: number;
     auth?: string;
     userAgent?: string;
