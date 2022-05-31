@@ -1,4 +1,4 @@
 docs/
-dist/
-typings/
+**/dist/
+**/typings/
 .yarnrc.yml
