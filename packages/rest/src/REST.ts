@@ -109,6 +109,36 @@ import {
   RESTDeleteAPIGuildScheduledEventResult,
   RESTGetAPIGuildScheduledEventUsersQuery,
   RESTGetAPIGuildScheduledEventUsersResult,
+  RESTGetAPIGuildTemplatesResult,
+  APIGuild,
+  APITemplate,
+  RESTGetAPIInviteQuery,
+  RESTGetAPIInviteResult,
+  RESTDeleteAPIInviteResult,
+  RESTPostAPIStageInstanceResult,
+  RESTPostAPIStageInstanceJSONBody,
+  RESTGetAPIStageInstanceResult,
+  RESTPatchAPIStageInstanceJSONBody,
+  RESTPatchAPIStageInstanceResult,
+  RESTDeleteAPIStageInstanceResult,
+  RESTGetAPIStickerResult,
+  RESTGetNitroStickerPacksResult,
+  RESTGetAPIGuildStickersResult,
+  RESTPostAPIGuildStickerFormDataBody,
+  RESTGetAPIGuildStickerResult,
+  RESTPostAPIGuildStickerResult,
+  RESTPatchAPIGuildStickerJSONBody,
+  RESTPatchAPIGuildStickerResult,
+  RESTDeleteAPIGuildStickerResult,
+  RESTGetAPICurrentUserResult,
+  RESTPatchAPICurrentUserJSONBody,
+  RESTPatchAPICurrentUserResult,
+  RESTGetAPICurrentUserGuildsQuery,
+  RESTGetAPICurrentUserGuildsResult,
+  APIGuildMember,
+  RESTDeleteAPICurrentUserGuildResult,
+  APIChannel,
+  APIConnection,
 } from 'discord-api-types/v10';
 import { ResponseData } from 'undici/types/dispatcher';
 import { APIRequest, File as FileData } from './APIRequest.js';
@@ -125,6 +155,10 @@ type RequestOptions = Partial<APIRequest & { buf: boolean }>;
 type Awaitable<T> = Promise<T> | T;
 type File = Required<Omit<FileData, 'filename' | 'key'>>;
 
+/**
+ * A simple, typed yet unsafe at runtime REST wrapper for Discord,
+ * exposing the documented endpoints in a type-safe way.
+ */
 export class REST extends RequestManager {
   beforeRequest:
     | ((options: RequestOptions) => Awaitable<void | RequestOptions>)
@@ -1304,6 +1338,238 @@ export class REST extends RequestManager {
         query: options,
       },
     );
+  }
+
+  //#endregion
+  //
+  //#region Templates
+  getGuildTemplate(code: string) {
+    return this.get<APITemplate>(`/guilds/templates/${code}`);
+  }
+
+  createGuildFromTemplate(code: string, data: { name: string; icon: File }) {
+    return this.post<APIGuild>(`/guilds/templates/${code}`, {
+      body: {
+        ...data,
+        icon: createDataURI(data.icon),
+      },
+    });
+  }
+
+  getGuildTemplates(guildID: string) {
+    return this.get<RESTGetAPIGuildTemplatesResult>(
+      `/guilds/${guildID}/templates`,
+    );
+  }
+
+  createGuildTemplate(
+    guildID: string,
+    data: { name: string; description: string },
+  ) {
+    return this.post<APITemplate>(`/guilds/${guildID}/templates`, {
+      body: data,
+    });
+  }
+
+  syncGuildTemplate(guildID: string, code: string) {
+    return this.put<APITemplate>(`/guilds/${guildID}/templates/${code}`, {});
+  }
+
+  editGuildTemplate(
+    guildID: string,
+    code: string,
+    data: { name: string; description: string },
+  ) {
+    return this.patch<APITemplate>(`/guilds/${guildID}/templates/${code}`, {
+      body: data,
+    });
+  }
+
+  deleteGuildTemplate(guildID: string, code: string) {
+    return this.delete<APITemplate>(`/guilds/${guildID}/templates/${code}`);
+  }
+
+  //#endregion
+
+  //#region Invites
+
+  getInvite(code: string, options: RESTGetAPIInviteQuery = {}) {
+    return this.get<RESTGetAPIInviteResult>(`/invites/${code}`, {
+      query: options,
+      auth: false,
+    });
+  }
+
+  deleteInvite(code: string) {
+    return this.delete<RESTDeleteAPIInviteResult>(`/invites/${code}`);
+  }
+
+  //#endregion
+
+  //#region Stage Instances
+
+  createStageInstance(
+    channelID: string,
+    data: Omit<RESTPostAPIStageInstanceJSONBody, 'channel_id'>,
+    reason?: string,
+  ) {
+    return this.post<RESTPostAPIStageInstanceResult>(`/stage-instances`, {
+      body: {
+        channel_id: channelID,
+        ...data,
+      },
+      reason,
+    });
+  }
+
+  getStageInstance(channelID: string) {
+    return this.get<RESTGetAPIStageInstanceResult>(
+      `/stage-instances/${channelID}`,
+    );
+  }
+
+  editStageInstance(
+    channelID: string,
+    data: RESTPatchAPIStageInstanceJSONBody,
+    reason?: string,
+  ) {
+    return this.patch<RESTPatchAPIStageInstanceResult>(
+      `/stage-instances/${channelID}`,
+      {
+        body: data,
+        reason,
+      },
+    );
+  }
+
+  deleteStageInstance(channelID: string) {
+    return this.delete<RESTDeleteAPIStageInstanceResult>(
+      `/stage-instances/${channelID}`,
+    );
+  }
+
+  //#endregion
+
+  //#region Stickers
+
+  getSticker(stickerID: string) {
+    return this.get<RESTGetAPIStickerResult>(`/stickers/${stickerID}`);
+  }
+
+  listPremiumStickerPacks() {
+    return this.get<RESTGetNitroStickerPacksResult>(`/sticker-packs`);
+  }
+
+  listGuildStickers(guildID: string) {
+    return this.get<RESTGetAPIGuildStickersResult>(
+      `/guilds/${guildID}/stickers`,
+    );
+  }
+
+  getGuildSticker(guildID: string, stickerID: string) {
+    return this.get<RESTGetAPIGuildStickerResult>(
+      `/guilds/${guildID}/stickers/${stickerID}`,
+    );
+  }
+
+  createGuildSticker(
+    guildID: string,
+    data: Omit<RESTPostAPIGuildStickerFormDataBody, 'file'>,
+    image: File,
+    reason?: string,
+  ) {
+    return this.post<RESTPostAPIGuildStickerResult>(
+      `/guilds/${guildID}/stickers`,
+      {
+        body: data,
+        files: [
+          {
+            key: 'file',
+            ...image,
+          },
+        ],
+        reason,
+      },
+    );
+  }
+
+  editGuildSticker(
+    guildID: string,
+    stickerID: string,
+    data: RESTPatchAPIGuildStickerJSONBody,
+    reason?: string,
+  ) {
+    return this.patch<RESTPatchAPIGuildStickerResult>(
+      `/guilds/${guildID}/stickers/${stickerID}`,
+      {
+        body: data,
+        reason,
+      },
+    );
+  }
+
+  deleteGuildSticker(guildID: string, stickerID: string, reason?: string) {
+    return this.delete<RESTDeleteAPIGuildStickerResult>(
+      `/guilds/${guildID}/stickers/${stickerID}`,
+      {
+        reason,
+      },
+    );
+  }
+
+  //#endregion
+
+  //#region Users
+
+  getCurrentUser() {
+    return this.getUser('@me') as Promise<RESTGetAPICurrentUserResult>;
+  }
+
+  getUser(userID: string) {
+    return this.get<RESTGetAPIUserResult>(`/users/${userID}`);
+  }
+
+  editCurrentUser(data: RESTPatchAPICurrentUserJSONBody) {
+    return this.patch<RESTPatchAPICurrentUserResult>(`/users/@me`, {
+      body: data,
+    });
+  }
+
+  getCurrentUserGuilds(options: RESTGetAPICurrentUserGuildsQuery = {}) {
+    return this.get<RESTGetAPICurrentUserGuildsResult>(`/users/@me/guilds`, {
+      query: options,
+    });
+  }
+
+  getCurrentGuildMember(guildID: string) {
+    return this.get<APIGuildMember>(`/users/@me/guilds/${guildID}/member`);
+  }
+
+  leaveGuild(guildID: string) {
+    return this.delete<RESTDeleteAPICurrentUserGuildResult>(
+      `/users/@me/guilds/${guildID}`,
+    );
+  }
+
+  createDM(recipientID: string) {
+    return this.post<APIChannel>(`/users/@me/channels`, {
+      body: {
+        recipient_id: recipientID,
+      },
+    });
+  }
+
+  createGroupDM(accessTokens: string[], nicks?: Record<string, string>) {
+    return this.post<APIChannel>(`/users/@me/channels`, {
+      body: {
+        access_tokens: accessTokens,
+        nicks,
+      },
+    });
+  }
+
+  getUserConnections(userID: string) {
+    return this.get<APIConnection>(`/users/${userID}/connections`);
   }
 
   //#endregion
