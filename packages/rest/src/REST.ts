@@ -3,11 +3,13 @@ import {
   APIConnection,
   APIGuild,
   APIGuildMember,
-  APIGuildMember,
   APIGuildWidget as RESTGetAPIGuildWidgetResult,
   APITemplate,
   APIThreadList,
+  APIVoiceRegion,
+  APIWebhook,
   GuildWidgetStyle,
+  Locale,
   RESTDeleteAPIChannelMessageResult,
   RESTDeleteAPIChannelPermissionResult,
   RESTDeleteAPIChannelPinResult,
@@ -26,6 +28,11 @@ import {
   RESTDeleteAPIGuildStickerResult,
   RESTDeleteAPIInviteResult,
   RESTDeleteAPIStageInstanceResult,
+  RESTDeleteAPIWebhookResult,
+  RESTDeleteAPIWebhookWithTokenMessageResult,
+  RESTGetAPIApplicationCommandPermissionsResult,
+  RESTGetAPIApplicationCommandResult,
+  RESTGetAPIApplicationCommandsResult,
   RESTGetAPIAuditLogQuery,
   RESTGetAPIAuditLogResult,
   RESTGetAPIChannelInvitesResult,
@@ -41,6 +48,8 @@ import {
   RESTGetAPICurrentUserGuildsQuery,
   RESTGetAPICurrentUserGuildsResult,
   RESTGetAPICurrentUserResult,
+  RESTGetAPIGatewayBotResult,
+  RESTGetAPIGatewayResult,
   RESTGetAPIGuildBanResult,
   RESTGetAPIGuildBansQuery,
   RESTGetAPIGuildBansResult,
@@ -58,9 +67,9 @@ import {
   RESTGetAPIGuildResult,
   RESTGetAPIGuildRolesResult,
   RESTGetAPIGuildScheduledEventResult,
+  RESTGetAPIGuildScheduledEventsResult,
   RESTGetAPIGuildScheduledEventUsersQuery,
   RESTGetAPIGuildScheduledEventUsersResult,
-  RESTGetAPIGuildScheduledEventsResult,
   RESTGetAPIGuildStickerResult,
   RESTGetAPIGuildStickersResult,
   RESTGetAPIGuildTemplatesResult,
@@ -70,10 +79,15 @@ import {
   RESTGetAPIGuildWidgetSettingsResult,
   RESTGetAPIInviteQuery,
   RESTGetAPIInviteResult,
+  RESTGetAPIOAuth2CurrentApplicationResult,
+  RESTGetAPIOAuth2CurrentAuthorizationResult,
   RESTGetAPIStageInstanceResult,
   RESTGetAPIStickerResult,
   RESTGetAPIUserResult,
+  RESTGetAPIWebhookWithTokenMessageResult,
   RESTGetNitroStickerPacksResult,
+  RESTPatchAPIApplicationCommandJSONBody,
+  RESTPatchAPIApplicationCommandResult,
   RESTPatchAPIChannelJSONBody,
   RESTPatchAPIChannelMessageJSONBody,
   RESTPatchAPIChannelMessageResult,
@@ -101,8 +115,15 @@ import {
   RESTPatchAPIGuildWelcomeScreenJSONBody,
   RESTPatchAPIGuildWidgetSettingsJSONBody,
   RESTPatchAPIGuildWidgetSettingsResult,
+  RESTPatchAPIInteractionOriginalResponseJSONBody,
   RESTPatchAPIStageInstanceJSONBody,
   RESTPatchAPIStageInstanceResult,
+  RESTPatchAPIWebhookJSONBody,
+  RESTPatchAPIWebhookResult,
+  RESTPatchAPIWebhookWithTokenMessageJSONBody,
+  RESTPatchAPIWebhookWithTokenMessageResult,
+  RESTPostAPIApplicationCommandsJSONBody,
+  RESTPostAPIApplicationCommandsResult,
   RESTPostAPIChannelFollowersResult,
   RESTPostAPIChannelInviteJSONBody,
   RESTPostAPIChannelInviteResult,
@@ -115,6 +136,8 @@ import {
   RESTPostAPIChannelThreadsJSONBody,
   RESTPostAPIChannelThreadsResult,
   RESTPostAPIChannelTypingResult,
+  RESTPostAPIChannelWebhookJSONBody,
+  RESTPostAPIChannelWebhookResult,
   RESTPostAPIGuildChannelJSONBody,
   RESTPostAPIGuildChannelResult,
   RESTPostAPIGuildEmojiResult,
@@ -127,8 +150,16 @@ import {
   RESTPostAPIGuildScheduledEventResult,
   RESTPostAPIGuildStickerFormDataBody,
   RESTPostAPIGuildStickerResult,
+  RESTPostAPIInteractionCallbackJSONBody,
+  RESTPostAPIInteractionFollowupJSONBody,
   RESTPostAPIStageInstanceJSONBody,
   RESTPostAPIStageInstanceResult,
+  RESTPostAPIWebhookWithTokenJSONBody,
+  RESTPostAPIWebhookWithTokenQuery,
+  RESTPostAPIWebhookWithTokenResult,
+  RESTPostAPIWebhookWithTokenWaitResult,
+  RESTPutAPIApplicationCommandsJSONBody,
+  RESTPutAPIApplicationCommandsResult,
   RESTPutAPIChannelMessageReactionResult,
   RESTPutAPIChannelPermissionJSONBody,
   RESTPutAPIChannelPermissionResult,
@@ -142,6 +173,7 @@ import {
   RESTPutAPIGuildMemberRoleResult,
 } from 'discord-api-types/v10';
 import { ResponseData } from 'undici/types/dispatcher';
+
 import { APIRequest, File as FileData } from './APIRequest.js';
 import { DefaultDiscordOptions } from './index.js';
 import {
@@ -186,8 +218,10 @@ export class REST extends RequestManager {
   }
 
   /**
-   * Set or gets the authentication token for requests to use. Tokens require a token type, must be `Bot` or `Bearer`.
-   * @returns The REST client instance if the token was set, otherwise the current token.
+   * Set or gets the authentication token for requests to use. Tokens require a
+   * token type, must be `Bot` or `Bearer`.
+   * @returns The REST client instance if the token was set, otherwise the
+   *     current token.
    */
   token(token?: string | null) {
     if (token) {
@@ -202,7 +236,9 @@ export class REST extends RequestManager {
   }
 
   /**
-   * Set a task to be run before a request is sent. The task is passed the request options, and is expected to return `undefined` _or_ modified options.
+   * Set a task to be run before a request is sent. The task is passed the
+   * request options, and is expected to return `undefined` _or_ modified
+   * options.
    * @param cb Task to run before a request is sent.
    * @returns The REST client instance.
    */
@@ -212,7 +248,9 @@ export class REST extends RequestManager {
   }
 
   /**
-   * Set a task to be run after a request is sent. The task is passed the request options, the response data and parsed JSON from the response, and is not expected to return anything.
+   * Set a task to be run after a request is sent. The task is passed the
+   * request options, the response data and parsed JSON from the response, and
+   * is not expected to return anything.
    * @param cb Task to run after a request is sent.
    * @returns The REST client instance.
    */
@@ -289,7 +327,8 @@ export class REST extends RequestManager {
   /**
    * Send a HTTP POST request to the Discord API
    * @param route Route to send the request to
-   * @param options Additional request options. `body` and `files` are merged if both
+   * @param options Additional request options. `body` and `files` are merged if
+   *     both
    * are supplied, using different strategies for `body` depending on
    * {@link APIRequest.payloadJson}.
    * @returns JSON response from the API
@@ -305,7 +344,8 @@ export class REST extends RequestManager {
   /**
    * Send a HTTP PUT request to the Discord API
    * @param route Route to send the request to
-   * @param options Additional request options. `body` and `files` are treated like
+   * @param options Additional request options. `body` and `files` are treated
+   *     like
    * in {@link REST.post}.
    * @returns JSON response from the API
    */
@@ -320,7 +360,8 @@ export class REST extends RequestManager {
   /**
    * Send a HTTP PATCH request to the Discord API
    * @param route Route to send the request to
-   * @param options Additional request options. `body` and `files` are treated like
+   * @param options Additional request options. `body` and `files` are treated
+   *     like
    * in {@link REST.post}.
    * @returns JSON response from the API
    */
@@ -336,7 +377,8 @@ export class REST extends RequestManager {
    * Send a HTTP DELETE request to the Discord API
    * @param route Route to send the request to
    * @param options Additional request options. `body` and `files` are ignored.
-   * @returns JSON/empty response from the API, usually 204 No Content therefore empty
+   * @returns JSON/empty response from the API, usually 204 No Content therefore
+   *     empty
    */
   delete<T>(route: RouteLike, options?: RequestOptions) {
     return this.request<T>({
@@ -1342,8 +1384,9 @@ export class REST extends RequestManager {
   }
 
   //#endregion
-  //
+
   //#region Templates
+
   getGuildTemplate(code: string) {
     return this.get<APITemplate>(`/guilds/templates/${code}`);
   }
@@ -1571,6 +1614,498 @@ export class REST extends RequestManager {
 
   getUserConnections(userID: string) {
     return this.get<APIConnection>(`/users/${userID}/connections`);
+  }
+
+  //#endregion
+
+  //#region Voice
+
+  listVoiceRegions() {
+    return this.get<APIVoiceRegion[]>(`/voice/regions`);
+  }
+
+  //#endregion
+
+  //#region Webhooks
+
+  createWebhook(
+    channelID: string,
+    data: RESTPostAPIChannelWebhookJSONBody,
+    reason?: string,
+  ) {
+    return this.post<RESTPostAPIChannelWebhookResult>(
+      `/channels/${channelID}/webhooks`,
+      {
+        body: data,
+        reason,
+      },
+    );
+  }
+
+  getChannelWebhooks(channelID: string) {
+    return this.get<APIWebhook[]>(`/channels/${channelID}/webhooks`);
+  }
+
+  getGuildWebhooks(guildID: string) {
+    return this.get<APIWebhook[]>(`/guilds/${guildID}/webhooks`);
+  }
+
+  getWebhook(webhookID: string) {
+    return this.get<APIWebhook>(`/webhooks/${webhookID}`);
+  }
+
+  getWebhookWithToken(webhookID: string, token: string) {
+    return this.get<APIWebhook>(`/webhooks/${webhookID}/${token}`, {
+      auth: false,
+    });
+  }
+
+  editWebhook(
+    webhookID: string,
+    data: RESTPatchAPIWebhookJSONBody,
+    reason?: string,
+  ) {
+    return this.patch<RESTPatchAPIWebhookResult>(`/webhooks/${webhookID}`, {
+      body: data,
+      reason,
+    });
+  }
+
+  editWebhookWithToken(
+    webhookID: string,
+    token: string,
+    data: Omit<RESTPatchAPIWebhookJSONBody, 'channel_id'>,
+  ) {
+    return this.patch<Omit<RESTPatchAPIWebhookResult, 'user'>>(
+      `/webhooks/${webhookID}/${token}`,
+      {
+        body: data,
+        auth: false,
+      },
+    );
+  }
+
+  deleteWebhook(webhookID: string, reason?: string) {
+    return this.delete<RESTDeleteAPIWebhookResult>(`/webhooks/${webhookID}`, {
+      reason,
+    });
+  }
+
+  deleteWebhookWithToken(webhookID: string, token: string) {
+    return this.delete<RESTDeleteAPIWebhookResult>(
+      `/webhooks/${webhookID}/${token}`,
+      {
+        auth: false,
+      },
+    );
+  }
+
+  executeWebhook<T = RESTPostAPIWebhookWithTokenJSONBody>(
+    webhookID: string,
+    token: string,
+    data: T,
+    {
+      files,
+      ...options
+    }: RESTPostAPIWebhookWithTokenQuery & { files?: FileData[] } = {},
+    ext = '',
+  ) {
+    return this.post<null | RESTPostAPIWebhookWithTokenWaitResult>(
+      `/webhooks/${webhookID}/${token}${ext}`,
+      {
+        body: data,
+        files,
+        query: {
+          ...options,
+        },
+        auth: false,
+      },
+    );
+  }
+
+  createWebhookMessage(
+    webhookID: string,
+    token: string,
+    data: RESTPostAPIWebhookWithTokenJSONBody,
+    options: RESTPostAPIWebhookWithTokenQuery & { files?: FileData[] } = {},
+  ) {
+    return this.executeWebhook(webhookID, token, data, options);
+  }
+
+  executeWebhookSlack(
+    webhookID: string,
+    token: string,
+    data: any,
+    options: RESTPostAPIWebhookWithTokenQuery,
+  ) {
+    return this.executeWebhook(webhookID, token, data, options, '/slack');
+  }
+
+  executeWebhookGitHub(
+    webhookID: string,
+    token: string,
+    data: any,
+    options: RESTPostAPIWebhookWithTokenQuery,
+  ) {
+    return this.executeWebhook(webhookID, token, data, options, '/github');
+  }
+
+  getWebhookMessage(
+    webhookID: string,
+    token: string,
+    messageID: string,
+    threadID?: string,
+  ) {
+    return this.get<RESTGetAPIWebhookWithTokenMessageResult>(
+      `/webhooks/${webhookID}/${token}/messages/${messageID}`,
+      {
+        query: {
+          thread_id: threadID,
+        },
+        auth: false,
+      },
+    );
+  }
+
+  editWebhookMessage(
+    webhookID: string,
+    token: string,
+    messageID: string,
+    data: RESTPatchAPIWebhookWithTokenMessageJSONBody,
+    { files, ...options }: { thread_id?: string; files?: FileData[] } = {},
+  ) {
+    return this.patch<RESTPatchAPIWebhookWithTokenMessageResult>(
+      `/webhooks/${webhookID}/${token}/messages/${messageID}`,
+      {
+        body: data,
+        files,
+        query: options,
+        auth: false,
+      },
+    );
+  }
+
+  deleteWebhookMessage(
+    webhookID: string,
+    token: string,
+    messageID: string,
+    threadID?: string,
+  ) {
+    return this.delete<RESTDeleteAPIWebhookWithTokenMessageResult>(
+      `/webhooks/${webhookID}/${token}/messages/${messageID}`,
+      {
+        query: {
+          thread_id: threadID,
+        },
+        auth: false,
+      },
+    );
+  }
+
+  //#endregion
+
+  //#region Gateway
+
+  getGateway() {
+    return this.get<RESTGetAPIGatewayResult>('/gateway', { auth: false });
+  }
+
+  getGatewayBot() {
+    return this.get<RESTGetAPIGatewayBotResult>('/gateway/bot');
+  }
+
+  //#endregion
+
+  //#region OAuth2
+
+  getCurrentOAuth2Authorization() {
+    return this.get<RESTGetAPIOAuth2CurrentAuthorizationResult>('/oauth2/@me');
+  }
+
+  getCurrentBotApplication() {
+    return this.get<RESTGetAPIOAuth2CurrentApplicationResult>(
+      '/oauth2/applications/@me',
+    );
+  }
+
+  //#endregion
+
+  //#region Interactions
+
+  createInteractionResponse(
+    interactionID: string,
+    token: string,
+    data: RESTPostAPIInteractionCallbackJSONBody,
+    files?: FileData[],
+  ) {
+    return this.post<never>(
+      `/interactions/${interactionID}/${token}/callback`,
+      {
+        body: data,
+        files,
+      },
+    );
+  }
+
+  getOriginalInteractionResponse(
+    applicationID: string,
+    interactionToken: string,
+  ) {
+    return this.getWebhookMessage(applicationID, interactionToken, '@original');
+  }
+
+  editOriginalInteractionResponse(
+    applicationID: string,
+    interactionToken: string,
+    data: RESTPatchAPIInteractionOriginalResponseJSONBody,
+    files?: FileData[],
+  ) {
+    return this.editWebhookMessage(
+      applicationID,
+      interactionToken,
+      '@original',
+      data,
+      { files },
+    );
+  }
+
+  deleteOriginalInteractionResponse(
+    applicationID: string,
+    interactionToken: string,
+  ) {
+    return this.deleteWebhookMessage(
+      applicationID,
+      interactionToken,
+      '@original',
+    );
+  }
+
+  createFollowupMessage(
+    applicationID: string,
+    interactionToken: string,
+    data: RESTPostAPIInteractionFollowupJSONBody,
+    files?: FileData[],
+  ) {
+    return this.executeWebhook(applicationID, interactionToken, data, {
+      files,
+    });
+  }
+
+  getFollowupMessage(
+    applicationID: string,
+    interactionToken: string,
+    messageID: string,
+  ) {
+    return this.getWebhookMessage(applicationID, interactionToken, messageID);
+  }
+
+  editFollowupMessage(
+    applicationID: string,
+    interactionToken: string,
+    messageID: string,
+    data: RESTPatchAPIInteractionFollowupJSONBody,
+    files?: FileData[],
+  ) {
+    return this.editWebhookMessage(
+      applicationID,
+      interactionToken,
+      messageID,
+      data,
+      { files },
+    );
+  }
+
+  deleteFollowupMessage(
+    applicationID: string,
+    interactionToken: string,
+    messageID: string,
+  ) {
+    return this.deleteWebhookMessage(
+      applicationID,
+      interactionToken,
+      messageID,
+    );
+  }
+
+  //#region Application Commands
+
+  getGlobalApplicationCommands(
+    applicationID: string,
+    {
+      locale,
+      localizations,
+    }: {
+      locale?: Locale;
+      localizations?: boolean;
+    } = {},
+  ) {
+    return this.get<RESTGetAPIApplicationCommandsResult>(
+      `/applications/${applicationID}/commands`,
+      {
+        locale,
+        query: {
+          with_localizations: localizations ?? !locale,
+        },
+      },
+    );
+  }
+
+  createGlobalApplicationCommand(
+    applicationID: string,
+    data: RESTPostAPIApplicationCommandsJSONBody,
+  ) {
+    return this.post<RESTPostAPIApplicationCommandsResult>(
+      `/applications/${applicationID}/commands`,
+      {
+        body: data,
+      },
+    );
+  }
+
+  getGlobalApplicationCommand(
+    applicationID: string,
+    commandID: string,
+    locale?: Locale,
+  ) {
+    return this.get<RESTGetAPIApplicationCommandResult>(
+      `/applications/${applicationID}/commands/${commandID}`,
+      {
+        locale,
+      },
+    );
+  }
+
+  editGlobalApplicationCommand(
+    applicationID: string,
+    commandID: string,
+    data: RESTPatchAPIApplicationCommandJSONBody,
+  ) {
+    return this.patch<RESTPatchAPIApplicationCommandResult>(
+      `/applications/${applicationID}/commands/${commandID}`,
+      {
+        body: data,
+      },
+    );
+  }
+
+  deleteGlobalApplicationCommand(applicationID: string, commandID: string) {
+    return this.delete<never>(
+      `/applications/${applicationID}/commands/${commandID}`,
+    );
+  }
+
+  bulkEditGlobalApplicationCommands(
+    applicationID: string,
+    data: RESTPutAPIApplicationCommandsJSONBody,
+  ) {
+    return this.put<RESTPutAPIApplicationCommandsResult>(
+      `/applications/${applicationID}/commands`,
+      {
+        body: data,
+      },
+    );
+  }
+
+  getGuildApplicationCommands(
+    applicationID: string,
+    guildID: string,
+    {
+      locale,
+      localizations,
+    }: { locale?: Locale; localizations?: boolean } = {},
+  ) {
+    return this.get<RESTGetAPIApplicationCommandsResult>(
+      `/applications/${applicationID}/guilds/${guildID}/commands`,
+      {
+        locale,
+        query: {
+          with_localizations: localizations ?? !locale,
+        },
+      },
+    );
+  }
+
+  createGuildApplicationCommand(
+    applicationID: string,
+    guildID: string,
+    data: RESTPostAPIApplicationCommandsJSONBody,
+  ) {
+    return this.post<RESTPostAPIApplicationCommandsResult>(
+      `/applications/${applicationID}/guilds/${guildID}/commands`,
+      {
+        body: data,
+      },
+    );
+  }
+
+  getGuildApplicationCommand(
+    applicationID: string,
+    guildID: string,
+    commandID: string,
+    locale?: Locale,
+  ) {
+    return this.get<RESTGetAPIApplicationCommandResult>(
+      `/applications/${applicationID}/guilds/${guildID}/commands/${commandID}`,
+      {
+        locale,
+      },
+    );
+  }
+
+  editGuildApplicationCommand(
+    applicationID: string,
+    guildID: string,
+    commandID: string,
+    data: RESTPatchAPIApplicationCommandJSONBody,
+  ) {
+    return this.patch<RESTPatchAPIApplicationCommandResult>(
+      `/applications/${applicationID}/guilds/${guildID}/commands/${commandID}`,
+      {
+        body: data,
+      },
+    );
+  }
+
+  deleteGuildApplicationCommand(
+    applicationID: string,
+    guildID: string,
+    commandID: string,
+  ) {
+    return this.delete<never>(
+      `/applications/${applicationID}/guilds/${guildID}/commands/${commandID}`,
+    );
+  }
+
+  bulkEditGuildApplicationCommands(
+    applicationID: string,
+    guildID: string,
+    data: RESTPutAPIApplicationCommandsJSONBody,
+  ) {
+    return this.put<RESTPutAPIApplicationCommandsResult>(
+      `/applications/${applicationID}/guilds/${guildID}/commands`,
+      {
+        body: data,
+      },
+    );
+  }
+
+  getGuildApplicationCommandPermissions(
+    applicationID: string,
+    guildID: string,
+  ) {
+    return this.get<RESTGetAPIApplicationCommandPermissionsResult[]>(
+      `/applications/${applicationID}/guilds/${guildID}/commands/permissions`,
+    );
+  }
+
+  getApplicationCommandPermissions(
+    applicationID: string,
+    guildID: string,
+    commandID: string,
+  ) {
+    return this.get<RESTGetAPIApplicationCommandPermissionsResult>(
+      `/applications/${applicationID}/guilds/${guildID}/commands/${commandID}/permissions`,
+    );
   }
 
   //#endregion

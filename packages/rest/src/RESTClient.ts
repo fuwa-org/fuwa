@@ -84,6 +84,8 @@ export class RESTClient {
       headers.authorization = headers.authorization ?? this.#auth;
     if (request.reason && request.reason.length)
       headers['x-audit-log-reason'] = request.reason;
+    if (request.locale && request.locale.length)
+      headers['x-discord-locale'] = request.locale;
 
     return headers;
   }

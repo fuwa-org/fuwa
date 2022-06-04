@@ -1,4 +1,5 @@
 /// <reference types="node" />
+import { Locale } from 'discord-api-types/rest/v10';
 import { URLSearchParams } from 'node:url';
 import { HttpMethod } from 'undici/types/dispatcher';
 export interface APIRequest<T = any> {
@@ -11,7 +12,9 @@ export interface APIRequest<T = any> {
     method?: HttpMethod;
     headers?: Record<string, string>;
     reason?: string | null;
+    locale?: Locale | null;
     useRateLimits?: boolean;
+    useGlobalRateLimit?: boolean;
     useBaseURL?: boolean;
     allowedRetries?: number;
     retries?: number;
