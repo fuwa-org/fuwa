@@ -1,3 +1,4 @@
+import { Locale } from 'discord-api-types/rest/v10';
 import { URLSearchParams } from 'node:url';
 import { HttpMethod } from 'undici/types/dispatcher';
 
@@ -5,13 +6,15 @@ export interface APIRequest<T = any> {
   route: string;
   auth?: boolean;
   versioned?: boolean;
-  query?: URLSearchParams | string | null;
+  query?: URLSearchParams | string | Record<string, any> | null;
   body?: T | null;
   files?: File[] | null;
   method?: HttpMethod;
   headers?: Record<string, string>;
   reason?: string | null;
+  locale?: Locale | null;
   useRateLimits?: boolean;
+  useGlobalRateLimit?: boolean;
   useBaseURL?: boolean;
 
   allowedRetries?: number;
@@ -43,7 +46,9 @@ export function resolveRequest(req: APIRequest): Required<APIRequest> {
     retries: 0,
     headers: {},
     reason: null,
+    locale: null,
     useRateLimits: true,
+    useGlobalRateLimit: req.auth === false ? false : true,
     useBaseURL: true,
     payloadJson: false,
     startTime: -1,

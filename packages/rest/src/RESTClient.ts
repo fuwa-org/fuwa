@@ -1,6 +1,7 @@
 import FormData from 'form-data';
 import undici from 'undici';
-import { inspect } from 'util';
+import { URLSearchParams } from 'node:url';
+import { inspect } from 'node:util';
 import { RequestOptions, ResponseData } from 'undici/types/dispatcher';
 import { APIRequest } from './APIRequest';
 import { RouteLike } from './RequestManager.js';
@@ -10,20 +11,23 @@ import { RouteLike } from './RequestManager.js';
  */
 export class RESTClient {
   /**
-   * An authentication token to include in the `Authorization` header for requests. Leave empty to not send that header.
+   * An authentication token to include in the `Authorization` header for requests.
    */
   #auth?: string;
-  public baseURL: string;
-  public options: RESTClientOptions;
+  public baseURL?: string;
   /**
    * API version to add to the {@link RESTClient.baseURL}. Leave empty to not add a version at all.
    */
   public version?: number;
+  public options: RESTClientOptions;
 
   public constructor(options: RESTClientOptions) {
     this.baseURL = options.baseURL;
     this.version = options.version;
     this.#auth = options.auth;
+
+    delete options.baseURL;
+    delete options.version;
 
     this.options = options;
 
@@ -60,7 +64,7 @@ export class RESTClient {
     };
   }
 
-  public setAuth(auth: string) {
+  public setAuth(auth?: string) {
     this.#auth = auth;
     return this;
   }
@@ -80,6 +84,8 @@ export class RESTClient {
       headers.authorization = headers.authorization ?? this.#auth;
     if (request.reason && request.reason.length)
       headers['x-audit-log-reason'] = request.reason;
+    if (request.locale && request.locale.length)
+      headers['x-discord-locale'] = request.locale;
 
     return headers;
   }
@@ -164,6 +170,12 @@ export class RESTClient {
   public createURL(request: APIRequest) {
     let query = '';
     if (request.query) {
+      if (
+        typeof request.query === 'object' &&
+        !(request.query instanceof URLSearchParams)
+      ) {
+        request.query = new URLSearchParams(request.query);
+      }
       query = `?${request.query.toString()}`;
     }
 
@@ -205,7 +217,7 @@ export class RESTClient {
 }
 
 export interface RESTClientOptions {
-  baseURL: string;
+  baseURL?: string;
   version?: number;
   auth?: string;
   userAgent?: string;

@@ -6,6 +6,5 @@ if git status | grep -q "\\.ts"; then
     node scripts/prettify_changed.js
   fi
 
-  yarn build --noEmit 
-  yarn lint
+  yarn foreach precommit
 fi

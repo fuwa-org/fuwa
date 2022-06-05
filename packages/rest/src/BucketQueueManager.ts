@@ -48,16 +48,28 @@ export class BucketQueueManager {
     return this.remaining === 0 && Date.now() < this.reset;
   }
 
+  public isLimited(global = true) {
+    if (this.localLimited) {
+      return { global: false };
+    } else if (global && this.manager.limited) {
+      return { global: true };
+    } else {
+      return false;
+    }
+  }
+
   public async queue(req: APIRequest): Promise<ResponseData> {
     // let running requests finish
     await this.#queue.wait();
 
-    if (this.limited) {
-      if (this.localLimited) {
+    let limited: { global: boolean } | false = false;
+
+    while ((limited = this.isLimited(req.useGlobalRateLimit))) {
+      if (!limited.global) {
         const dur = this.durUntilReset;
         this.debug(`Rate limited, sleeping for ${dur}ms`);
         await sleep(dur);
-      } else if (this.manager.limited) {
+      } else {
         const dur = this.manager.durUntilReset;
         this.debug(`Globally rate limited, sleeping for ${dur}ms`);
         await sleep(dur);

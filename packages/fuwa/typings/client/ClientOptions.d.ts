@@ -4,6 +4,7 @@ import { LoggerOptions } from '../logging/LoggerOptions.js';
 import { Erlpack } from '../ws/GatewayShard.js';
 export declare const pkg: any;
 export interface ClientOptions {
+    token?: string;
     intents?: ClientOptionsIntents;
     logger?: boolean | ILogger | LoggerOptions;
     apiVersion?: number;

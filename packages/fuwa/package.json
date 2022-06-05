@@ -5,12 +5,10 @@
   "main": "./dist/index.js",
   "type": "commonjs",
   "scripts": {
+    "precommit": "yarn build --noEmit && yarn lint",
     "lint": "eslint . --ext .ts",
     "lint:fix": "yarn lint --fix",
     "build": "tsc",
-    "docs:build": "typedoc --options typedoc.json",
-    "docs:serve": "cd docs; python3 -m http.server",
-    "docs": "yarn docs:build && yarn docs:serve",
     "prettify": "prettier -w ."
   },
   "repository": "https://github.com/fuwa-org/fuwa.git",

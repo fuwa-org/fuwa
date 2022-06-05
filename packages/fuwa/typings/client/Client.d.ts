@@ -1,6 +1,6 @@
 /// <reference types="node" />
 import Events from '@fuwa/events';
-import { APIRequest, RequestManager, Response } from '@fuwa/rest';
+import { APIRequest, REST, Response } from '@fuwa/rest';
 import { Snowflake } from 'discord-api-types/globals';
 import EventEmitter from 'events';
 import { ILogger } from '../logging/ILogger.js';
@@ -21,14 +21,15 @@ export declare class Client extends EventEmitter {
     options: Required<ClientOptions>;
     logger: ILogger;
     ws: GatewayManager;
-    http: RequestManager;
+    http: REST;
     guilds: GuildManager;
     users: UserManager;
     channels: ChannelManager;
     user: ExtendedUser | null;
     private timeouts;
     private timers;
-    constructor(token: string, options?: ClientOptions);
+    constructor(token?: string, options?: ClientOptions);
+    constructor(options?: ClientOptions);
     connect(): Promise<void>;
     token(redact?: boolean): string;
     debug(...data: any[]): void;

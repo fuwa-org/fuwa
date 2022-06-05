@@ -15,6 +15,9 @@ export declare class BucketQueueManager {
     handleRateLimit(req: APIRequest, res: ResponseData): Promise<ResponseData>;
     get limited(): boolean;
     get localLimited(): boolean;
+    isLimited(global?: boolean): false | {
+        global: boolean;
+    };
     queue(req: APIRequest): Promise<ResponseData>;
     private debug;
 }

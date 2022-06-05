@@ -1,17 +1,20 @@
 /// <reference types="node" />
+import { Locale } from 'discord-api-types/rest/v10';
 import { URLSearchParams } from 'node:url';
 import { HttpMethod } from 'undici/types/dispatcher';
 export interface APIRequest<T = any> {
     route: string;
     auth?: boolean;
     versioned?: boolean;
-    query?: URLSearchParams | string | null;
+    query?: URLSearchParams | string | Record<string, any> | null;
     body?: T | null;
     files?: File[] | null;
     method?: HttpMethod;
     headers?: Record<string, string>;
     reason?: string | null;
+    locale?: Locale | null;
     useRateLimits?: boolean;
+    useGlobalRateLimit?: boolean;
     useBaseURL?: boolean;
     allowedRetries?: number;
     retries?: number;
