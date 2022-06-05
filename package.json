@@ -25,5 +25,8 @@
   "homepage": "https://github.com/fuwa-org/fuwa#readme",
   "workspaces": [
     "packages/*"
-  ]
+  ],
+  "devDependencies": {
+    "@changesets/cli": "^2.22.0"
+  }
 }
