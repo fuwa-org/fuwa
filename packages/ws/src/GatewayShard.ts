@@ -1,31 +1,15 @@
 import { AsyncQueue } from '@sapphire/async-queue';
 import {
-  Snowflake,
   GatewayIdentify,
   GatewayOpcodes,
   GatewayReceivePayload,
   GatewayResume,
   GatewaySendPayload,
+  Snowflake,
 } from 'discord-api-types/v10';
-import WebSocket from 'ws';
-import { Client } from '../client/Client';
-import { Intents } from '../util/bitfields/Intents';
 import EventEmitter from 'node:events';
-
-/**
- * Typeguard for Erlpack interfaces
- */
-export interface Erlpack {
-  pack(data: any): Buffer;
-  unpack<T>(data: Buffer): T;
-}
-
-let erlpack: Erlpack;
-try {
-  erlpack = require('erlpack');
-} catch {
-  // it's not installed
-}
+import WebSocket from 'ws';
+import { WebSocketProperties } from './Constants.js';
 
 export enum ShardState {
   Disconnected = 0,
@@ -46,10 +30,9 @@ export class GatewayShard extends EventEmitter {
   private _socket!: WebSocket;
   /** @internal */
   #messageQueue = new AsyncQueue();
+  #token: string;
   /** @internal */
   private messageQueueCount = 0;
-  public compress: boolean;
-  public erlpack: boolean;
   public id: number;
   private heartbeat_interval = -1;
   private heartbeat_at = -1;
@@ -77,24 +60,15 @@ export class GatewayShard extends EventEmitter {
 
   public state = ShardState.Disconnected;
 
-  constructor(public client: Client, public readonly shard: [number, number]) {
+  constructor(
+    public readonly shard: [number, number],
+    public readonly intents: number,
+    token: string,
+  ) {
     super();
 
     this.id = shard[0]!;
-    this.compress = client.options.compress;
-
-    if (typeof this.client.options.etf === 'boolean') {
-      this.erlpack = this.client.options.etf;
-    } else {
-      this.erlpack = true;
-      erlpack = this.client.options.etf;
-    }
-
-    Object.defineProperty(this, 'client', {
-      enumerable: false,
-      writable: false,
-      value: this.client,
-    });
+    this.#token = token;
   }
 
   /**
@@ -103,38 +77,25 @@ export class GatewayShard extends EventEmitter {
    */
   private authenticate() {
     if (this.session) {
-      this.debugPretty('Resuming...', {
-        session: this.session,
-        seq: this.seq,
-      });
       this.state = ShardState.Resuming;
       this.send(<GatewayResume>{
         op: GatewayOpcodes.Resume,
         d: {
-          token: this.client.token(false),
+          token: this.#token,
           session_id: this.session,
           seq: this.seq,
         },
       });
     } else {
-      this.debugPretty('Identifying...', {
-        token: this.client.token(),
-        shard: this.shard.join(', '),
-        intents: this.client.options.intents,
-      });
       this.state = ShardState.Identifying;
       this.send(<GatewayIdentify>{
         op: GatewayOpcodes.Identify,
         d: {
-          token: this.client.token(false),
-          properties: {
-            $browser: this.client.options.wsBrowser,
-            $device: this.client.options.wsDevice,
-            $os: this.client.options.wsOS,
-          },
-          compress: this.compress,
+          token: this.#token,
+          properties: WebSocketProperties,
+          compress: false,
           shard: this.shard,
-          intents: (this.client.options.intents as Intents).bits,
+          intents: this.intents,
         },
       });
     }
@@ -188,44 +149,6 @@ export class GatewayShard extends EventEmitter {
     // to prevent the heartbeater to immediately panic and reconnect, creating an infinite loop
     this.heartbeat_acked = true;
     this._awaitedGuilds = [];
-    this.debug('Reset shard');
-  }
-
-  #__log_header() {
-    return `[${this.client.logger.kleur().blue('WS')} => ${this.client.logger
-      .kleur()
-      .yellow(this.id.toString())}]`;
-  }
-
-  /** @internal @ignore */
-  debug(...data: any[]) {
-    this.client.debug(this.#__log_header(), ...data);
-  }
-
-  /** @internal @ignore */
-  trace(...data: any[]) {
-    this.client.logger.trace(`[WS => ${this.id}]`, ...data);
-  }
-
-  /** @internal @ignore */
-  debugPretty(message: string, data: Record<string, any>) {
-    this.debug(
-      message,
-      '\n',
-      Object.entries(data)
-        .map(([K, V]) => `\t${K}\t\t:\t${V}`)
-        .join('\n'),
-    );
-  }
-
-  /** @internal @ignore */
-  warn(...data: any[]) {
-    this.client.logger.warn(this.#__log_header(), ...data);
-  }
-
-  /** @internal @ignore */
-  error(...data: any[]) {
-    this.client.logger.error(this.#__log_header(), ...data);
   }
 
   /** Await a packet of a specific type from the gateway. */
@@ -244,15 +167,8 @@ export class GatewayShard extends EventEmitter {
 
   /** @internal */
   private async onMessage(message: Buffer) {
-    let buffer = message;
-
-    if (this.erlpack) {
-      buffer = erlpack.unpack(buffer);
-    }
-
-    const data: GatewayReceivePayload = this.erlpack
-      ? (buffer as unknown as any)
-      : JSON.parse(buffer.toString());
+    const buffer = message,
+      data: GatewayReceivePayload = JSON.parse(buffer.toString());
 
     this.emit('packet', data);
 
@@ -261,10 +177,7 @@ export class GatewayShard extends EventEmitter {
     switch (data.op) {
       case GatewayOpcodes.Hello: {
         this.heartbeat_interval = payload.heartbeat_interval;
-        this.trace(
-          'commencing heartbeating with interval of',
-          this.heartbeat_interval,
-        );
+
         this.startHeartbeat();
         this.emit('hello', this.heartbeat_interval);
 
@@ -279,27 +192,20 @@ export class GatewayShard extends EventEmitter {
         this.heartbeat_acked = true;
         this.ping = Date.now() - this.heartbeat_at;
 
-        this.trace('heartbeat acked with ping of ' + this.ping + 'ms');
-
         break;
       }
       case GatewayOpcodes.Reconnect: {
-        this.trace('received reconnect opcode');
-
         this.reconnect();
 
         break;
       }
       case GatewayOpcodes.InvalidSession: {
-        this.debug('invalid session passed');
         this.emit('_refresh');
         this.emit('invalidSession');
 
         break;
       }
       case GatewayOpcodes.Dispatch: {
-        this.trace('received dispatch', data.t);
-
         this.emit('dispatch', data);
 
         break;
@@ -341,13 +247,7 @@ export class GatewayShard extends EventEmitter {
       return;
     }
 
-    let data: Buffer;
-
-    if (this.erlpack) {
-      data = erlpack.pack(packet);
-    } else {
-      data = Buffer.from(JSON.stringify(packet));
-    }
+    const data = Buffer.from(JSON.stringify(packet));
 
     this._socket!.send(data);
 
@@ -376,12 +276,9 @@ export class GatewayShard extends EventEmitter {
 
     this.heartbeat_acked = false;
 
-    this.trace('sent heartbeat, seq ' + this.seq);
-
     this.#timeouts.push(
       setTimeout(() => {
         if (!this.heartbeat_acked) {
-          this.debug('closing due to heartbeat timeout');
           this.reconnect();
         }
       }, 10e3),

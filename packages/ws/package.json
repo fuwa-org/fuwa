@@ -1,0 +1,34 @@
+{
+  "name": "@fuwa/ws",
+  "version": "0.3.0",
+  "description": "Minimal WebSocket client for Discord's real-time gateway",
+  "main": "dist/index.js",
+  "types": "typings/index.d.ts",
+  "scripts": {
+    "precommit": "yarn build --noEmit && yarn lint",
+    "build": "tsc",
+    "build:watch": "tsc -w",
+    "lint": "eslint . --ext .ts",
+    "lint:fix": "yarn lint --fix"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/fuwa-org/fuwa.git"
+  },
+  "author": "Splatterxl <splatterxl+npm@outlook.ie>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/fuwa-org/fuwa/issues"
+  },
+  "homepage": "https://github.com/fuwa-org/fuwa#readme",
+  "devDependencies": {
+    "@types/ws": "^8",
+    "typescript": "^4.6.4"
+  },
+  "dependencies": {
+    "@fuwa/rest": "workspace:^",
+    "@sapphire/async-queue": "^1.3.1",
+    "discord-api-types": "^0.36.2",
+    "ws": "^8.8.1"
+  }
+}

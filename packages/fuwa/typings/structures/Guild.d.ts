@@ -54,7 +54,7 @@ export declare class Guild extends BaseStructure<APIGuild | APIUnavailableGuild>
     get publicUpdatesChannel(): GuildChannel<APIGuildChannel<GuildChannelType>> | null | undefined;
     channels: GuildChannelManager;
     get shardId(): number;
-    get shard(): import("..").GatewayShard | undefined;
+    get shard(): import("@fuwa/ws").GatewayShard | undefined;
     constructor(client: Client);
     _deserialise(data: APIGuild | APIUnavailableGuild): this;
     fetch(force?: boolean): Promise<Guild>;

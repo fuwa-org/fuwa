@@ -1,11 +1,15 @@
 /// <reference types="node" />
+import { REST } from '@fuwa/rest';
 import { APIGatewayBotInfo } from 'discord-api-types/v10';
 import EventEmitter from 'node:events';
-import { Client } from '../client/Client.js';
 import { GatewayShard } from './GatewayShard.js';
 export declare class GatewayManager extends EventEmitter {
     #private;
-    client: Client;
+    rest: REST;
+    options: {
+        apiVersion: number;
+        intents: number;
+    };
     shards: Map<number, GatewayShard>;
     count: number;
     gateway: APIGatewayBotInfo;
@@ -13,10 +17,10 @@ export declare class GatewayManager extends EventEmitter {
     private concurrency;
     private _lastIdentify;
     private lock;
-    constructor(client: Client);
-    debug(...args: any[]): void;
-    error(...args: any[]): void;
-    trace(...args: any[]): void;
+    constructor(rest: REST, options: {
+        apiVersion: number;
+        intents: number;
+    }, token: string);
     shard(id: number): GatewayShard | undefined;
     spawnWithShardingManager(options: GatewayManagerShardingOptions): Promise<void>;
     spawn(options: GatewayManagerOptions): Promise<void>;

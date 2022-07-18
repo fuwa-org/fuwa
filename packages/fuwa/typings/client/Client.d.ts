@@ -1,6 +1,6 @@
 /// <reference types="node" />
-import Events from '@fuwa/events';
-import { APIRequest, REST, Response } from '@fuwa/rest';
+import { APIRequest, Response, REST } from '@fuwa/rest';
+import { GatewayManager, GatewayShard } from '@fuwa/ws';
 import { Snowflake } from 'discord-api-types/globals';
 import EventEmitter from 'events';
 import { ILogger } from '../logging/ILogger.js';
@@ -13,8 +13,6 @@ import { ChannelManager } from '../structures/managers/ChannelManager.js';
 import { GuildManager } from '../structures/managers/GuildManager.js';
 import { UserManager } from '../structures/managers/UserManager.js';
 import { Message } from '../structures/Message.js';
-import { GatewayManager } from '../ws/GatewayManager.js';
-import { GatewayShard } from '../ws/GatewayShard.js';
 import { ClientOptions } from './ClientOptions';
 export declare class Client extends EventEmitter {
     #private;
@@ -34,7 +32,6 @@ export declare class Client extends EventEmitter {
     token(redact?: boolean): string;
     debug(...data: any[]): void;
     delegate(event: `${string}.${string}`, ...data: any[]): void;
-    event(name: string): Events.SubscriptionBuilder<string, any[]>;
     reset(): void;
     get rest(): APIProxy;
     createDM(recipient: Snowflake, cache?: boolean): Promise<DMChannel>;

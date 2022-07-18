@@ -1,9 +1,11 @@
+import { GatewayManager, GatewayShard } from '@fuwa/ws';
 import {
   APIGuildMember,
   APIMessage,
   GatewayDispatchEvents,
   GatewayDispatchPayload,
 } from 'discord-api-types/v10';
+import { Client } from '../client/Client.js';
 import { Channel } from '../structures/Channel.js';
 import { ExtendedUser } from '../structures/ExtendedUser';
 import { Guild } from '../structures/Guild';
@@ -11,10 +13,9 @@ import { GuildChannels } from '../structures/GuildChannel.js';
 import { GuildMember } from '../structures/GuildMember.js';
 import { Message } from '../structures/Message.js';
 import { Intents } from '../util/bitfields/Intents';
-import { GatewayManager } from './GatewayManager';
-import { GatewayShard } from './GatewayShard';
 
 export async function handleDispatch(
+  client: Client,
   manager: GatewayManager,
   data: GatewayDispatchPayload,
   shard: GatewayShard,
@@ -25,29 +26,29 @@ export async function handleDispatch(
       shard.session = data.d.session_id;
       shard._awaitedGuilds = data.d.guilds.map(g => g.id);
 
-      const user = new ExtendedUser(shard.client)._deserialise(data.d.user);
+      const user = new ExtendedUser(client)._deserialise(data.d.user);
 
-      shard.client.user = user;
-      shard.client.users.add(user);
+      client.user = user;
+      client.users.add(user);
 
       // data.d.application
 
-      shard.debug(`ready with ${data.d.guilds.length} guilds to sync`);
+      client.debug(`ready with ${data.d.guilds.length} guilds to sync`);
 
       if (
-        (shard.client.options.intents as Intents).has(Intents.Bits.Guilds) &&
+        (client.options.intents as Intents).has(Intents.Bits.Guilds) &&
         data.d.guilds.length > 0
       ) {
         shard.setTimeout(() => {
           if (shard._awaitedGuilds.length) {
-            shard.debug(
+            client.debug(
               `shard ${shard.id} has ${shard._awaitedGuilds.length} guilds left to sync after 20s`,
             );
             shard.ready();
           }
         }, 20e3);
       } else {
-        shard.debug(
+        client.debug(
           `shard ${shard.id} has no guilds to receive, marking as available`,
         );
         shard.ready();
@@ -69,13 +70,13 @@ export async function handleDispatch(
         await shard.awaitPacket(d => d.t === 'READY');
       }
 
-      const guild = new Guild(shard.client)._deserialise(data.d);
-      shard.client.guilds.add(guild);
+      const guild = new Guild(client)._deserialise(data.d);
+      client.guilds.add(guild);
 
       if (shard._awaitedGuilds.includes(guild.id)) {
         shard._awaitedGuilds.splice(shard._awaitedGuilds.indexOf(guild.id), 1);
         if (shard._awaitedGuilds.length === 0) {
-          shard.debug(`shard ${shard.id} has no guilds left to sync`);
+          client.debug(`shard ${shard.id} has no guilds left to sync`);
           shard.ready();
         }
       } else {
@@ -85,11 +86,11 @@ export async function handleDispatch(
       break;
     }
     case GatewayDispatchEvents.GuildUpdate: {
-      const guild = shard.client.guilds.get(data.d.id);
-      const oldGuild = shard.client.guilds.get(data.d.id);
+      const guild = client.guilds.get(data.d.id);
+      const oldGuild = client.guilds.get(data.d.id);
 
       if (!guild) {
-        shard.warn(
+        client.logger.warn(
           `received guild update for ${data.d.id} but it doesn't exist in cache; ignoring`,
         );
         break;
@@ -97,13 +98,13 @@ export async function handleDispatch(
 
       guild._deserialise(data.d);
 
-      shard.client.guilds.update(guild);
+      client.guilds.update(guild);
 
       manager.event('guildUpdate', oldGuild, guild);
       break;
     }
     case GatewayDispatchEvents.GuildDelete: {
-      shard.client.guilds.remove(data.d.id);
+      client.guilds.remove(data.d.id);
 
       manager.event('guildDelete', data.d.id);
       break;
@@ -112,13 +113,13 @@ export async function handleDispatch(
 
     //#region Channels
     case GatewayDispatchEvents.ChannelCreate: {
-      const channel = Channel.create(shard.client, data.d as unknown as any);
+      const channel = Channel.create(client, data.d as unknown as any);
 
       if ((<any>data.d).guild_id) {
-        const guild = shard.client.guilds.get((<any>data.d).guild_id);
+        const guild = client.guilds.get((<any>data.d).guild_id);
 
         if (!guild) {
-          shard.warn(
+          client.logger.warn(
             `received channel create for ${data.d.id} but it doesn't exist in cache; ignoring`,
           );
           break;
@@ -126,7 +127,7 @@ export async function handleDispatch(
 
         guild.channels.add(channel as GuildChannels);
       } else {
-        shard.client.channels.add(channel);
+        client.channels.add(channel);
       }
 
       manager.event('channelCreate', channel);
@@ -134,11 +135,11 @@ export async function handleDispatch(
       break;
     }
     case GatewayDispatchEvents.ChannelUpdate: {
-      let channel = shard.client.channels.get(data.d.id);
-      const oldChannel = shard.client.channels.get(data.d.id);
+      let channel = client.channels.get(data.d.id);
+      const oldChannel = client.channels.get(data.d.id);
 
       if (!channel) {
-        shard.warn(
+        client.logger.warn(
           `received channel update for ${data.d.id} but it doesn't exist in cache; ignoring`,
         );
         break;
@@ -146,7 +147,7 @@ export async function handleDispatch(
 
       if (data.d.type && channel.type !== data.d.type) {
         // @ts-ignore
-        channel = Channel.create(shard.client, {
+        channel = Channel.create(client, {
           ...channel.toJSON(),
           ...data.d,
         });
@@ -155,10 +156,10 @@ export async function handleDispatch(
       }
 
       if (channel.guildId) {
-        const guild = shard.client.guilds.get(channel.guildId);
+        const guild = client.guilds.get(channel.guildId);
 
         if (!guild) {
-          shard.warn(
+          client.logger.warn(
             `received channel update for ${data.d.id} but guild doesn't exist in cache; not setting in guild`,
           );
         } else {
@@ -166,21 +167,21 @@ export async function handleDispatch(
         }
       }
 
-      shard.client.channels.update(channel);
+      client.channels.update(channel);
 
       manager.event('channelUpdate', channel, oldChannel);
       break;
     }
     case GatewayDispatchEvents.ChannelDelete: {
-      const channel = shard.client.channels.get(data.d.id);
+      const channel = client.channels.get(data.d.id);
 
       if (!channel) break;
 
       if (channel.guildId) {
-        const guild = shard.client.guilds.get(channel.guildId);
+        const guild = client.guilds.get(channel.guildId);
 
         if (!guild) {
-          shard.warn(
+          client.logger.warn(
             `received channel delete for ${data.d.id} but guild doesn't exist in cache; not removing from guild`,
           );
         } else {
@@ -188,7 +189,7 @@ export async function handleDispatch(
         }
       }
 
-      shard.client.channels.remove(channel.id);
+      client.channels.remove(channel.id);
 
       manager.event('channelDelete', {
         guild: channel.guildId ?? null,
@@ -200,18 +201,16 @@ export async function handleDispatch(
 
     //#region Members
     case GatewayDispatchEvents.GuildMemberAdd: {
-      const guild = shard.client.guilds.get(data.d.guild_id);
+      const guild = client.guilds.get(data.d.guild_id);
 
       if (!guild) {
-        shard.warn(
+        client.logger.warn(
           `received member add for ${data.d.guild_id} but guild doesn't exist in cache; ignoring`,
         );
         break;
       }
 
-      const member = new GuildMember(shard.client, guild.id)._deserialise(
-        data.d,
-      );
+      const member = new GuildMember(client, guild.id)._deserialise(data.d);
 
       guild.members.add(member);
 
@@ -219,10 +218,10 @@ export async function handleDispatch(
       break;
     }
     case GatewayDispatchEvents.GuildMemberUpdate: {
-      const guild = shard.client.guilds.get(data.d.guild_id);
+      const guild = client.guilds.get(data.d.guild_id);
 
       if (!guild) {
-        shard.warn(
+        client.logger.warn(
           `received member update for ${data.d.guild_id} but guild doesn't exist in cache; ignoring`,
         );
         break;
@@ -232,7 +231,7 @@ export async function handleDispatch(
       const oldMember = guild.members.get(data.d.user.id);
 
       if (!member) {
-        shard.warn(
+        client.logger.warn(
           `received member update for ${data.d.user.id} but member doesn't exist in cache; ignoring`,
         );
         break;
@@ -246,10 +245,10 @@ export async function handleDispatch(
       break;
     }
     case GatewayDispatchEvents.GuildMemberRemove: {
-      const guild = shard.client.guilds.get(data.d.guild_id);
+      const guild = client.guilds.get(data.d.guild_id);
 
       if (!guild) {
-        shard.warn(
+        client.logger.warn(
           `received member remove for ${data.d.guild_id} but guild doesn't exist in cache; ignoring`,
         );
         break;
@@ -265,20 +264,19 @@ export async function handleDispatch(
     }
 
     case GatewayDispatchEvents.GuildMembersChunk: {
-      const guild = shard.client.guilds.get(data.d.guild_id);
+      const guild = client.guilds.get(data.d.guild_id);
 
       if (!guild) {
-        shard.warn(
+        client.logger.warn(
           `received member chunk for ${data.d.guild_id} but guild doesn't exist in cache; ignoring`,
         );
         break;
       }
 
       for (const member of data.d.members) {
-        const memberInstance = new GuildMember(
-          shard.client,
-          guild.id,
-        )._deserialise(member);
+        const memberInstance = new GuildMember(client, guild.id)._deserialise(
+          member,
+        );
 
         guild.members.add(memberInstance);
       }
@@ -294,23 +292,23 @@ export async function handleDispatch(
 
     //#region Messages
     case GatewayDispatchEvents.MessageCreate: {
-      const channel = shard.client.channels.get(data.d.channel_id);
+      const channel = client.channels.get(data.d.channel_id);
 
       if (!channel) {
-        shard.warn(
+        client.logger.warn(
           `received message create for ${data.d.channel_id} but channel doesn't exist in cache; ignoring`,
         );
         break;
       }
 
       if (!channel.isTextBased()) {
-        shard.warn(
+        client.logger.warn(
           `received message create for ${data.d.channel_id} but channel is not a text channel; ignoring`,
         );
         break;
       }
 
-      const message = new Message(shard.client)._deserialise(data.d);
+      const message = new Message(client)._deserialise(data.d);
 
       channel.messages.add(message);
 
@@ -318,17 +316,17 @@ export async function handleDispatch(
       break;
     }
     case GatewayDispatchEvents.MessageUpdate: {
-      const channel = shard.client.channels.get(data.d.channel_id);
+      const channel = client.channels.get(data.d.channel_id);
 
       if (!channel) {
-        shard.warn(
+        client.logger.warn(
           `received message update for ${data.d.channel_id} but channel doesn't exist in cache; ignoring`,
         );
         break;
       }
 
       if (!channel.isTextBased()) {
-        shard.warn(
+        client.logger.warn(
           `received message update for ${data.d.channel_id} but channel is not a text channel; ignoring`,
         );
         break;
@@ -338,7 +336,7 @@ export async function handleDispatch(
       const oldMessage = channel.messages.get(data.d.id);
 
       if (!message) {
-        shard.warn(
+        client.logger.warn(
           `received message update for ${data.d.id} but message doesn't exist in cache; ignoring`,
         );
         break;
@@ -352,17 +350,17 @@ export async function handleDispatch(
       break;
     }
     case GatewayDispatchEvents.MessageDelete: {
-      const channel = shard.client.channels.get(data.d.channel_id);
+      const channel = client.channels.get(data.d.channel_id);
 
       if (!channel) {
-        shard.warn(
+        client.logger.warn(
           `received message delete for ${data.d.channel_id} but channel doesn't exist in cache; ignoring`,
         );
         break;
       }
 
       if (!channel.isTextBased()) {
-        shard.warn(
+        client.logger.warn(
           `received message delete for ${data.d.channel_id} but channel is not a text channel; ignoring`,
         );
         break;
@@ -371,7 +369,7 @@ export async function handleDispatch(
       const message = channel.messages.get(data.d.id);
 
       if (!message) {
-        shard.warn(
+        client.logger.warn(
           `received message delete for ${data.d.id} but message doesn't exist in cache; ignoring`,
         );
         break;
@@ -388,8 +386,8 @@ export async function handleDispatch(
     }
 
     default: {
-      shard.warn(`unhandled dispatch event ${data.t}`);
-      shard.trace(data.t, data.d);
+      client.logger.warn(`unhandled dispatch event ${data.t}`);
+      client.logger.trace(data.t, data.d);
     }
   }
 }

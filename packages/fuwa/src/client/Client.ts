@@ -1,11 +1,11 @@
-import Events from '@fuwa/events';
 import {
   APIRequest,
   consumeJSON,
-  REST,
   Response,
+  REST,
   RESTClient,
 } from '@fuwa/rest';
+import { GatewayManager, GatewayShard } from '@fuwa/ws';
 import { Snowflake } from 'discord-api-types/globals';
 import EventEmitter from 'events';
 import { HttpMethod } from 'undici/types/dispatcher';
@@ -26,10 +26,10 @@ import { ChannelManager } from '../structures/managers/ChannelManager.js';
 import { GuildManager } from '../structures/managers/GuildManager.js';
 import { UserManager } from '../structures/managers/UserManager.js';
 import { Message } from '../structures/Message.js';
+import { Intents } from '../util/bitfields/Intents.js';
 import { FuwaError } from '../util/errors.js';
 import { redactToken } from '../util/tokens.js';
-import { GatewayManager } from '../ws/GatewayManager.js';
-import { GatewayShard } from '../ws/GatewayShard.js';
+import { handleDispatch } from '../ws/DispatchHandler.js';
 import {
   ClientOptions,
   DefaultClientOptions,
@@ -157,7 +157,7 @@ export class Client extends EventEmitter {
     this.options = Object.assign(
       {},
       DefaultClientOptions,
-      typeof token === "object" ? token : { token, ...options },
+      typeof token === 'object' ? token : { token, ...options },
     ) as Required<ClientOptions>;
     this.#token = this.options.token ?? process.env.DISCORD_TOKEN ?? '';
     this.options.intents = resolveIntents(this.options.intents!);
@@ -183,7 +183,14 @@ export class Client extends EventEmitter {
         logger: this.logger,
       },
     );
-    this.ws = new GatewayManager(this);
+    this.ws = new GatewayManager(
+      this.http,
+      {
+        intents: (this.options.intents! as Intents).bits,
+        apiVersion: this.options.apiVersion,
+      },
+      this.#token,
+    );
 
     this.guilds = new GuildManager(this);
     this.users = new UserManager(this);
@@ -225,8 +232,18 @@ export class Client extends EventEmitter {
         });
       }
 
+      this.ws.on('dispatch', (data, shard) =>
+        handleDispatch(this, this.ws, data, shard),
+      );
+      this.ws.on('clientEvent', (name, ...data) => this.emit(name, ...data));
+
       return;
     }
+
+    this.ws.on('dispatch', (data, shard) =>
+      handleDispatch(this, this.ws, data, shard),
+    );
+    this.ws.on('clientEvent', (name, ...data) => this.emit(name, ...data));
 
     await this.ws.spawn({
       shards: 'auto',
@@ -253,10 +270,6 @@ export class Client extends EventEmitter {
    */
   public delegate(event: `${string}.${string}`, ...data: any[]) {
     this.emit(event.replace(/^meta\./, ''), ...data);
-  }
-
-  public event(name: string) {
-    return new Events.SubscriptionBuilder(name, this);
   }
 
   /**

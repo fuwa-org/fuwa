@@ -11,8 +11,6 @@ export * from './util/resolvables/MessagePayload';
 export * from './util/util';
 export * from './util/errors';
 export * as Tokens from './util/tokens';
-export * from './ws/GatewayShard';
-export * from './ws/GatewayManager';
 export * from './structures/templates/BaseStructure';
 export * from './structures/Guild';
 export * from './structures/User';

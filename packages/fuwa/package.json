@@ -18,13 +18,12 @@
   "types": "./typings/index.d.ts",
   "homepage": "https://fuwadiscord.github.io/fuwa/",
   "dependencies": {
-    "@fuwa/events": "1.2.3",
     "@fuwa/rest": "workspace:^",
+    "@fuwa/ws": "workspace:^",
     "@sapphire/async-queue": "1.3.1",
     "@types/ws": "8.5.3",
     "discord-api-types": "0.32.0",
     "lodash.snakecase": "4.1.1",
-    "undici": "5.2.0",
     "ws": "8.6.0"
   },
   "devDependencies": {

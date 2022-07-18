@@ -1,0 +1,18 @@
+{
+  "compilerOptions": {
+    "outDir": "./dist/",
+    "declaration": true,
+    "declarationDir": "./typings/",
+    "target": "ESNext",
+    "sourceMap": true,
+    "extendedDiagnostics": false,
+    "diagnostics": false,
+    "module": "commonjs",
+    "noEmitHelpers": false,
+    "importHelpers": false
+  },
+  "extends": "@splatterxl/tsconfig",
+  "include": ["./src/**/*"],
+  "compileOnSave": false,
+  "exclude": ["./dist/**"]
+}

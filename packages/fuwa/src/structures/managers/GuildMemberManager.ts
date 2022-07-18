@@ -13,16 +13,9 @@ export class GuildMemberManager extends BaseManager<GuildMember> {
     super(client, GuildMember);
   }
 
-  public async fetch(
-    id: Snowflake | '@me',
-    cache = false,
-  ): Promise<GuildMember> {
+  public async fetch(id: Snowflake, cache = false): Promise<GuildMember> {
     return this.client
-      .rest(
-        id === '@me'
-          ? Routes.userGuildMember(this.guildId)
-          : Routes.guildMember(this.guildId, id),
-      )
+      .rest(Routes.guildMember(this.guildId, id))
       .get<APIGuildMember>()
       .then(data => {
         if (cache) return this.resolve(data)!;

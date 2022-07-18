@@ -1,11 +1,6 @@
 /// <reference types="node" />
-import { Snowflake, GatewayReceivePayload, GatewaySendPayload } from 'discord-api-types/v10';
-import { Client } from '../client/Client';
+import { GatewayReceivePayload, GatewaySendPayload, Snowflake } from 'discord-api-types/v10';
 import EventEmitter from 'node:events';
-export interface Erlpack {
-    pack(data: any): Buffer;
-    unpack<T>(data: Buffer): T;
-}
 export declare enum ShardState {
     Disconnected = 0,
     Connecting = 1,
@@ -18,12 +13,10 @@ export declare enum ShardState {
 }
 export declare class GatewayShard extends EventEmitter {
     #private;
-    client: Client;
     readonly shard: [number, number];
+    readonly intents: number;
     private _socket;
     private messageQueueCount;
-    compress: boolean;
-    erlpack: boolean;
     id: number;
     private heartbeat_interval;
     private heartbeat_at;
@@ -34,15 +27,10 @@ export declare class GatewayShard extends EventEmitter {
     session?: string;
     _awaitedGuilds: Snowflake[];
     state: ShardState;
-    constructor(client: Client, shard: [number, number]);
+    constructor(shard: [number, number], intents: number, token: string);
     private authenticate;
     connect(url?: string): Promise<unknown>;
     reset(full?: boolean): void;
-    debug(...data: any[]): void;
-    trace(...data: any[]): void;
-    debugPretty(message: string, data: Record<string, any>): void;
-    warn(...data: any[]): void;
-    error(...data: any[]): void;
     awaitPacket(filter: (payload: GatewayReceivePayload) => boolean): Promise<unknown>;
     private onMessage;
     ready(): true | undefined;

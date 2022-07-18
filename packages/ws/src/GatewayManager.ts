@@ -1,15 +1,8 @@
-import {
-  APIGatewayBotInfo,
-  GatewayCloseCodes,
-  Routes,
-} from 'discord-api-types/v10';
+import { REST } from '@fuwa/rest';
+import { APIGatewayBotInfo, GatewayCloseCodes } from 'discord-api-types/v10';
 import EventEmitter from 'node:events';
-import { Client } from '../client/Client.js';
-import { consumeJSON } from '@fuwa/rest';
-import { Intents } from '../util/bitfields/Intents.js';
-import { GatewayShard, ShardState } from './GatewayShard.js';
 import { setTimeout as sleep } from 'node:timers/promises';
-import { handleDispatch } from './DispatchHandler.js';
+import { GatewayShard, ShardState } from './GatewayShard.js';
 
 /**
  * The Gateway Manager is responsible for managing the client's {@link GatewayShard}s.
@@ -19,6 +12,8 @@ export class GatewayManager extends EventEmitter {
   count = 0;
 
   gateway!: APIGatewayBotInfo;
+
+  #token: string;
 
   /**
    * The average latency of all the client's shards, in milliseconds.
@@ -39,36 +34,14 @@ export class GatewayManager extends EventEmitter {
 
   private lock = false;
 
-  constructor(public client: Client) {
+  constructor(
+    public rest: REST,
+    public options: { apiVersion: number; intents: number },
+    token: string,
+  ) {
     super();
 
-    Object.defineProperty(this, 'client', {
-      value: this.client,
-      enumerable: false,
-    });
-
-    // FIXME: find a better way to do this
-    setInterval(() => {
-      this.concurrency = this.gateway.session_start_limit.max_concurrency;
-    }, 7e3);
-  }
-
-  #__log_header() {
-    return `[${this.client.logger.kleur().blue('WS')} => ${this.client.logger
-      .kleur()
-      .green('Manager')}]`;
-  }
-
-  debug(...args: any[]) {
-    this.client.logger.debug(this.#__log_header(), ...args);
-  }
-
-  error(...args: any[]) {
-    this.client.logger.error(this.#__log_header(), ...args);
-  }
-
-  trace(...args: any[]) {
-    this.client.logger.trace('[WS => Manager]', ...args);
+    this.#token = token;
   }
 
   /**
@@ -171,12 +144,14 @@ export class GatewayManager extends EventEmitter {
     count ??= gateway.shards;
 
     if (this.concurrency !== gateway.session_start_limit.max_concurrency) {
+      if (Date.now() - this._lastIdentify > 7e3) {
+        this.concurrency = gateway.session_start_limit.max_concurrency;
+      }
+
       this.concurrency = this.gateway.session_start_limit.max_concurrency ?? 1;
     }
 
     if (options.shards === 'auto') {
-      this.debug('automatically assuming shard count:', gateway.shards);
-
       range = [0, gateway.shards];
       count = gateway.shards;
     } else if (Array.isArray(options.shards)) {
@@ -185,14 +160,9 @@ export class GatewayManager extends EventEmitter {
       range = [options.id!, options.id! + 1];
     }
 
-    this.debug('spawning shards:', range.join('..'), '(' + count + ')');
-
     if (options.trimExisting) {
-      this.debug('trimming existing shards which do not satisfy the range');
-
       for (const [id, shard] of this.shards) {
         if (id < range[0] || id >= range[1]) {
-          this.debug('closing shard', id);
           shard.close(false);
           this.shards.delete(id);
         }
@@ -205,15 +175,9 @@ export class GatewayManager extends EventEmitter {
 
     async function concurrencyCheck(this: GatewayManager, id: number) {
       if (this.lock) {
-        this.trace(
-          'concurrency check for shard',
-          id,
-          ': lock aquired by other shard',
-        );
         await sleep(1e3);
         await concurrencyCheck.call(this, id);
       } else if (this.concurrency === 0) {
-        this.trace('concurrency check for shard', id, ': concurrency drained');
         await sleep(7e3 - (Date.now() - this._lastIdentify) + 1e3);
         await concurrencyCheck.call(this, id);
       }
@@ -223,19 +187,20 @@ export class GatewayManager extends EventEmitter {
 
     for (let i = range[0]; i < range[1]; i++) {
       if (options.skipExisting && this.shards.has(i)) {
-        this.debug('skipping existing shard', i);
         continue;
       }
 
       await concurrencyCheck.call(this, i);
 
-      this.debug('spawning shard', i);
       this.lock = true;
-      this.trace('spawning shard', i, ': lock aquired');
       this._lastIdentify = Date.now();
       this.concurrency--;
 
-      const shard = new GatewayShard(this.client, [i, this.count]);
+      const shard = new GatewayShard(
+        [i, this.count],
+        this.options.intents,
+        this.#token,
+      );
       this._registerListeners(shard, false);
 
       try {
@@ -263,16 +228,10 @@ export class GatewayManager extends EventEmitter {
 
         this.shards.set(i, shard);
 
-        this.debug('shard', i, 'is ready');
-
         this.lock = false;
       } catch (e) {
-        this.debug('failed to spawn shard', i, ':', e);
         this.lock = false;
-        this.debug(this.respawn(i));
       }
-
-      this.trace('spawning shard', i, ': lock released');
     }
   }
 
@@ -300,8 +259,6 @@ export class GatewayManager extends EventEmitter {
   public async recalculate(amount: number): Promise<void>;
   public async recalculate(info: APIGatewayBotInfo): Promise<void>;
   public async recalculate(info: APIGatewayBotInfo | number) {
-    this.debug('recalculating shard count for new statistics: ', info);
-
     if (typeof info === 'number') {
       this.gateway = {
         ...this.gateway,
@@ -324,7 +281,6 @@ export class GatewayManager extends EventEmitter {
   private _registerListeners(shard: GatewayShard, runtime: boolean) {
     if (runtime)
       shard.on('_refresh', () => {
-        this.debug('refreshing shard', shard.id);
         this.respawn(shard.id);
       });
     shard
@@ -339,7 +295,6 @@ export class GatewayManager extends EventEmitter {
       })
       .on('dispatch', d => {
         this.emit('dispatch', d, shard);
-        handleDispatch(this, d, shard);
       })
       .on('ready', () => {
         this.event('shardReady', shard);
@@ -354,50 +309,21 @@ export class GatewayManager extends EventEmitter {
         this.onClose(shard, code, reason);
       });
 
-    (function registerMirrors(this: GatewayManager) {
-      for (const mirror of [
-        'ready',
-        'preReady',
-        'resume',
-        'reconnect',
-        'close',
-        'hello',
-      ]) {
-        shard.on(mirror, (...args: any[]) => {
-          this.emit(mirror, shard, ...args);
-          this.event(
-            `shard${mirror[0].toUpperCase()}${mirror.slice(0)}`,
-            shard,
-            ...args,
-          );
-        });
-      }
-    }.call(this));
-
     return shard;
   }
 
   /** @internal */
   private onClose(shard: GatewayShard, code: number, reason: string | Buffer) {
-    this.debug(
-      `Shard ${shard.id} closed with code`,
-      code,
-      `reason`,
-      reason?.toString() ?? GatewayCloseCodes[code],
-    );
+    this.emit('close', shard.id, code, reason);
     switch (code) {
       case GatewayCloseCodes.InvalidIntents:
-        throw new Error(
-          `Gateway intents ${this.client.options.intents} are invalid.`,
-        );
+        throw new Error(`Gateway intents are invalid.`);
       case GatewayCloseCodes.InvalidShard:
         throw new Error('Invalid shard id: ' + shard.id);
       case GatewayCloseCodes.DisallowedIntents: {
         const err = new Error(
-          `Gateway intents ${this.client.options.intents} are disallowed for the client.`,
+          `Gateway intents are disallowed for the client.`,
         ) as any;
-
-        err.intents = (this.client.options.intents as Intents).toArray();
 
         throw err;
       }
@@ -409,8 +335,8 @@ export class GatewayManager extends EventEmitter {
         shard.emit('_refresh');
         break;
       default:
-        this.debug('Socket closed, reconnecting...');
         shard.reconnect();
+        this.emit('reconnect', shard.id);
         break;
     }
   }
@@ -419,18 +345,13 @@ export class GatewayManager extends EventEmitter {
    * Fetch gateway information for the client.
    */
   private async fetchGatewayBot() {
-    return this.client.http
-      .queue<APIGatewayBotInfo>(Routes.gatewayBot())
-      .then(consumeJSON);
+    return this.rest.getGatewayBot();
   }
 
   private constructGatewayURL(url: string) {
     const parsed = new URL(url);
-    parsed.searchParams.set(
-      'encoding',
-      this.client.options.etf ? 'etf' : 'json',
-    );
-    parsed.searchParams.set('v', this.client.options.apiVersion.toString());
+    parsed.searchParams.set('encoding', 'json');
+    parsed.searchParams.set('v', this.options.apiVersion.toString());
 
     return parsed.toString();
   }
@@ -452,7 +373,7 @@ export class GatewayManager extends EventEmitter {
    * Emit an event to the client.
    */
   event(name: string, ...data: any[]) {
-    this.client.emit(name, ...data);
+    this.emit('clientEvent', name, ...data);
   }
 }
 
