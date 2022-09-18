@@ -5,7 +5,7 @@ import { BaseManager } from './BaseManager';
 export declare class GuildMemberManager extends BaseManager<GuildMember> {
     guildId: Snowflake;
     constructor(client: Client, guildId: Snowflake);
-    fetch(id: Snowflake | '@me', cache?: boolean): Promise<GuildMember>;
+    fetch(id: Snowflake, cache?: boolean): Promise<GuildMember>;
     disableCommunicationFor(member: Snowflake | GuildMember, until: Date | number, reason?: string): Promise<GuildMember>;
     ban(member: Snowflake | GuildMember, { deleteMessageDays, reason }?: BanGuildMemberOptions): Promise<void>;
     unban(id: Snowflake, reason?: string): Promise<void>;
