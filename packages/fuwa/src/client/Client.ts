@@ -8,7 +8,7 @@ import {
 import { GatewayManager, GatewayShard } from '@fuwa/ws';
 import { Snowflake } from 'discord-api-types/globals';
 import EventEmitter from 'events';
-import { HttpMethod } from 'undici/types/dispatcher';
+import Dispatcher from 'undici/types/dispatcher';
 import { workerData } from 'worker_threads';
 import { DefaultLogger } from '../logging/DefaultLogger.js';
 import { DisabledLogger } from '../logging/DisabledLogger.js';
@@ -320,7 +320,7 @@ export class Client extends EventEmitter {
               return this.http
                 .queue<any>({
                   route: route.join('/'),
-                  method: prop.toUpperCase() as HttpMethod,
+                  method: prop.toUpperCase() as Dispatcher.HttpMethod,
                   ...options,
                 })
                 .then((d: any) => (json ? consumeJSON(d) : d)) as any;

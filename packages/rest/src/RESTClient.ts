@@ -1,8 +1,8 @@
 import FormData from 'form-data';
-import undici from 'undici';
 import { URLSearchParams } from 'node:url';
 import { inspect } from 'node:util';
-import { RequestOptions, ResponseData } from 'undici/types/dispatcher';
+import undici from 'undici';
+import Dispatcher from 'undici/types/dispatcher';
 import { APIRequest } from './APIRequest';
 import { RouteLike } from './RequestManager.js';
 
@@ -186,13 +186,16 @@ export class RESTClient {
     )}${query}`;
   }
 
-  public execute(request: APIRequest, tracefunc?: any): Promise<ResponseData> {
+  public execute(
+    request: APIRequest,
+    tracefunc?: any,
+  ): Promise<Dispatcher.ResponseData> {
     request = this.resolveBody(request);
 
-    const options: RequestOptions = {
+    const options: Dispatcher.RequestOptions = {
         method: request.method ?? 'GET',
         headers: this.createHeaders(request),
-      } as RequestOptions,
+      } as Dispatcher.RequestOptions,
       url = this.createURL(request);
 
     if (request.body) options.body = request.body;

@@ -32,8 +32,8 @@ export declare class RequestManager {
     debug(...args: any[]): void;
     private trace;
 }
-export declare type RouteLike = `/${string}`;
-export declare type Response<T> = ResponseData & {
+export type RouteLike = `/${string}`;
+export type Response<T> = ResponseData & {
     body: {
         json(): Promise<T>;
     };

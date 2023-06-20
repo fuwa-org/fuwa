@@ -1,4 +1,5 @@
 /// <reference types="node" />
+/// <reference types="node" />
 import { RESTClient } from '@fuwa/rest';
 import { ChildProcess } from 'child_process';
 import { APIGatewayBotInfo } from 'discord-api-types/v10';

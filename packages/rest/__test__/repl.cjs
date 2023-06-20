@@ -1,4 +1,5 @@
-let __module__ = require('..');
+/* eslint-disable @typescript-eslint/no-var-requires, no-undef */
+let __module__ = require('../typings');
 const repl = require('node:repl');
 
 // allow autocompletion
@@ -14,7 +15,8 @@ const prompter = repl.start({
 
 function reload() {
   delete require.cache[require.resolve('..')];
-  __module__ = require('..');
+  // @ts-ignore
+  __module__ = require('../typings');
   r = new __module__.REST();
   r.init.logger = {
     debug: console.log,
@@ -30,6 +32,8 @@ Object.assign(prompter.context, __module__);
 Object.defineProperty(prompter.context, 'reload', {
   get() {
     reload();
+
+    return 'ok';
   },
 });
 

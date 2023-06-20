@@ -333,6 +333,8 @@ export class GatewayShard extends EventEmitter {
 
   /** @internal @ignore */
   setTimeout(func: (...args: any[]) => any, timeout: number) {
-    return this.#timeouts.push(setTimeout(func, timeout));
+    return this.#timeouts.push(
+      setTimeout(func, timeout) as any as NodeJS.Timeout,
+    );
   }
 }

@@ -1,4 +1,5 @@
-const REST = require('..');
+/* eslint-disable @typescript-eslint/no-var-requires, no-undef */
+const REST = require('../typings');
 const assert = require('assert');
 
 const manager = new REST.default(

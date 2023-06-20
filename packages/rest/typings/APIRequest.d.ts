@@ -1,4 +1,5 @@
 /// <reference types="node" />
+/// <reference types="node" />
 import { Locale } from 'discord-api-types/rest/v10';
 import { URLSearchParams } from 'node:url';
 import { HttpMethod } from 'undici/types/dispatcher';

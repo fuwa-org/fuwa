@@ -3,7 +3,6 @@ import {
   APIConnection,
   APIGuild,
   APIGuildMember,
-  APIGuildWidget as RESTGetAPIGuildWidgetResult,
   APITemplate,
   APIThreadList,
   APIVoiceRegion,
@@ -67,15 +66,16 @@ import {
   RESTGetAPIGuildResult,
   RESTGetAPIGuildRolesResult,
   RESTGetAPIGuildScheduledEventResult,
+  RESTGetAPIGuildScheduledEventsResult,
   RESTGetAPIGuildScheduledEventUsersQuery,
   RESTGetAPIGuildScheduledEventUsersResult,
-  RESTGetAPIGuildScheduledEventsResult,
   RESTGetAPIGuildStickerResult,
   RESTGetAPIGuildStickersResult,
   RESTGetAPIGuildTemplatesResult,
   RESTGetAPIGuildVanityUrlResult,
   RESTGetAPIGuildVoiceRegionsResult,
   RESTGetAPIGuildWelcomeScreenResult,
+  APIGuildWidget as RESTGetAPIGuildWidgetResult,
   RESTGetAPIGuildWidgetSettingsResult,
   RESTGetAPIInviteQuery,
   RESTGetAPIInviteResult,
@@ -157,7 +157,6 @@ import {
   RESTPostAPIStageInstanceResult,
   RESTPostAPIWebhookWithTokenJSONBody,
   RESTPostAPIWebhookWithTokenQuery,
-  RESTPostAPIWebhookWithTokenResult,
   RESTPostAPIWebhookWithTokenWaitResult,
   RESTPutAPIApplicationCommandsJSONBody,
   RESTPutAPIApplicationCommandsResult,
@@ -173,7 +172,7 @@ import {
   RESTPutAPIGuildMemberResult,
   RESTPutAPIGuildMemberRoleResult,
 } from 'discord-api-types/v10';
-import { ResponseData } from 'undici/types/dispatcher';
+import Dispatcher from 'undici/types/dispatcher';
 
 import { APIRequest, File as FileData } from './APIRequest.js';
 import { DefaultDiscordOptions } from './index.js';
@@ -200,7 +199,7 @@ export class REST extends RequestManager {
   afterRequest:
     | ((
         options: RequestOptions,
-        response: ResponseData,
+        response: Dispatcher.ResponseData,
         text: string,
         json: any | null,
       ) => Awaitable<void>)

@@ -18,6 +18,6 @@
   },
   "homepage": "https://github.com/fuwa-org/fuwa#readme",
   "dependencies": {
-    "discord-api-types": "^0.32.1"
+    "discord-api-types": "^0.37.46"
   }
 }
