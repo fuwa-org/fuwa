@@ -1,5 +1,9 @@
 import { REST } from '@fuwa/rest';
-import { APIGatewayBotInfo, GatewayCloseCodes } from 'discord-api-types/v10';
+import {
+  APIGatewayBotInfo,
+  GatewayCloseCodes,
+  GatewayDispatchPayload,
+} from 'discord-api-types/v10';
 import EventEmitter from 'node:events';
 import { setTimeout as sleep } from 'node:timers/promises';
 import { GatewayShard, ShardState } from './GatewayShard.js';
@@ -240,13 +244,14 @@ export class GatewayManager extends EventEmitter {
    *
    * @returns Whether the shard was successfully respawned.
    */
-  public async respawn(id: number) {
+  public async respawn(id: number, url?: string) {
     this.event('shardRespawn', id);
 
     return this.spawn({
+      id: id,
       shards: 1,
-      id,
       count: this.count,
+      url,
     })
       .then(() => true)
       .catch(() => false);
@@ -279,10 +284,11 @@ export class GatewayManager extends EventEmitter {
 
   /** @internal */
   private _registerListeners(shard: GatewayShard, runtime: boolean) {
-    if (runtime)
+    if (runtime) {
       shard.on('_refresh', () => {
         this.respawn(shard.id);
       });
+    }
     shard
       .on('_throw', e => {
         throw new Error(`Shard ${shard.id}: ${e}`);
@@ -293,8 +299,9 @@ export class GatewayManager extends EventEmitter {
           this.emit(p.t, p.d, shard);
         }
       })
-      .on('dispatch', d => {
-        this.emit('dispatch', d, shard);
+      .on('dispatch', (payload: GatewayDispatchPayload) => {
+        this.emit('dispatch', payload, shard);
+        this.emit(payload.t, payload.d);
       })
       .on('ready', () => {
         this.event('shardReady', shard);

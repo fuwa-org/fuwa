@@ -1,5 +1,6 @@
 import { AsyncQueue } from '@sapphire/async-queue';
 import {
+  GatewayDispatchEvents,
   GatewayIdentify,
   GatewayOpcodes,
   GatewayReceivePayload,
@@ -208,6 +209,26 @@ export class GatewayShard extends EventEmitter {
       case GatewayOpcodes.Dispatch: {
         this.emit('dispatch', data);
 
+        switch (data.t) {
+          case GatewayDispatchEvents.Ready: {
+            this.session = data.d.session_id;
+            this._awaitedGuilds = data.d.guilds.map(g => g.id);
+
+            this.url = data.d.resume_gateway_url;
+
+            break;
+          }
+          case GatewayDispatchEvents.Resumed: {
+            this.emit('resume');
+            this.emit('ready');
+
+            break;
+          }
+          default: {
+            // this is handled by the client
+          }
+        }
+
         break;
       }
     }
@@ -224,6 +245,8 @@ export class GatewayShard extends EventEmitter {
 
     this.state = ShardState.Available;
     this.emit('ready');
+
+    return true;
   }
 
   /**

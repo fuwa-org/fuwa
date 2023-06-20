@@ -58,10 +58,6 @@ export async function handleDispatch(
 
       break;
     }
-    case GatewayDispatchEvents.Resumed: {
-      shard.emit('resumed');
-      break;
-    }
     //#endregion
 
     //#region Guilds
