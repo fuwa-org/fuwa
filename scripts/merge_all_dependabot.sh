@@ -1,7 +1,7 @@
 #!/bin/sh
-prs="$(gh pr list --state open --app dependabot --json number -q ".[].number")"
-
-data="$(gh pr list --state open --app dependabot --json number,state,isDraft,title,headRefName)"
+app=dependabot
+data="$(gh pr list --state open --app "$app" --json number,state,isDraft,title,headRefName)"
+prs="$(echo "$data" | jq ".[].number")"
 
 for pr in $prs; do
   echo debug: processing PR "$pr"
