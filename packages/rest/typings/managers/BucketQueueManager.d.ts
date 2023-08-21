@@ -1,5 +1,5 @@
-import { ResponseData } from 'undici/types/dispatcher';
-import { APIRequest } from './APIRequest';
+import Dispatcher from 'undici/types/dispatcher';
+import { APIRequest } from '../client/APIRequest';
 import { RequestManager } from './RequestManager';
 export declare class BucketQueueManager {
     #private;
@@ -12,12 +12,12 @@ export declare class BucketQueueManager {
     constructor(manager: RequestManager, id: string, majorId: string);
     private applyRateLimitInfo;
     get durUntilReset(): number;
-    handleRateLimit(req: APIRequest, res: ResponseData): Promise<ResponseData>;
+    handleRateLimit(req: APIRequest, res: Dispatcher.ResponseData): Promise<Dispatcher.ResponseData>;
     get limited(): boolean;
     get localLimited(): boolean;
     isLimited(global?: boolean): false | {
         global: boolean;
     };
-    queue(req: APIRequest): Promise<ResponseData>;
+    queue(req: APIRequest): Promise<Dispatcher.ResponseData>;
     private debug;
 }

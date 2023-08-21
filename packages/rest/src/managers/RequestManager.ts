@@ -1,14 +1,9 @@
 import { STATUS_CODES } from 'node:http';
 import Dispatcher from 'undici/types/dispatcher';
-import { APIRequest, resolveRequest } from './APIRequest.js';
-import { BucketQueueManager } from './BucketQueueManager.js';
-import { RESTClient } from './RESTClient';
-import {
-  APIError,
-  RESTError,
-  RateLimitedError,
-  parseErr,
-} from './RESTError.js';
+import { APIRequest, resolveRequest } from '../client/APIRequest';
+import { BucketQueueManager } from './BucketQueueManager';
+import { RESTClient } from '../client/RESTClient';
+import { APIError, RESTError, RateLimitedError, parseErr } from '../error';
 
 export interface RequestManagerOptions {
   timings?: boolean;
@@ -20,8 +15,12 @@ export interface RequestManagerOptions {
   };
 }
 
+/**
+ * This class manages rate limits for the client.
+ * @internal Use {@link REST} as this class is still quite low-level.
+ */
 export class RequestManager {
-  // maybe this'll be of some use someday
+  // maybe this will be of some use someday
   // private buckets: Map<string, RateLimit> = new Map();
 
   /** The total amount of requests we can make until we're globally rate-limited. */
@@ -116,7 +115,7 @@ export class RequestManager {
 
             if (req.retries < req.allowedRetries) {
               req.retries++;
-              this.debug('got ratelimited at', bucket.id, '- retrying');
+              this.debug('got rate-limited at', bucket.id, '- retrying');
 
               return this.queue(req);
             } else {
@@ -127,7 +126,9 @@ export class RequestManager {
           }
         }
         case 401:
-          throw new Error('Token has been invalidated or was never valid');
+          if (this.client.getAuth())
+            throw new Error('Token has been invalidated or was never valid');
+        // eslint-disable-next-line no-fallthrough
         default: {
           const text = await res.body.text();
 
@@ -146,16 +147,16 @@ export class RequestManager {
     }
   }
 
-  public queue<T>(
+  public queue<T = unknown, B = any>(
     route: RouteLike,
 
-    options?: Omit<APIRequest, 'route'>,
+    options?: Omit<APIRequest<B>, 'route'>,
   ): Promise<Response<T>>;
-  public queue<T>(req: APIRequest): Promise<Response<T>>;
-  public queue<T>(
-    req: APIRequest | RouteLike,
+  public queue<T = unknown, B = any>(req: APIRequest<B>): Promise<Response<T>>;
+  public queue<T = unknown, B = any>(
+    req: APIRequest<B> | RouteLike,
 
-    options?: APIRequest,
+    options?: APIRequest<B>,
   ): Promise<Dispatcher.ResponseData & { body: { json(): Promise<T> } }> {
     if (typeof req === 'string') {
       req = resolveRequest({ route: req, ...options });

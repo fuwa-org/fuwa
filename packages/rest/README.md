@@ -1,45 +1,45 @@
 # @fuwa/rest
 
 A minimal, yet feature-complete, client for [Discord](https://discord.com)'s
-public [REST API](https://discord.com/developers/docs). Uses undici.
+public [REST API](https://discord.com/developers/docs). Uses undici internally.
 
-Although the project is designed for Discord, it can be used for many types of
-RESTful APIs.
+# Installation
 
-# installation.
-
-```sh
-yarn add @fuwa/rest
-npm install --save @fuwa/rest
+```shell
+# using yarn
+$ yarn add @fuwa/rest
+# or pnpm
+$ pnpm add @fuwa/rest
+# or even npm
+$ npm install --save @fuwa/rest
 ```
 
-# usage.
+# Usage
 
 ```js
-import RESTManager, { RESTClient, DefaultDiscordOptions } from '@fuwa/rest';
+import { REST } from '@fuwa/rest';
 
-const REST = new RESTManager(
-  new RESTClient({
-    ...DefaultDiscordOptions,
-    auth: 'Bot <token>',
-  }),
-);
+const client = new REST("my_token");
 
-REST.queue({
-  route: '/abc/def',
-  method: 'PATCH', // needs to be uppercase!
+await client.patch("/users/@me", {
   body: {
-    foo: 'bar',
+    username: "fuwa_l0v3r"
   },
-})
-  // undici's ResponseData is returned
-  .then(d => d.body.json());
+});
+
+// want it simpler? here you go:
+await client.editCurrentUser({
+  username: "fuwa_l0v3r_shorthand"
+});
 ```
 
-# documentation.
+# Documentation
 
-Documentation is planned. Watch this space!
+All endpoints under `REST` are represented by their name in the [Discord Developer Docs](https://discord.com/developers/docs).
 
-# links.
+Documentation is planned and on the roadmap. Check back here later.
 
-- [source.](https://github.com/fuwa-org/fuwa)
+# Links
+
+- [source code](https://github.com/fuwa-org/fuwa)
+- [npm package](https://npmjs.com/@fuwa/rest)

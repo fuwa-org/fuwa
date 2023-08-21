@@ -7,3 +7,4 @@
 .yarn/cache
 .yarn/install-state.gz
 **/.token
+pnpm-lock.yaml

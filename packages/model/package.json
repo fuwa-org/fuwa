@@ -4,7 +4,7 @@
   "description": "Small library to facilitate JavaScript-ifying Discord objects",
   "main": "dist/index.js",
   "scripts": {
-    "precommit": "# yarn build --noEmit && yarn lint",
+    "precommit": "# pnpm build --noEmit && pnpm lint",
     "build": "tsc"
   },
   "repository": {

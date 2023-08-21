@@ -4,22 +4,29 @@ import { inspect } from 'node:util';
 import undici from 'undici';
 import Dispatcher from 'undici/types/dispatcher';
 import { APIRequest } from './APIRequest';
-import { RouteLike } from './RequestManager.js';
+import { RouteLike } from '../managers/RequestManager';
+import { version } from '../util';
 
 /**
- * Utility class for easy HTTP requests to the Discord API. Can be used for other APIs if needed.
+ * Low level utility class for easy HTTP requests to the Discord API. Can be used for other APIs if needed.
+ *
+ * @internal You should use {@link REST} or {@link RequestManager} for Discord.
  */
 export class RESTClient {
   /**
    * An authentication token to include in the `Authorization` header for requests.
    */
   #auth?: string;
+  /**
+   * Base URL to use for the API.
+   * @default https://discord.com/v10
+   */
   public baseURL?: string;
   /**
    * API version to add to the {@link RESTClient.baseURL}. Leave empty to not add a version at all.
    */
   public version?: number;
-  public options: RESTClientOptions;
+  private readonly options: RESTClientOptions;
 
   public constructor(options: RESTClientOptions) {
     this.baseURL = options.baseURL;
@@ -42,24 +49,23 @@ export class RESTClient {
    * be used directly.
    */
   public static createRESTOptions(
-    clientOptions: any,
+    clientOptions: RESTClientOptions,
     token: string,
     tokenType: 'Bot' | 'Bearer',
   ): RESTClientOptions {
     return {
-      baseURL: clientOptions.httpBaseURL,
-      version: clientOptions.apiVersion,
-      auth: `${tokenType} ${token}`,
-      userAgent: clientOptions.httpUserAgent,
+      baseURL: clientOptions.baseURL,
+      version: clientOptions.version,
+      auth: `${tokenType} ${token}`.trim(),
+      userAgent: clientOptions.userAgent,
       headers: {},
     };
   }
-  public static getDefaultOptions(token: string): Required<RESTClientOptions> {
+  public static getDefaultOptions(): Exclude<RESTClientOptions, 'auth'> {
     return {
       baseURL: 'https://discord.com/api',
       version: 10,
-      auth: `Bot ${token}`,
-      userAgent: `DiscordBot (https://github.com/fuwa-org/fuwa; 0.0.0)`,
+      userAgent: `DiscordBot (https://github.com/fuwa-org/fuwa; ${version})`,
       headers: {},
     };
   }
@@ -76,16 +82,28 @@ export class RESTClient {
     const headers: Record<string, string> = request.headers ?? {};
 
     if (this.options.headers) Object.assign(headers, this.options.headers);
-    headers['user-agent'] =
-      headers['user-agent'] ??
-      this.options.userAgent ??
-      'Mozila/5.0 (compatible; Fuwa)';
-    if (this.#auth && request.auth)
+    headers['user-agent'] = headers['user-agent'] ?? this.options.userAgent;
+
+    if (!headers['user-agent']) {
+      process.emitWarning(
+        "Missing 'user-agent' header passed to fuwa RESTClient",
+      );
+    }
+
+    if (request.auth) {
+      headers.authorization = request.auth;
+    } else if (this.#auth && request.useAuth) {
       headers.authorization = headers.authorization ?? this.#auth;
-    if (request.reason && request.reason.length)
+    }
+
+    if (request.reason && request.reason.length) {
       headers['x-audit-log-reason'] = request.reason;
-    if (request.locale && request.locale.length)
+    }
+
+    if (request.locale && request.locale.length) {
       headers['x-discord-locale'] = request.locale;
+      headers['accept-language'] = request.locale;
+    }
 
     return headers;
   }
@@ -207,7 +225,7 @@ export class RESTClient {
         options.body
           ? prettifyBody(
               options.headers![
-                'content-type' as keyof typeof options['headers']
+                'content-type' as keyof (typeof options)['headers']
               ],
               options.body! as Buffer,
             )

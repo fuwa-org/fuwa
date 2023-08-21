@@ -5,9 +5,9 @@
   "main": "./dist/index.js",
   "type": "commonjs",
   "scripts": {
-    "precommit": "yarn build --noEmit && yarn lint",
+    "precommit": "pnpm build --noEmit && pnpm lint",
     "lint": "eslint . --ext .ts",
-    "lint:fix": "yarn lint --fix",
+    "lint:fix": "pnpm lint --fix",
     "build": "tsc",
     "prettify": "prettier -w ."
   },
@@ -43,6 +43,5 @@
       "path": "./node_modules/cz-conventional-changelog"
     }
   },
-  "optionalPeerDependencies": {},
-  "packageManager": "yarn@3.2.0"
+  "optionalPeerDependencies": {}
 }

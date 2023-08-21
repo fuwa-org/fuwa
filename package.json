@@ -1,16 +1,15 @@
 {
   "name": "@fuwa/fuwa",
-  "packageManager": "yarn@3.2.0",
   "version": "1.0.0",
   "main": "packages/fuwa/dist/index.js",
   "scripts": {
-    "foreach": "bash scripts/foreach.sh yarn",
+    "foreach": "bash scripts/foreach.sh pnpm",
     "lint": "eslint . --ext .ts",
-    "lint:fix": "yarn lint --fix",
+    "lint:fix": "pnpm lint --fix",
     "build": "tsc",
     "docs:build": "typedoc --options typedoc.json",
     "docs:serve": "cd docs; python3 -m http.server",
-    "docs": "yarn docs:build && yarn docs:serve",
+    "docs": "pnpm docs:build && pnpm docs:serve",
     "prettify": "prettier -w ."
   },
   "repository": {
@@ -23,10 +22,7 @@
     "url": "https://github.com/fuwa-org/fuwa/issues"
   },
   "homepage": "https://github.com/fuwa-org/fuwa#readme",
-  "workspaces": [
-    "packages/*"
-  ],
   "devDependencies": {
-    "@changesets/cli": "^2.26.1"
+    "@changesets/cli": "^2.26.2"
   }
 }

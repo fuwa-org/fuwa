@@ -1,6 +1,6 @@
 import { STATUS_CODES } from 'http';
 import Dispatcher from 'undici/types/dispatcher';
-import { APIRequest, File } from './APIRequest';
+import { APIRequest, File } from './client/APIRequest';
 
 export class RESTError extends Error {
   public body: any;
@@ -20,8 +20,6 @@ export class RESTError extends Error {
 }
 
 export class RateLimitedError extends RESTError {
-  public _message = 'You are being rate limited.';
-
   constructor(req: APIRequest, res: Dispatcher.ResponseData, bucket?: string) {
     super(req, res);
 
@@ -80,7 +78,7 @@ function traverse(obj: any, keyPrefix = '', prev: Record<string, any> = {}) {
   return prev;
 }
 
-export class APIError extends Error {
+export class APIError extends RESTError {
   public route: string;
   public body: any;
   public files?: File[];
@@ -92,7 +90,7 @@ export class APIError extends Error {
     error?: any,
     stack?: string,
   ) {
-    super();
+    super(req, _res, error);
 
     const err = flattenErrors(error);
 

@@ -4,12 +4,12 @@ fuwa is a small, lightweight library for use in [Node.js] for interaction with
 the popular text and VoIP instant messaging application [Discord] through its
 [public bot API][discord-docs].
 
-## installation.
+## Installation
 
 While fuwa is under heavy alpha development, some components of it are publicly
 released. See [installation.md] for installation details.
 
-## getting started.
+## Getting started
 
 fuwa is designed for use by developers familiar with the Discord API, and does
 not provide heavy abstractions like other libraries. If this isn't for you, see
@@ -21,17 +21,18 @@ A simple ping/pong bot using [@fuwa/ws], [@fuwa/model], [@fuwa/rest] and
 ```js
 import { GatewayManager } from '@fuwa/ws';
 import { Message } from '@fuwa/model';
-import { REST } from '@fuwa/rest';
+import RESTManager from '@fuwa/rest';
 import { APIMessage } from 'discord-api-types';
 
 const gateway = new GatewayManager('my bot token');
-const rest = new REST('Bot <my token>');
+const rest = new RESTManager('Bot <my token>');
 
-gateway.on('MESSAGE_CREATE', message => {
+gateway.on('MESSAGE_CREATE', async (message: APIMessage) => {
+  // convert to a typed camelCase object
   const msg = new Message(message);
 
   if (msg.content.startsWith('!ping')) {
-    rest.createMessage(msg.channelID, {
+    await rest.createMessage(msg.channelID, {
       content: 'pong!',
       message_reference: {
         message_id: msg.id,
@@ -41,12 +42,12 @@ gateway.on('MESSAGE_CREATE', message => {
 });
 ```
 
-## links.
+## Links
 
-- [documentation.](https://fuwa-org.github.io/fuwa)
-- [repository.](https://github.com/fuwa-org/fuwa)
-- [related projects.](https://discord.com/developers/docs/topics/community-resources)
-- [discord server.](https://discord.gg/tDG9BMz5s7)
+- [documentation](https://fuwa-org.github.io/fuwa)
+- [repository](https://github.com/fuwa-org/fuwa)
+- [related projects](https://discord.com/developers/docs/topics/community-resources)
+- [discord server](https://discord.gg/tDG9BMz5s7)
 
 [node.js]: https://nodejs.org
 [discord]: https://discord.com

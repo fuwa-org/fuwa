@@ -1,19 +1,15 @@
-import { RequestManager } from './RequestManager.js';
-import { RESTClientOptions } from './RESTClient.js';
-import { version } from './util.js';
+import { RequestManager } from './managers/RequestManager';
+import { RESTClient, RESTClientOptions } from './client/RESTClient';
+import { REST } from './REST';
 
-export const DefaultDiscordOptions: RESTClientOptions = {
-  baseURL: 'https://discord.com/api',
-  version: 10,
-  userAgent: 'DiscordBot (https://github.com/fuwa-org/fuwa; ' + version + ')',
-  headers: {},
-};
+export const DefaultDiscordOptions: RESTClientOptions =
+  RESTClient.getDefaultOptions();
 
-export * from './APIRequest.js';
-export * from './BucketQueueManager.js';
-export * from './RequestManager.js';
-export * from './RESTClient.js';
-export * from './RESTError.js';
-export * from './REST.js';
+export * from './client/APIRequest';
+export * from './managers/BucketQueueManager';
+export * from './managers/RequestManager';
+export * from './client/RESTClient';
+export * from './error';
+export * from './REST';
 
-export { RequestManager as default, RequestManager as Client };
+export { REST as default, RequestManager as Client };

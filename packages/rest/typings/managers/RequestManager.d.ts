@@ -1,7 +1,7 @@
-import { ResponseData } from 'undici/types/dispatcher';
-import { APIRequest } from './APIRequest.js';
-import { BucketQueueManager } from './BucketQueueManager.js';
-import { RESTClient } from './RESTClient';
+import Dispatcher from 'undici/types/dispatcher';
+import { APIRequest } from '../client/APIRequest';
+import { BucketQueueManager } from './BucketQueueManager';
+import { RESTClient } from '../client/RESTClient';
 export interface RequestManagerOptions {
     timings?: boolean;
     logger?: {
@@ -23,9 +23,9 @@ export declare class RequestManager {
     get durUntilReset(): number;
     getBucket(route: RouteLike): string[];
     get limited(): boolean;
-    makeRequest(bucket: BucketQueueManager, req: Required<APIRequest>): Promise<ResponseData>;
-    queue<T>(route: RouteLike, options?: Omit<APIRequest, 'route'>): Promise<Response<T>>;
-    queue<T>(req: APIRequest): Promise<Response<T>>;
+    makeRequest(bucket: BucketQueueManager, req: Required<APIRequest>): Promise<Dispatcher.ResponseData>;
+    queue<T = unknown, B = any>(route: RouteLike, options?: Omit<APIRequest<B>, 'route'>): Promise<Response<T>>;
+    queue<T = unknown, B = any>(req: APIRequest<B>): Promise<Response<T>>;
     private updateOffset;
     private updateHeaders;
     __log_header(): string;
@@ -33,12 +33,12 @@ export declare class RequestManager {
     private trace;
 }
 export type RouteLike = `/${string}`;
-export type Response<T> = ResponseData & {
+export type Response<T> = Dispatcher.ResponseData & {
     body: {
         json(): Promise<T>;
     };
 };
-export declare function consumeJSON<D = any>(res: ResponseData & {
+export declare function consumeJSON<D = any>(res: Dispatcher.ResponseData & {
     body: {
         json(): Promise<D>;
     };
