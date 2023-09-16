@@ -8,3 +8,5 @@
 .yarn/install-state.gz
 **/.token
 pnpm-lock.yaml
+.idea
+**/.DS_Store
