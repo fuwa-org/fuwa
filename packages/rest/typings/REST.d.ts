@@ -139,15 +139,15 @@ export declare class REST extends RequestManager {
     deleteGuild(guildId: string, options?: RequestOptions): Promise<never>;
     getGuildChannels(guildId: string, options?: RequestOptions): Promise<Api.RESTGetAPIGuildChannelsResult>;
     createGuildChannel(guildId: string, data: Api.RESTPostAPIGuildChannelJSONBody, options?: RequestOptions): Promise<Api.APIChannel>;
-    editGuildChannelPositions(guildId: string, data: Api.RESTPatchAPIGuildChannelPositionsJSONBody, options?: RequestOptions): Promise<never>;
+    modifyGuildChannelPositions(guildId: string, data: Api.RESTPatchAPIGuildChannelPositionsJSONBody, options?: RequestOptions): Promise<never>;
     getGuildMember(guildId: string, userId: string, options?: RequestOptions): Promise<Api.APIGuildMember>;
     listGuildMembers(guildId: string, options?: Api.RESTGetAPIGuildMembersQuery & RequestOptions<never, Api.RESTGetAPIGuildMembersQuery>): Promise<Api.RESTGetAPIGuildMembersResult>;
     searchGuildMembers(guildId: string, query: string, options?: RequestOptions & {
         limit?: number;
     }): Promise<Api.RESTGetAPIGuildMembersResult>;
     addGuildMember(guildId: string, userId: string, accessToken: string, data?: Omit<Api.RESTPutAPIGuildMemberJSONBody, 'access_token'>, options?: BotRequestOptions): Promise<Api.APIGuildMember>;
-    editGuildMember(guildId: string, userId: string, data: Api.RESTPatchAPIGuildMemberJSONBody, options?: RequestOptions): Promise<Api.APIGuildMember>;
-    editCurrentMember(guildId: string, nickname?: string, options?: RequestOptions): Promise<Api.APIGuildMember>;
+    modifyGuildMember(guildId: string, userId: string, data: Api.RESTPatchAPIGuildMemberJSONBody, options?: RequestOptions): Promise<Api.APIGuildMember>;
+    editCurrentMember(guildId: string, nickname?: string, options?: RequestOptions): any;
     editCurrentUserNick(guildId: string, nickname?: string, options?: RequestOptions): Promise<Api.APIGuildMember>;
     addGuildMemberRole(guildId: string, userId: string, roleId: string, options?: RequestOptions): Promise<never>;
     removeGuildMemberRole(guildId: string, userId: string, roleId: string, options?: RequestOptions): Promise<never>;

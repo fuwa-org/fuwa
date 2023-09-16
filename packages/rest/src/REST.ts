@@ -969,6 +969,7 @@ export class REST extends RequestManager {
       interactionToken,
       data,
       options,
+      '?wait=true',
     ).then(res => res!);
   }
 
@@ -2784,8 +2785,9 @@ export class REST extends RequestManager {
    * Returns a list of guild member objects whose username or nickname starts with a provided string.
    *
    * @param guildId Guild ID to list members for
-   * @param query Query string to match username(s) and nickname(s) against.
-   * @param [limit=1] max number of members to return
+   * @param query Query string to match username(s) and nickname(s) against.@param options Additional options for the request
+   * @param [options] Additional options for the request
+   * @param [options.limit=1] max number of members to return
    *
    * @see https://discord.com/developers/docs/resources/guild#list-guild-members
    */
@@ -2863,6 +2865,10 @@ export class REST extends RequestManager {
    *
    * - If the `channel_id` is set to null, this will force the target user to
    * be disconnected from voice
+   * - All parameters to this endpoint are optional and nullable. When moving
+   * members to channels, the API user must have permissions to both connect to
+   * the channel and have the `MOVE_MEMBERS` permission.
+   * - This endpoint supports sending an Audit Log reason.
    *
    * Fires a `GUILD_MEMBER_UPDATE` Gateway event.
    *
@@ -2872,7 +2878,6 @@ export class REST extends RequestManager {
    * @param userId User ID to update
    * @param data Member data
    * @param options Additional options
-   * // TODO
    *
    * @see https://discord.com/developers/docs/resources/guild#modify-guild-member
    */
@@ -2891,12 +2896,24 @@ export class REST extends RequestManager {
     );
   }
 
-  editCurrentMember(
+  /**
+   * Modifies the current member in a guild.
+   *
+   * - Fires a `GUILD_MEMBER_UPDATE` Gateway event.
+   * - This endpoint supports sending an Audit Log reason.
+   *
+   * @returns The updated member.
+   *
+   * @param guildId Guild to update the member in.
+   * @param nickname New nickname for the member.
+   * @param options
+   */
+  modifyCurrentMember(
     guildId: string,
     nickname?: string,
     options: RequestOptions = {},
   ) {
-    return this.editGuildMember(
+    return this.modifyGuildMember(
       guildId,
       '@me',
       {
@@ -2907,7 +2924,12 @@ export class REST extends RequestManager {
   }
 
   /**
-   * @deprecated Deprecated in favour of {@link REST.editCurrentMember}
+   * Modifies the nickname of the current user in a guild.
+   *
+   * - This endpoint supports sending an Audit Log reason.
+   * - Fires a `GUILD_MEMBER_UPDATE` Gateway event.
+   *
+   * @deprecated Deprecated in favour of {@link REST.modifyCurrentMember}
    */
   editCurrentUserNick(
     guildId: string,
@@ -3085,7 +3107,7 @@ export class REST extends RequestManager {
     return this.post<Api.RESTPostAPIGuildPruneResult>(
       `/guilds/${guildId}/prune`,
       {
-        body: options,
+        body: data,
         ...options,
       },
     );
