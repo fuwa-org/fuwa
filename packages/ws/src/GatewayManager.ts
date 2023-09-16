@@ -4,7 +4,7 @@ import {
   GatewayCloseCodes,
   GatewayDispatchPayload,
 } from 'discord-api-types/v10';
-import EventEmitter from 'node:events';
+import { EventEmitter } from 'node:events';
 import { setTimeout as sleep } from 'node:timers/promises';
 import { GatewayShard, ShardState } from './GatewayShard.js';
 

@@ -10,7 +10,7 @@ export class ShardingManager {
   workers: Map<number, ChildProcess | Worker> = new Map();
 
   constructor(public token: string, public options: ShardingManagerOptions) {
-    this.client = new RESTClient(RESTClient.getDefaultOptions(token));
+    this.client = new RESTClient(RESTClient.getDefaultOptions()).setAuth(token);
   }
 
   public async spawn() {

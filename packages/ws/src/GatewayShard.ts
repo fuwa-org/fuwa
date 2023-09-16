@@ -8,7 +8,7 @@ import {
   GatewaySendPayload,
   Snowflake,
 } from 'discord-api-types/v10';
-import EventEmitter from 'node:events';
+import { EventEmitter } from 'node:events';
 import WebSocket from 'ws';
 import { WebSocketProperties } from './Constants.js';
 
