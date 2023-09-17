@@ -1,7 +1,7 @@
 import Dispatcher from 'undici/types/dispatcher';
 import { APIRequest } from '../client/APIRequest';
 import { BucketQueueManager } from './BucketQueueManager';
-import { RESTClient } from '../client/RESTClient';
+import { RESTClient, TypedResponseData } from '../client/RESTClient';
 export interface RequestManagerOptions {
     timings?: boolean;
     logger?: {
@@ -23,7 +23,7 @@ export declare class RequestManager {
     get durUntilReset(): number;
     getBucket(route: RouteLike): string[];
     get limited(): boolean;
-    makeRequest(bucket: BucketQueueManager, req: Required<APIRequest>): Promise<Dispatcher.ResponseData>;
+    makeRequest<T>(bucket: BucketQueueManager, req: Required<APIRequest>): Promise<TypedResponseData<T>>;
     queue<T = unknown, B = any>(route: RouteLike, options?: Omit<APIRequest<B>, 'route'>): Promise<Response<T>>;
     queue<T = unknown, B = any>(req: APIRequest<B>): Promise<Response<T>>;
     private updateOffset;
@@ -38,8 +38,4 @@ export type Response<T> = Dispatcher.ResponseData & {
         json(): Promise<T>;
     };
 };
-export declare function consumeJSON<D = any>(res: Dispatcher.ResponseData & {
-    body: {
-        json(): Promise<D>;
-    };
-}): Promise<D>;
+export declare function consumeJSON<D = any>(res: TypedResponseData<D>): Promise<D>;

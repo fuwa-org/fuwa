@@ -145,9 +145,9 @@ export declare class REST extends RequestManager {
     searchGuildMembers(guildId: string, query: string, options?: RequestOptions & {
         limit?: number;
     }): Promise<Api.RESTGetAPIGuildMembersResult>;
-    addGuildMember(guildId: string, userId: string, accessToken: string, data?: Omit<Api.RESTPutAPIGuildMemberJSONBody, 'access_token'>, options?: BotRequestOptions): Promise<Api.APIGuildMember>;
+    addGuildMember(guildId: string, userId: string, accessToken: string, data?: Omit<Api.RESTPutAPIGuildMemberJSONBody, 'access_token'>, options?: BotRequestOptions): Promise<Api.RESTPutAPIGuildMemberResult>;
     modifyGuildMember(guildId: string, userId: string, data: Api.RESTPatchAPIGuildMemberJSONBody, options?: RequestOptions): Promise<Api.APIGuildMember>;
-    editCurrentMember(guildId: string, nickname?: string, options?: RequestOptions): any;
+    modifyCurrentMember(guildId: string, nickname?: string, options?: RequestOptions): Promise<Api.APIGuildMember>;
     editCurrentUserNick(guildId: string, nickname?: string, options?: RequestOptions): Promise<Api.APIGuildMember>;
     addGuildMemberRole(guildId: string, userId: string, roleId: string, options?: RequestOptions): Promise<never>;
     removeGuildMemberRole(guildId: string, userId: string, roleId: string, options?: RequestOptions): Promise<never>;
@@ -209,7 +209,7 @@ export declare class REST extends RequestManager {
     editStageInstance(channelId: string, data: Api.RESTPatchAPIStageInstanceJSONBody, options?: RequestOptions): Promise<Api.APIStageInstance>;
     deleteStageInstance(channelId: string, options?: RequestOptions): Promise<never>;
     getSticker(stickerId: string, options?: RequestOptions): Promise<Api.APISticker>;
-    listPremiumStickerPacks(options?: RequestOptions): Promise<Api.RESTGetNitroStickerPacksResult>;
+    listPremiumStickerPacks(options?: RequestOptions): Promise<Api.RESTGetStickerPacksResult>;
     listGuildStickers(guildId: string, options?: RequestOptions): Promise<Api.RESTGetAPIGuildStickersResult>;
     getGuildSticker(guildId: string, stickerId: string, options?: RequestOptions): Promise<Api.APISticker>;
     createGuildSticker(guildId: string, data: Omit<Api.RESTPostAPIGuildStickerFormDataBody, 'file'>, image: File, options?: RequestOptions): Promise<Api.APISticker>;

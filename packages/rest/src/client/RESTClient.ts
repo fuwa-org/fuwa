@@ -7,6 +7,10 @@ import { APIRequest } from './APIRequest';
 import { RouteLike } from '../managers/RequestManager';
 import { version } from '../util';
 
+export type TypedResponseData<T> = Dispatcher.ResponseData & {
+  body: { json(): Promise<T> };
+};
+
 /**
  * Low level utility class for easy HTTP requests to the Discord API. Can be used for other APIs if needed.
  *
@@ -204,10 +208,10 @@ export class RESTClient {
     )}${query}`;
   }
 
-  public execute(
+  public execute<T>(
     request: APIRequest,
     tracefunc?: any,
-  ): Promise<Dispatcher.ResponseData> {
+  ): Promise<TypedResponseData<T>> {
     request = this.resolveBody(request);
 
     const options: Dispatcher.RequestOptions = {
@@ -233,7 +237,7 @@ export class RESTClient {
       );
     }
 
-    return undici.request(url, options);
+    return undici.request(url, options) as Promise<TypedResponseData<T>>;
   }
 }
 

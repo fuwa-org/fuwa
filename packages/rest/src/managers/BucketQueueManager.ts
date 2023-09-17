@@ -4,6 +4,7 @@ import Dispatcher from 'undici/types/dispatcher';
 import { APIRequest } from '../client/APIRequest';
 import { RateLimitedError } from '../error';
 import { RequestManager } from './RequestManager';
+import { TypedResponseData } from '../client/RESTClient';
 
 export class BucketQueueManager {
   #queue = new AsyncQueue();
@@ -30,7 +31,10 @@ export class BucketQueueManager {
   public get durUntilReset() {
     return this.reset + this.manager.offset - Date.now();
   }
-  public handleRateLimit(req: APIRequest, res: Dispatcher.ResponseData) {
+  public handleRateLimit<D>(
+    req: APIRequest,
+    res: Dispatcher.ResponseData,
+  ): Promise<TypedResponseData<D>> {
     this.applyRateLimitInfo(res);
 
     if (req.retries! < req.allowedRetries!) {
@@ -58,7 +62,9 @@ export class BucketQueueManager {
     }
   }
 
-  public async queue(req: APIRequest): Promise<Dispatcher.ResponseData> {
+  public async queue<D = unknown>(
+    req: APIRequest,
+  ): Promise<TypedResponseData<D>> {
     // let running requests finish
     await this.#queue.wait();
 
@@ -84,7 +90,7 @@ export class BucketQueueManager {
 
       this.applyRateLimitInfo(res);
 
-      return res;
+      return res as TypedResponseData<D>;
     } finally {
       this.#queue.shift();
     }

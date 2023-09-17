@@ -2,7 +2,7 @@ import { STATUS_CODES } from 'node:http';
 import Dispatcher from 'undici/types/dispatcher';
 import { APIRequest, resolveRequest } from '../client/APIRequest';
 import { BucketQueueManager } from './BucketQueueManager';
-import { RESTClient } from '../client/RESTClient';
+import { RESTClient, TypedResponseData } from '../client/RESTClient';
 import { APIError, RESTError, RateLimitedError, parseErr } from '../error';
 
 export interface RequestManagerOptions {
@@ -61,15 +61,17 @@ export class RequestManager {
     return this.remaining === 0 && Date.now() < this.reset;
   }
 
-  public async makeRequest(
+  public async makeRequest<T>(
     bucket: BucketQueueManager,
     req: Required<APIRequest>,
-  ): Promise<Dispatcher.ResponseData> {
+  ): Promise<TypedResponseData<T>> {
     if (this.init.timings) req.httpStartTime = Date.now();
 
     this.trace(`Sending ${req.method} to ${req.route}...`);
 
-    const res = await this.client.execute(
+    const res: Dispatcher.ResponseData & {
+        body: { json(): Promise<T> };
+      } = await this.client.execute<T>(
         req,
         this.init.logger?.trace && !this.init.logger?.debug
           ? this.trace.bind(this)
@@ -237,11 +239,9 @@ export type RouteLike = `/${string}`;
 export type Response<T> = Dispatcher.ResponseData & {
   body: { json(): Promise<T> };
 };
-export function consumeJSON<D = any>(
-  res: Dispatcher.ResponseData & { body: { json(): Promise<D> } },
-): Promise<D> {
+export function consumeJSON<D = any>(res: TypedResponseData<D>): Promise<D> {
   if (res.headers['content-type']!.includes('application/json')) {
-    return res.body.json();
+    return res.body.json() as Promise<D>;
   } else {
     throw new Error('API response was not JSON');
   }

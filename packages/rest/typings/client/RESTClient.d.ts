@@ -1,6 +1,11 @@
 import Dispatcher from 'undici/types/dispatcher';
 import { APIRequest } from './APIRequest';
 import { RouteLike } from '../managers/RequestManager';
+export type TypedResponseData<T> = Dispatcher.ResponseData & {
+    body: {
+        json(): Promise<T>;
+    };
+};
 export declare class RESTClient {
     #private;
     baseURL?: string;
@@ -15,7 +20,7 @@ export declare class RESTClient {
     formatRoute(route: RouteLike, versioned?: boolean, useBase?: boolean): string;
     resolveBody(req: APIRequest): APIRequest;
     createURL(request: APIRequest): string;
-    execute(request: APIRequest, tracefunc?: any): Promise<Dispatcher.ResponseData>;
+    execute<T>(request: APIRequest, tracefunc?: any): Promise<TypedResponseData<T>>;
 }
 export interface RESTClientOptions {
     baseURL?: string;
